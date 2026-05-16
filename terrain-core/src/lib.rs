@@ -77,6 +77,16 @@ pub struct SiteMovement {
 }
 
 #[derive(Debug, Clone, PartialEq)]
+pub struct AssigneeCapacity {
+    pub assignee: String,
+    pub team: String,
+    pub capacity: f64,
+    pub home_latitude: f64,
+    pub home_longitude: f64,
+    pub skills: Vec<String>,
+}
+
+#[derive(Debug, Clone, PartialEq)]
 pub struct PartitionSweepResult {
     pub target_territory_count: usize,
     pub actual_territory_count: usize,
@@ -819,6 +829,77 @@ pub fn parse_sites_csv(input: &str) -> Result<Vec<Site>, CsvIntakeError> {
     Ok(sites)
 }
 
+pub fn parse_assignee_capacity_csv(input: &str) -> Result<Vec<AssigneeCapacity>, CsvIntakeError> {
+    let mut lines = input.lines().enumerate();
+    let Some((header_idx, header_line)) = lines.find(|(_, line)| !line.trim().is_empty()) else {
+        return Err(CsvIntakeError {
+            line: 1,
+            message: "missing header row".to_string(),
+        });
+    };
+    let headers = parse_csv_line(header_line).map_err(|message| CsvIntakeError {
+        line: header_idx + 1,
+        message,
+    })?;
+    let header_map = headers
+        .iter()
+        .enumerate()
+        .map(|(idx, header)| (header.trim().to_ascii_lowercase(), idx))
+        .collect::<std::collections::BTreeMap<_, _>>();
+    for header in ["assignee", "capacity", "home_latitude", "home_longitude"] {
+        if !header_map.contains_key(header) {
+            return Err(CsvIntakeError {
+                line: header_idx + 1,
+                message: format!("missing required header '{header}'"),
+            });
+        }
+    }
+
+    let mut capacities = Vec::new();
+    for (line_idx, line) in lines {
+        if line.trim().is_empty() {
+            continue;
+        }
+        let line_number = line_idx + 1;
+        let fields = parse_csv_line(line).map_err(|message| CsvIntakeError {
+            line: line_number,
+            message,
+        })?;
+        let assignee = csv_field(&fields, &header_map, "assignee")
+            .trim()
+            .to_string();
+        if assignee.is_empty() {
+            return Err(CsvIntakeError {
+                line: line_number,
+                message: "assignee cannot be empty".to_string(),
+            });
+        }
+        capacities.push(AssigneeCapacity {
+            assignee,
+            team: csv_field(&fields, &header_map, "team").trim().to_string(),
+            capacity: parse_f64(
+                csv_field(&fields, &header_map, "capacity"),
+                line_number,
+                "capacity",
+            )?,
+            home_latitude: parse_f64(
+                csv_field(&fields, &header_map, "home_latitude"),
+                line_number,
+                "home_latitude",
+            )?,
+            home_longitude: parse_f64(
+                csv_field(&fields, &header_map, "home_longitude"),
+                line_number,
+                "home_longitude",
+            )?,
+            skills: optional_csv_field(&fields, &header_map, "skills")
+                .map(split_assignees)
+                .unwrap_or_default(),
+        });
+    }
+    Ok(capacities)
+}
+
 pub fn partition_sites(
     sites: impl IntoIterator<Item = Site>,
     target_territory_count: usize,
@@ -935,6 +1016,15 @@ N-003,9,80000,47.58,-122.29\n\
 S-001,11,105000,47.50,-122.27\n\
 S-002,10,95000,47.46,-122.33\n\
 S-003,10,92000,47.53,-122.38\n"
+}
+
+pub fn sample_assignee_capacity_csv() -> &'static str {
+    "assignee,team,capacity,home_latitude,home_longitude,skills\n\
+Avery,north,14,47.61,-122.34,enterprise;onsite\n\
+Morgan,north,12,47.66,-122.30,renewal\n\
+Sam,north,10,47.59,-122.28,onsite\n\
+Jordan,south,16,47.49,-122.29,enterprise\n\
+Riley,south,14,47.52,-122.36,renewal;onsite\n"
 }
 
 pub fn sample_territories() -> Vec<Territory> {
@@ -1271,6 +1361,18 @@ mod tests {
         assert!(sweep[0].audit.passes);
         assert_eq!(sweep[1].target_territory_count, 3);
         assert_eq!(sweep[1].actual_territory_count, 3);
+    }
+
+    #[test]
+    fn parses_assignee_capacity_csv() {
+        let capacities =
+            parse_assignee_capacity_csv(sample_assignee_capacity_csv()).expect("capacity parses");
+
+        assert_eq!(capacities.len(), 5);
+        assert_eq!(capacities[0].assignee, "Avery");
+        assert_eq!(capacities[0].team, "north");
+        near(capacities[0].capacity, 14.0);
+        assert_eq!(capacities[0].skills, ["enterprise", "onsite"]);
     }
 
     #[test]

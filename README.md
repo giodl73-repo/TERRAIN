@@ -25,6 +25,8 @@ cargo run -p terrain-cli -- field-review-csv sample-territories.csv sample-terri
 cargo run -p terrain-cli -- svg-csv sample-territories.csv > terrain-split.svg
 cargo run -p terrain-cli -- geojson-csv sample-territories.csv > terrain-split.geojson
 cargo run -p terrain-cli -- sample-sites-csv > sample-sites.csv
+cargo run -p terrain-cli -- sample-capacity-csv > sample-capacity.csv
+cargo run -p terrain-cli -- capacity-csv sample-capacity.csv
 cargo run -p terrain-cli -- partition-csv sample-sites.csv 2
 cargo run -p terrain-cli -- sweep-csv sample-sites.csv 2 3
 cargo run -p terrain-cli -- partition-svg-csv sample-sites.csv 2 > terrain-partition.svg
@@ -69,6 +71,9 @@ count range, producing audit rows that can be sorted or charted.
 
 The field review command emits a plain-language recommendation, balance summary,
 site movement list, and compactness exceptions for field manager review.
+
+The capacity commands start the Homestead Act phase by parsing assigned people
+or team capacity, home-base coordinates, and skills for later fairness checks.
 
 ## Product thesis
 

@@ -1,9 +1,9 @@
 use terrain_core::{
     TerritoryVisualOptions, audit_territories, compactness_exceptions, compare_territory_plans,
-    diagnose_territories_csv, parse_sites_csv, parse_territories_csv, partition_count_sweep,
-    partition_sites, render_territory_geojson, render_territory_svg,
-    sample_proposed_territories_csv, sample_sites_csv, sample_territories, sample_territories_csv,
-    site_movements,
+    diagnose_territories_csv, parse_assignee_capacity_csv, parse_sites_csv, parse_territories_csv,
+    partition_count_sweep, partition_sites, render_territory_geojson, render_territory_svg,
+    sample_assignee_capacity_csv, sample_proposed_territories_csv, sample_sites_csv,
+    sample_territories, sample_territories_csv, site_movements,
 };
 
 fn main() {
@@ -23,7 +23,9 @@ fn main() {
         "sample-csv" => print_sample_csv(),
         "sample-proposed-csv" => print_sample_proposed_csv(),
         "sample-sites-csv" => print_sample_sites_csv(),
+        "sample-capacity-csv" => print_sample_capacity_csv(),
         "audit-csv" => run_csv_command(args.get(1), print_audit_for_csv),
+        "capacity-csv" => run_csv_command(args.get(1), print_capacity_for_csv),
         "diagnose-csv" => run_csv_command(args.get(1), print_diagnostics_for_csv),
         "compare-csv" => run_compare_command(args.get(1), args.get(2)),
         "movement-csv" => run_movement_command(args.get(1), args.get(2)),
@@ -56,7 +58,9 @@ fn print_help() {
     println!("  sample-csv     Emit the built-in CSV intake fixture");
     println!("  sample-proposed-csv Emit a proposed-plan CSV fixture for comparison");
     println!("  sample-sites-csv Emit the built-in unassigned site CSV fixture");
+    println!("  sample-capacity-csv Emit the built-in assignee capacity fixture");
     println!("  audit-csv PATH Audit a territory CSV file");
+    println!("  capacity-csv PATH Summarize assignee capacity CSV");
     println!("  diagnose-csv PATH Report territory CSV intake diagnostics");
     println!("  compare-csv BASELINE PROPOSED Compare two territory CSV plans");
     println!("  movement-csv BASELINE PROPOSED List stable site movement between plans");
@@ -151,6 +155,29 @@ fn print_sample_proposed_csv() {
 
 fn print_sample_sites_csv() {
     print!("{}", sample_sites_csv());
+}
+
+fn print_sample_capacity_csv() {
+    print!("{}", sample_assignee_capacity_csv());
+}
+
+fn print_capacity_for_csv(csv: &str) {
+    let capacities = parse_assignee_capacity_csv(csv).unwrap_or_else(|error| {
+        eprintln!("{error}");
+        std::process::exit(1);
+    });
+    println!("assignee,team,capacity,home_latitude,home_longitude,skills");
+    for capacity in capacities {
+        println!(
+            "{},{},{:.1},{:.4},{:.4},{}",
+            capacity.assignee,
+            capacity.team,
+            capacity.capacity,
+            capacity.home_latitude,
+            capacity.home_longitude,
+            capacity.skills.join(";"),
+        );
+    }
 }
 
 fn print_svg_for_csv(csv: &str) {
