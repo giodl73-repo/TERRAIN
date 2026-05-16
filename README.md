@@ -18,6 +18,7 @@ cargo run -p terrain-cli -- sample-proposed-csv > sample-territories-proposed.cs
 cargo run -p terrain-cli -- audit-csv sample-territories.csv
 cargo run -p terrain-cli -- diagnose-csv sample-territories.csv
 cargo run -p terrain-cli -- compare-csv sample-territories.csv sample-territories-proposed.csv
+cargo run -p terrain-cli -- movement-csv sample-territories.csv sample-territories-proposed.csv
 cargo run -p terrain-cli -- compactness-csv sample-territories.csv 0.06
 cargo run -p terrain-cli -- packet-csv sample-territories.csv sample-territories-proposed.csv terrain-packet
 cargo run -p terrain-cli -- svg-csv sample-territories.csv > terrain-split.svg
@@ -56,6 +57,10 @@ or route kernels are adopted.
 The packet command writes a review folder with scenario summary metrics,
 per-territory deltas, proposed SVG, and proposed GeoJSON for operations and
 dashboard handoff.
+
+The movement command starts the Oregon Trail phase by listing site-level moves
+between baseline and proposed plans with stable IDs, before/after territories,
+movement kind, demand, and revenue.
 
 ## Product thesis
 

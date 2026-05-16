@@ -2,7 +2,7 @@ use terrain_core::{
     TerritoryVisualOptions, audit_territories, compactness_exceptions, compare_territory_plans,
     diagnose_territories_csv, parse_sites_csv, parse_territories_csv, partition_sites,
     render_territory_geojson, render_territory_svg, sample_proposed_territories_csv,
-    sample_sites_csv, sample_territories, sample_territories_csv,
+    sample_sites_csv, sample_territories, sample_territories_csv, site_movements,
 };
 
 fn main() {
@@ -25,6 +25,7 @@ fn main() {
         "audit-csv" => run_csv_command(args.get(1), print_audit_for_csv),
         "diagnose-csv" => run_csv_command(args.get(1), print_diagnostics_for_csv),
         "compare-csv" => run_compare_command(args.get(1), args.get(2)),
+        "movement-csv" => run_movement_command(args.get(1), args.get(2)),
         "compactness-csv" => run_compactness_command(args.get(1), args.get(2)),
         "packet-csv" => run_packet_command(args.get(1), args.get(2), args.get(3)),
         "svg-csv" => run_csv_command(args.get(1), print_svg_for_csv),
@@ -55,6 +56,7 @@ fn print_help() {
     println!("  audit-csv PATH Audit a territory CSV file");
     println!("  diagnose-csv PATH Report territory CSV intake diagnostics");
     println!("  compare-csv BASELINE PROPOSED Compare two territory CSV plans");
+    println!("  movement-csv BASELINE PROPOSED List stable site movement between plans");
     println!("  compactness-csv PATH THRESHOLD Report max-radius compactness exceptions");
     println!("  packet-csv BASELINE PROPOSED OUT_DIR Write a scenario review packet");
     println!("  svg-csv PATH   Emit a data-bound SVG split from a CSV file");
@@ -272,6 +274,45 @@ fn run_compare_command(baseline_path: Option<&String>, proposed_path: Option<&St
             delta.revenue_delta,
             delta.baseline_demand,
             delta.proposed_demand,
+        );
+    }
+}
+
+fn run_movement_command(baseline_path: Option<&String>, proposed_path: Option<&String>) {
+    let Some(proposed_path) = proposed_path else {
+        eprintln!("missing proposed CSV path");
+        print_help();
+        std::process::exit(2);
+    };
+    let baseline_csv = read_csv_file(baseline_path);
+    let proposed_csv = read_csv_file(Some(proposed_path));
+    let baseline = parse_territories_csv(&baseline_csv).unwrap_or_else(|error| {
+        eprintln!("baseline {error}");
+        std::process::exit(1);
+    });
+    let proposed = parse_territories_csv(&proposed_csv).unwrap_or_else(|error| {
+        eprintln!("proposed {error}");
+        std::process::exit(1);
+    });
+    let movements = site_movements(&baseline, &proposed);
+    let moved_count = movements
+        .iter()
+        .filter(|movement| movement.movement_kind != "unchanged")
+        .count();
+    println!(
+        "status=review movement_count={moved_count} site_count={}",
+        movements.len()
+    );
+    println!("site_id,baseline_territory,proposed_territory,movement_kind,demand,revenue");
+    for movement in movements {
+        println!(
+            "{},{},{},{},{:.1},{:.0}",
+            movement.site_id,
+            movement.baseline_territory_id.unwrap_or_default(),
+            movement.proposed_territory_id.unwrap_or_default(),
+            movement.movement_kind,
+            movement.demand,
+            movement.revenue,
         );
     }
 }

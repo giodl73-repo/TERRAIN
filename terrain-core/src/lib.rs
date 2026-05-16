@@ -67,6 +67,16 @@ pub struct CompactnessException {
 }
 
 #[derive(Debug, Clone, PartialEq)]
+pub struct SiteMovement {
+    pub site_id: String,
+    pub baseline_territory_id: Option<String>,
+    pub proposed_territory_id: Option<String>,
+    pub movement_kind: String,
+    pub demand: f64,
+    pub revenue: f64,
+}
+
+#[derive(Debug, Clone, PartialEq)]
 pub struct TerritoryVisualOptions {
     pub width: u32,
     pub height: u32,
@@ -300,6 +310,46 @@ pub fn compactness_exceptions(
             site_count: summary.site_count,
             max_radius_degrees: summary.max_radius_degrees,
             threshold_degrees,
+        })
+        .collect()
+}
+
+pub fn site_movements(baseline: &[Territory], proposed: &[Territory]) -> Vec<SiteMovement> {
+    let baseline_sites = territory_site_index(baseline);
+    let proposed_sites = territory_site_index(proposed);
+    let site_ids = baseline_sites
+        .keys()
+        .chain(proposed_sites.keys())
+        .cloned()
+        .collect::<std::collections::BTreeSet<_>>();
+
+    site_ids
+        .into_iter()
+        .map(|site_id| {
+            let baseline = baseline_sites.get(&site_id);
+            let proposed = proposed_sites.get(&site_id);
+            let baseline_territory_id = baseline.map(|(territory_id, _)| territory_id.to_string());
+            let proposed_territory_id = proposed.map(|(territory_id, _)| territory_id.to_string());
+            let movement_kind = match (&baseline_territory_id, &proposed_territory_id) {
+                (Some(left), Some(right)) if left == right => "unchanged",
+                (Some(_), Some(_)) => "moved",
+                (Some(_), None) => "removed",
+                (None, Some(_)) => "added",
+                (None, None) => "unknown",
+            }
+            .to_string();
+            let site = proposed
+                .map(|(_, site)| *site)
+                .or_else(|| baseline.map(|(_, site)| *site))
+                .expect("site id came from one of the indexes");
+            SiteMovement {
+                site_id,
+                baseline_territory_id,
+                proposed_territory_id,
+                movement_kind,
+                demand: site.demand,
+                revenue: site.revenue,
+            }
         })
         .collect()
 }
@@ -900,6 +950,18 @@ fn diagnose_coordinate(
     }
 }
 
+fn territory_site_index(
+    territories: &[Territory],
+) -> std::collections::BTreeMap<String, (String, &Site)> {
+    let mut index = std::collections::BTreeMap::new();
+    for territory in territories {
+        for site in &territory.sites {
+            index.insert(site.id.clone(), (territory.id.clone(), site));
+        }
+    }
+    index
+}
+
 fn csv_field<'a>(
     fields: &'a [String],
     header_map: &std::collections::BTreeMap<String, usize>,
@@ -1136,6 +1198,24 @@ mod tests {
         assert_eq!(exceptions[0].territory_id, "south");
         assert_eq!(exceptions[0].site_count, 3);
         assert!(exceptions[0].max_radius_degrees > exceptions[0].threshold_degrees);
+    }
+
+    #[test]
+    fn reports_site_movements_between_plans() {
+        let baseline = parse_territories_csv(sample_territories_csv()).expect("baseline parses");
+        let proposed =
+            parse_territories_csv(sample_proposed_territories_csv()).expect("proposed parses");
+        let movements = site_movements(&baseline, &proposed);
+
+        assert_eq!(movements.len(), 6);
+        let moved = movements
+            .iter()
+            .find(|movement| movement.site_id == "N-003")
+            .expect("N-003 movement exists");
+        assert_eq!(moved.baseline_territory_id.as_deref(), Some("north"));
+        assert_eq!(moved.proposed_territory_id.as_deref(), Some("south"));
+        assert_eq!(moved.movement_kind, "moved");
+        near(moved.demand, 9.0);
     }
 
     #[test]
