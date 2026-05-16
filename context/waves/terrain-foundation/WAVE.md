@@ -31,7 +31,7 @@ centroid bindings.
 |------:|-------|--------|---------|
 | 01 | Workspace foundation | done | Repo skeleton, docs, skills, sample balance audit, and sample SVG split. |
 | 02 | CSV intake | done | Parse site/customer rows plus assigned people/team fields into the core audit model and render audit/SVG outputs from CSV. |
-| 03 | First partition | pending | Produce a deterministic initial territory assignment and audit. |
+| 03 | First partition | done | Produce a deterministic initial territory assignment, audit, and SVG from unassigned site CSV rows. |
 | 04 | Visual export contract | pending | Emit dashboard-ready SVG/GeoJSON with shared data bindings. |
 
 ## Success criteria

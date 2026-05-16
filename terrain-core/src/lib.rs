@@ -50,6 +50,12 @@ pub struct CsvIntakeError {
     pub message: String,
 }
 
+#[derive(Debug, Clone, PartialEq)]
+pub enum PartitionError {
+    EmptySiteSet,
+    ZeroTerritories,
+}
+
 impl std::fmt::Display for CsvIntakeError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
@@ -61,6 +67,17 @@ impl std::fmt::Display for CsvIntakeError {
 }
 
 impl std::error::Error for CsvIntakeError {}
+
+impl std::fmt::Display for PartitionError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::EmptySiteSet => write!(f, "cannot partition an empty site set"),
+            Self::ZeroTerritories => write!(f, "target territory count must be greater than zero"),
+        }
+    }
+}
+
+impl std::error::Error for PartitionError {}
 
 impl Default for TerritoryVisualOptions {
     fn default() -> Self {
@@ -381,6 +398,131 @@ pub fn parse_territories_csv(input: &str) -> Result<Vec<Territory>, CsvIntakeErr
         .collect())
 }
 
+pub fn parse_sites_csv(input: &str) -> Result<Vec<Site>, CsvIntakeError> {
+    let mut lines = input.lines().enumerate();
+    let Some((header_idx, header_line)) = lines.find(|(_, line)| !line.trim().is_empty()) else {
+        return Err(CsvIntakeError {
+            line: 1,
+            message: "missing header row".to_string(),
+        });
+    };
+    let headers = parse_csv_line(header_line).map_err(|message| CsvIntakeError {
+        line: header_idx + 1,
+        message,
+    })?;
+    let header_map = headers
+        .iter()
+        .enumerate()
+        .map(|(idx, header)| (header.trim().to_ascii_lowercase(), idx))
+        .collect::<std::collections::BTreeMap<_, _>>();
+    let required = ["site_id", "demand", "revenue", "latitude", "longitude"];
+    for header in required {
+        if !header_map.contains_key(header) {
+            return Err(CsvIntakeError {
+                line: header_idx + 1,
+                message: format!("missing required header '{header}'"),
+            });
+        }
+    }
+
+    let mut sites = Vec::new();
+    for (line_idx, line) in lines {
+        if line.trim().is_empty() {
+            continue;
+        }
+        let fields = parse_csv_line(line).map_err(|message| CsvIntakeError {
+            line: line_idx + 1,
+            message,
+        })?;
+        let site_id = csv_field(&fields, &header_map, "site_id")
+            .trim()
+            .to_string();
+        if site_id.is_empty() {
+            return Err(CsvIntakeError {
+                line: line_idx + 1,
+                message: "site_id cannot be empty".to_string(),
+            });
+        }
+        sites.push(Site::new(
+            site_id,
+            parse_f64(
+                csv_field(&fields, &header_map, "demand"),
+                line_idx + 1,
+                "demand",
+            )?,
+            parse_f64(
+                csv_field(&fields, &header_map, "revenue"),
+                line_idx + 1,
+                "revenue",
+            )?,
+            parse_f64(
+                csv_field(&fields, &header_map, "latitude"),
+                line_idx + 1,
+                "latitude",
+            )?,
+            parse_f64(
+                csv_field(&fields, &header_map, "longitude"),
+                line_idx + 1,
+                "longitude",
+            )?,
+        ));
+    }
+    Ok(sites)
+}
+
+pub fn partition_sites(
+    sites: impl IntoIterator<Item = Site>,
+    target_territory_count: usize,
+) -> Result<Vec<Territory>, PartitionError> {
+    if target_territory_count == 0 {
+        return Err(PartitionError::ZeroTerritories);
+    }
+    let mut sites = sites.into_iter().collect::<Vec<_>>();
+    if sites.is_empty() {
+        return Err(PartitionError::EmptySiteSet);
+    }
+    sites.sort_by(|left, right| {
+        right
+            .demand
+            .total_cmp(&left.demand)
+            .then_with(|| left.id.cmp(&right.id))
+    });
+
+    let territory_count = target_territory_count.min(sites.len());
+    let mut territories = (0..territory_count)
+        .map(|idx| {
+            let id = format!("territory-{}", idx + 1);
+            Territory::new(&id, Vec::new()).with_label(format!("Territory {}", idx + 1))
+        })
+        .collect::<Vec<_>>();
+    let mut demand_totals = vec![0.0_f64; territory_count];
+    let mut revenue_totals = vec![0.0_f64; territory_count];
+    let mut site_counts = vec![0usize; territory_count];
+
+    for site in sites {
+        let target_idx = (0..territory_count)
+            .min_by(|left, right| {
+                demand_totals[*left]
+                    .total_cmp(&demand_totals[*right])
+                    .then_with(|| site_counts[*left].cmp(&site_counts[*right]))
+                    .then_with(|| revenue_totals[*left].total_cmp(&revenue_totals[*right]))
+                    .then_with(|| left.cmp(right))
+            })
+            .expect("territory_count is greater than zero");
+        demand_totals[target_idx] += site.demand;
+        revenue_totals[target_idx] += site.revenue;
+        site_counts[target_idx] += 1;
+        territories[target_idx].sites.push(site);
+    }
+
+    for territory in &mut territories {
+        territory
+            .sites
+            .sort_by(|left, right| left.id.cmp(&right.id));
+    }
+    Ok(territories)
+}
+
 pub fn sample_territories_csv() -> &'static str {
     "territory_id,territory_label,assignees,site_id,demand,revenue,latitude,longitude\n\
 north,North field team,Avery;Morgan;Sam,N-001,12,120000,47.62,-122.35\n\
@@ -389,6 +531,16 @@ north,North field team,Avery;Morgan;Sam,N-003,9,80000,47.58,-122.29\n\
 south,South field team,Jordan;Riley,S-001,11,105000,47.50,-122.27\n\
 south,South field team,Jordan;Riley,S-002,10,95000,47.46,-122.33\n\
 south,South field team,Jordan;Riley,S-003,10,92000,47.53,-122.38\n"
+}
+
+pub fn sample_sites_csv() -> &'static str {
+    "site_id,demand,revenue,latitude,longitude\n\
+N-001,12,120000,47.62,-122.35\n\
+N-002,10,90000,47.67,-122.31\n\
+N-003,9,80000,47.58,-122.29\n\
+S-001,11,105000,47.50,-122.27\n\
+S-002,10,95000,47.46,-122.33\n\
+S-003,10,92000,47.53,-122.38\n"
 }
 
 pub fn sample_territories() -> Vec<Territory> {
@@ -619,5 +771,28 @@ mod tests {
 
         assert_eq!(error.line, 2);
         assert!(error.message.contains("demand"));
+    }
+
+    #[test]
+    fn parses_unassigned_site_csv() {
+        let sites = parse_sites_csv(sample_sites_csv()).expect("site sample parses");
+
+        assert_eq!(sites.len(), 6);
+        assert_eq!(sites[0].id, "N-001");
+        near(sites.iter().map(|site| site.demand).sum::<f64>(), 62.0);
+    }
+
+    #[test]
+    fn partitions_sites_by_demand_deterministically() {
+        let sites = parse_sites_csv(sample_sites_csv()).expect("site sample parses");
+        let territories = partition_sites(sites, 2).expect("sites partition");
+        let audit = audit_territories(&territories, 0.05, 0.05);
+
+        assert_eq!(territories.len(), 2);
+        assert_eq!(territories[0].id, "territory-1");
+        assert_eq!(territories[1].id, "territory-2");
+        near(audit.summaries[0].demand, 31.0);
+        near(audit.summaries[1].demand, 31.0);
+        assert!(audit.passes);
     }
 }
