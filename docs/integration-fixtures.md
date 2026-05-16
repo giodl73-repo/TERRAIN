@@ -20,6 +20,9 @@ making TERRAIN depend on CROP, PEBBLE, or FLETCH yet.
 | `sample-territories` | `fixtures\sample-territories.csv` | Assigned territory baseline |
 | `sample-sites` | `fixtures\sample-sites.csv` | Unassigned partition input |
 | `sample-capacity` | `fixtures\sample-capacity.csv` | Assignee capacity input |
+| `steady-state-scenario` | `fixtures\scenarios\steady-state-territories.csv` | Balanced multi-product territory scenario |
+| `risky-reassignment-scenario` | `fixtures\scenarios\risky-reassignment-territories.csv` | Movement, product imbalance, and capacity overload scenario |
+| `growth-sites-scenario` | `fixtures\scenarios\growth-sites.csv` | Multi-product count sweep input |
 
 ## CLI
 

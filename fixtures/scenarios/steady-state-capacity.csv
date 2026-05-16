@@ -1,0 +1,10 @@
+assignee,team,responsibility,asset_group,capacity,home_latitude,home_longitude,skills
+Avery,north,territory,enterprise_accounts,12,47.69,-122.35,enterprise;onsite
+Avery,north,onsite,field_visits,8,47.69,-122.35,onsite
+Morgan,north,renewals,subscription_book,18,47.64,-122.30,renewal
+Sam,central,onsite,field_visits,12,47.57,-122.33,onsite
+Sam,central,territory,enterprise_accounts,8,47.57,-122.33,enterprise
+Taylor,central,renewals,subscription_book,18,47.53,-122.28,renewal;enterprise
+Jordan,south,territory,enterprise_accounts,20,47.46,-122.37,enterprise
+Riley,south,onsite,field_visits,10,47.42,-122.31,onsite
+Riley,south,renewals,subscription_book,8,47.42,-122.31,renewal

@@ -1,0 +1,10 @@
+territory_id,territory_label,assignees,site_id,demand,revenue,latitude,longitude,product_enterprise,product_renewal,product_onsite,product_service,product_growth
+north,North field team,Avery;Morgan,N-101,14,140000,47.70,-122.36,8,2,2,1,1
+north,North field team,Avery;Morgan,N-102,12,120000,47.66,-122.31,4,4,2,1,1
+north,North field team,Avery;Morgan,N-103,10,100000,47.62,-122.28,2,2,3,2,1
+central,Central field team,Sam;Taylor,C-101,13,135000,47.58,-122.34,5,3,2,2,1
+central,Central field team,Sam;Taylor,C-102,12,115000,47.55,-122.30,4,3,2,2,1
+central,Central field team,Sam;Taylor,C-103,11,105000,47.52,-122.26,5,2,3,0,1
+south,South field team,Jordan;Riley,S-101,14,145000,47.47,-122.38,4,2,3,3,2
+south,South field team,Jordan;Riley,S-102,12,120000,47.44,-122.33,5,3,2,1,1
+south,South field team,Jordan;Riley,S-103,10,95000,47.41,-122.28,5,3,2,0,0

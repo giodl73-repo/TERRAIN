@@ -5,6 +5,13 @@ pub struct Site {
     pub revenue: f64,
     pub latitude: f64,
     pub longitude: f64,
+    pub product_demands: Vec<ProductDemand>,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ProductDemand {
+    pub product: String,
+    pub demand: f64,
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -34,6 +41,21 @@ pub struct BalanceAudit {
     pub demand_spread_ratio: f64,
     pub revenue_spread_ratio: f64,
     pub max_radius_degrees: f64,
+    pub passes: bool,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ProductDemandBalance {
+    pub product: String,
+    pub min_demand: f64,
+    pub max_demand: f64,
+    pub spread_ratio: f64,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ProductBalanceAudit {
+    pub balances: Vec<ProductDemandBalance>,
+    pub overall_spread_score: f64,
     pub passes: bool,
 }
 
@@ -80,6 +102,8 @@ pub struct SiteMovement {
 pub struct AssigneeCapacity {
     pub assignee: String,
     pub team: String,
+    pub responsibility: String,
+    pub asset_group: String,
     pub capacity: f64,
     pub home_latitude: f64,
     pub home_longitude: f64,
@@ -176,7 +200,16 @@ impl Site {
             revenue,
             latitude,
             longitude,
+            product_demands: Vec::new(),
         }
+    }
+
+    pub fn with_product_demands(
+        mut self,
+        product_demands: impl IntoIterator<Item = ProductDemand>,
+    ) -> Self {
+        self.product_demands = product_demands.into_iter().collect();
+        self
     }
 }
 
@@ -206,11 +239,11 @@ impl Territory {
 }
 
 pub fn dashboard_schema_json() -> &'static str {
-    r#"{"schema_id":"terrain.dashboard.v1","exports":[{"name":"territory","fields":["territory_id","territory_label","site_count","demand","revenue","capacity","overload","owner_count","assignee_count","assignees","centroid_latitude","centroid_longitude","max_radius_degrees"]},{"name":"site","fields":["site_id","territory_id","territory_label","demand","revenue","capacity","overload","owner_count","assignee_count","assignees","latitude","longitude"]},{"name":"scenario_delta","fields":["territory_id","baseline_site_count","proposed_site_count","site_count_delta","baseline_demand","proposed_demand","demand_delta","baseline_revenue","proposed_revenue","revenue_delta"]},{"name":"movement","fields":["site_id","baseline_territory_id","proposed_territory_id","movement_kind","demand","revenue"]},{"name":"capacity_exception","fields":["territory_id","demand","capacity","overload","assignees"]}]}"#
+    r#"{"schema_id":"terrain.dashboard.v1","exports":[{"name":"territory","fields":["territory_id","territory_label","site_count","demand","revenue","capacity","overload","owner_count","assignee_count","assignees","centroid_latitude","centroid_longitude","max_radius_degrees"]},{"name":"site","fields":["site_id","territory_id","territory_label","demand","revenue","capacity","overload","owner_count","assignee_count","assignees","latitude","longitude","product_*"]},{"name":"product_balance","fields":["product","min_demand","max_demand","spread_ratio"]},{"name":"scenario_delta","fields":["territory_id","baseline_site_count","proposed_site_count","site_count_delta","baseline_demand","proposed_demand","demand_delta","baseline_revenue","proposed_revenue","revenue_delta"]},{"name":"movement","fields":["site_id","baseline_territory_id","proposed_territory_id","movement_kind","demand","revenue"]},{"name":"capacity_exception","fields":["territory_id","demand","capacity","overload","assignees"]}]}"#
 }
 
 pub fn integration_fixture_manifest_json() -> &'static str {
-    r#"{"manifest_id":"terrain.integration-fixtures.v1","sources":[{"name":"crop-geography-cache","repo":"CROP","role":"cached public geography and boundaries","status":"candidate"},{"name":"pebble-context-packets","repo":"PEBBLE","role":"portable context and benchmark packets","status":"candidate"},{"name":"fletch-fetch-cache","repo":"FLETCH","role":"registered URL/cacheline-backed fixture retrieval","status":"candidate"}],"fixtures":[{"name":"sample-territories","path":"fixtures/sample-territories.csv","schema":"terrain.dashboard.v1","role":"assigned territory baseline"},{"name":"sample-sites","path":"fixtures/sample-sites.csv","schema":"terrain.dashboard.v1","role":"unassigned partition input"},{"name":"sample-capacity","path":"fixtures/sample-capacity.csv","schema":"terrain.dashboard.v1","role":"assignee capacity input"}]}"#
+    r#"{"manifest_id":"terrain.integration-fixtures.v1","sources":[{"name":"crop-geography-cache","repo":"CROP","role":"cached public geography and boundaries","status":"candidate"},{"name":"pebble-context-packets","repo":"PEBBLE","role":"portable context and benchmark packets","status":"candidate"},{"name":"fletch-fetch-cache","repo":"FLETCH","role":"registered URL/cacheline-backed fixture retrieval","status":"candidate"}],"fixtures":[{"name":"sample-territories","path":"fixtures/sample-territories.csv","schema":"terrain.dashboard.v1","role":"assigned territory baseline"},{"name":"sample-sites","path":"fixtures/sample-sites.csv","schema":"terrain.dashboard.v1","role":"unassigned partition input"},{"name":"sample-capacity","path":"fixtures/sample-capacity.csv","schema":"terrain.dashboard.v1","role":"assignee capacity input"},{"name":"steady-state-scenario","path":"fixtures/scenarios/steady-state-territories.csv","schema":"terrain.dashboard.v1","role":"balanced multi-product territory scenario"},{"name":"risky-reassignment-scenario","path":"fixtures/scenarios/risky-reassignment-territories.csv","schema":"terrain.dashboard.v1","role":"movement, product imbalance, and capacity overload scenario"},{"name":"growth-sites-scenario","path":"fixtures/scenarios/growth-sites.csv","schema":"terrain.dashboard.v1","role":"multi-product count sweep input"}]}"#
 }
 
 pub fn summarize_territory(territory: &Territory) -> TerritorySummary {
@@ -268,6 +301,71 @@ pub fn audit_territories(
         demand_spread_ratio,
         revenue_spread_ratio,
         max_radius_degrees,
+        passes,
+    }
+}
+
+pub fn audit_product_balance(
+    territories: &[Territory],
+    max_product_spread_ratio: f64,
+) -> ProductBalanceAudit {
+    let products = territories
+        .iter()
+        .flat_map(|territory| &territory.sites)
+        .flat_map(|site| {
+            site.product_demands
+                .iter()
+                .map(|demand| demand.product.clone())
+        })
+        .collect::<std::collections::BTreeSet<_>>();
+    let balances = products
+        .into_iter()
+        .map(|product| {
+            let totals = territories
+                .iter()
+                .map(|territory| {
+                    territory
+                        .sites
+                        .iter()
+                        .flat_map(|site| &site.product_demands)
+                        .filter(|demand| demand.product == product)
+                        .map(|demand| demand.demand)
+                        .sum::<f64>()
+                })
+                .collect::<Vec<_>>();
+            let min_demand = totals.iter().copied().fold(f64::INFINITY, f64::min);
+            let max_demand = totals.iter().copied().fold(f64::NEG_INFINITY, f64::max);
+            ProductDemandBalance {
+                product,
+                min_demand: if min_demand.is_finite() {
+                    min_demand
+                } else {
+                    0.0
+                },
+                max_demand: if max_demand.is_finite() {
+                    max_demand
+                } else {
+                    0.0
+                },
+                spread_ratio: spread_ratio(totals.into_iter()),
+            }
+        })
+        .collect::<Vec<_>>();
+    let overall_spread_score = if balances.is_empty() {
+        0.0
+    } else {
+        balances
+            .iter()
+            .map(|balance| balance.spread_ratio)
+            .sum::<f64>()
+            / balances.len() as f64
+    };
+    let passes = balances
+        .iter()
+        .all(|balance| balance.spread_ratio <= max_product_spread_ratio);
+    ProductBalanceAudit {
+        balances,
+        overall_spread_score,
         passes,
     }
 }
@@ -392,10 +490,7 @@ pub fn capacity_exceptions(
     territories: &[Territory],
     capacities: &[AssigneeCapacity],
 ) -> Vec<CapacityException> {
-    let capacity_by_assignee = capacities
-        .iter()
-        .map(|capacity| (capacity.assignee.clone(), capacity.capacity))
-        .collect::<std::collections::BTreeMap<_, _>>();
+    let capacity_by_assignee = assignee_capacity_totals(capacities);
 
     territories
         .iter()
@@ -419,14 +514,11 @@ pub fn capacity_exceptions(
 }
 
 pub fn territory_capacity(territory: &Territory, capacities: &[AssigneeCapacity]) -> f64 {
-    let capacity_by_assignee = capacities
-        .iter()
-        .map(|capacity| (capacity.assignee.as_str(), capacity.capacity))
-        .collect::<std::collections::BTreeMap<_, _>>();
+    let capacity_by_assignee = assignee_capacity_totals(capacities);
     territory
         .assignees
         .iter()
-        .filter_map(|assignee| capacity_by_assignee.get(assignee.as_str()))
+        .filter_map(|assignee| capacity_by_assignee.get(assignee))
         .sum()
 }
 
@@ -731,7 +823,8 @@ pub fn parse_territories_csv(input: &str) -> Result<Vec<Territory>, CsvIntakeErr
                 line_idx + 1,
                 "longitude",
             )?,
-        );
+        )
+        .with_product_demands(extract_product_demands(&fields, &header_map, line_idx + 1)?);
         if !territories.contains_key(&territory_id) {
             order.push(territory_id.clone());
             let label = optional_csv_field(&fields, &header_map, "territory_label")
@@ -941,29 +1034,36 @@ pub fn parse_sites_csv(input: &str) -> Result<Vec<Site>, CsvIntakeError> {
                 message: "site_id cannot be empty".to_string(),
             });
         }
-        sites.push(Site::new(
-            site_id,
-            parse_f64(
-                csv_field(&fields, &header_map, "demand"),
+        sites.push(
+            Site::new(
+                site_id,
+                parse_f64(
+                    csv_field(&fields, &header_map, "demand"),
+                    line_idx + 1,
+                    "demand",
+                )?,
+                parse_f64(
+                    csv_field(&fields, &header_map, "revenue"),
+                    line_idx + 1,
+                    "revenue",
+                )?,
+                parse_f64(
+                    csv_field(&fields, &header_map, "latitude"),
+                    line_idx + 1,
+                    "latitude",
+                )?,
+                parse_f64(
+                    csv_field(&fields, &header_map, "longitude"),
+                    line_idx + 1,
+                    "longitude",
+                )?,
+            )
+            .with_product_demands(extract_product_demands(
+                &fields,
+                &header_map,
                 line_idx + 1,
-                "demand",
-            )?,
-            parse_f64(
-                csv_field(&fields, &header_map, "revenue"),
-                line_idx + 1,
-                "revenue",
-            )?,
-            parse_f64(
-                csv_field(&fields, &header_map, "latitude"),
-                line_idx + 1,
-                "latitude",
-            )?,
-            parse_f64(
-                csv_field(&fields, &header_map, "longitude"),
-                line_idx + 1,
-                "longitude",
-            )?,
-        ));
+            )?),
+        );
     }
     Ok(sites)
 }
@@ -1016,6 +1116,14 @@ pub fn parse_assignee_capacity_csv(input: &str) -> Result<Vec<AssigneeCapacity>,
         capacities.push(AssigneeCapacity {
             assignee,
             team: csv_field(&fields, &header_map, "team").trim().to_string(),
+            responsibility: optional_csv_field(&fields, &header_map, "responsibility")
+                .unwrap_or("territory")
+                .trim()
+                .to_string(),
+            asset_group: optional_csv_field(&fields, &header_map, "asset_group")
+                .unwrap_or("all")
+                .trim()
+                .to_string(),
             capacity: parse_f64(
                 csv_field(&fields, &header_map, "capacity"),
                 line_number,
@@ -1158,12 +1266,13 @@ S-003,10,92000,47.53,-122.38\n"
 }
 
 pub fn sample_assignee_capacity_csv() -> &'static str {
-    "assignee,team,capacity,home_latitude,home_longitude,skills\n\
-Avery,north,14,47.61,-122.34,enterprise;onsite\n\
-Morgan,north,12,47.66,-122.30,renewal\n\
-Sam,north,10,47.59,-122.28,onsite\n\
-Jordan,south,16,47.49,-122.29,enterprise\n\
-Riley,south,14,47.52,-122.36,renewal;onsite\n"
+    "assignee,team,responsibility,asset_group,capacity,home_latitude,home_longitude,skills\n\
+Avery,north,territory,enterprise_accounts,9,47.61,-122.34,enterprise;onsite\n\
+Avery,north,territory,field_visits,5,47.61,-122.34,onsite\n\
+Morgan,north,renewals,subscription_book,12,47.66,-122.30,renewal\n\
+Sam,north,onsite,field_visits,10,47.59,-122.28,onsite\n\
+Jordan,south,territory,enterprise_accounts,16,47.49,-122.29,enterprise\n\
+Riley,south,renewals,subscription_book,14,47.52,-122.36,renewal;onsite\n"
 }
 
 pub fn sample_territories() -> Vec<Territory> {
@@ -1198,6 +1307,30 @@ fn parse_f64(value: &str, line: usize, field: &str) -> Result<f64, CsvIntakeErro
     })
 }
 
+fn extract_product_demands(
+    fields: &[String],
+    header_map: &std::collections::BTreeMap<String, usize>,
+    line: usize,
+) -> Result<Vec<ProductDemand>, CsvIntakeError> {
+    let mut product_demands = Vec::new();
+    for (header, idx) in header_map {
+        let Some(product) = header.strip_prefix("product_") else {
+            continue;
+        };
+        let Some(value) = fields.get(*idx).map(String::as_str) else {
+            continue;
+        };
+        if value.trim().is_empty() {
+            continue;
+        }
+        product_demands.push(ProductDemand {
+            product: product.to_string(),
+            demand: parse_f64(value, line, header)?,
+        });
+    }
+    Ok(product_demands)
+}
+
 fn diagnose_coordinate(
     diagnostics: &mut Vec<CsvDiagnostic>,
     fields: &[String],
@@ -1219,6 +1352,16 @@ fn diagnose_coordinate(
             message: format!("field '{field}' is outside expected range {min}..{max}"),
         });
     }
+}
+
+fn assignee_capacity_totals(
+    capacities: &[AssigneeCapacity],
+) -> std::collections::BTreeMap<String, f64> {
+    let mut totals = std::collections::BTreeMap::new();
+    for capacity in capacities {
+        *totals.entry(capacity.assignee.clone()).or_insert(0.0) += capacity.capacity;
+    }
+    totals
 }
 
 fn territory_site_index(
@@ -1447,6 +1590,23 @@ mod tests {
     }
 
     #[test]
+    fn audits_multi_product_demand_balance() {
+        let territories = parse_territories_csv(
+            "territory_id,site_id,demand,revenue,latitude,longitude,product_alpha,product_beta\n\
+north,N-001,10,100,1,1,9,1\n\
+south,S-001,10,100,2,2,2,8\n",
+        )
+        .expect("product demand parses");
+
+        let audit = audit_product_balance(&territories, 0.25);
+
+        assert_eq!(territories[0].sites[0].product_demands.len(), 2);
+        assert_eq!(audit.balances.len(), 2);
+        assert!(!audit.passes);
+        assert!(audit.overall_spread_score > 3.0);
+    }
+
+    #[test]
     fn renders_data_bound_svg_for_dashboards() {
         let svg = render_territory_svg(&sample_territories(), &TerritoryVisualOptions::default());
 
@@ -1528,11 +1688,25 @@ mod tests {
         let capacities =
             parse_assignee_capacity_csv(sample_assignee_capacity_csv()).expect("capacity parses");
 
-        assert_eq!(capacities.len(), 5);
+        assert_eq!(capacities.len(), 6);
         assert_eq!(capacities[0].assignee, "Avery");
         assert_eq!(capacities[0].team, "north");
-        near(capacities[0].capacity, 14.0);
+        assert_eq!(capacities[0].responsibility, "territory");
+        assert_eq!(capacities[0].asset_group, "enterprise_accounts");
+        near(capacities[0].capacity, 9.0);
         assert_eq!(capacities[0].skills, ["enterprise", "onsite"]);
+    }
+
+    #[test]
+    fn sums_multiple_capacity_lanes_per_assignee() {
+        let capacities =
+            parse_assignee_capacity_csv(sample_assignee_capacity_csv()).expect("capacity parses");
+        let total = territory_capacity(
+            &Territory::new("north", Vec::new()).with_assignees(["Avery"]),
+            &capacities,
+        );
+
+        near(total, 14.0);
     }
 
     #[test]

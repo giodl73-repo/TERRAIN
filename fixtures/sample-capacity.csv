@@ -1,6 +1,7 @@
-assignee,team,capacity,home_latitude,home_longitude,skills
-Avery,north,14,47.61,-122.34,enterprise;onsite
-Morgan,north,12,47.66,-122.30,renewal
-Sam,north,10,47.59,-122.28,onsite
-Jordan,south,16,47.49,-122.29,enterprise
-Riley,south,14,47.52,-122.36,renewal;onsite
+assignee,team,responsibility,asset_group,capacity,home_latitude,home_longitude,skills
+Avery,north,territory,enterprise_accounts,9,47.61,-122.34,enterprise;onsite
+Avery,north,territory,field_visits,5,47.61,-122.34,onsite
+Morgan,north,renewals,subscription_book,12,47.66,-122.30,renewal
+Sam,north,onsite,field_visits,10,47.59,-122.28,onsite
+Jordan,south,territory,enterprise_accounts,16,47.49,-122.29,enterprise
+Riley,south,renewals,subscription_book,14,47.52,-122.36,renewal;onsite

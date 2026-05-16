@@ -1,9 +1,9 @@
 use terrain_core::{
-    TerritoryVisualOptions, audit_territories, capacity_exceptions, compactness_exceptions,
-    compare_territory_plans, dashboard_schema_json, diagnose_territories_csv,
-    integration_fixture_manifest_json, parse_assignee_capacity_csv, parse_sites_csv,
-    parse_territories_csv, partition_count_sweep, partition_sites, render_territory_geojson,
-    render_territory_geojson_with_capacity, render_territory_svg,
+    TerritoryVisualOptions, audit_product_balance, audit_territories, capacity_exceptions,
+    compactness_exceptions, compare_territory_plans, dashboard_schema_json,
+    diagnose_territories_csv, integration_fixture_manifest_json, parse_assignee_capacity_csv,
+    parse_sites_csv, parse_territories_csv, partition_count_sweep, partition_sites,
+    render_territory_geojson, render_territory_geojson_with_capacity, render_territory_svg,
     render_territory_svg_with_capacity, sample_assignee_capacity_csv,
     sample_proposed_territories_csv, sample_sites_csv, sample_territories, sample_territories_csv,
     site_movements,
@@ -31,6 +31,7 @@ fn main() {
         "sample-sites-csv" => print_sample_sites_csv(),
         "sample-capacity-csv" => print_sample_capacity_csv(),
         "audit-csv" => run_csv_command(args.get(1), print_audit_for_csv),
+        "product-balance-csv" => run_csv_command(args.get(1), print_product_balance_for_csv),
         "capacity-csv" => run_csv_command(args.get(1), print_capacity_for_csv),
         "capacity-audit-csv" => run_capacity_audit_command(args.get(1), args.get(2)),
         "diagnose-csv" => run_csv_command(args.get(1), print_diagnostics_for_csv),
@@ -73,6 +74,7 @@ fn print_help() {
     println!("  sample-sites-csv Emit the built-in unassigned site CSV fixture");
     println!("  sample-capacity-csv Emit the built-in assignee capacity fixture");
     println!("  audit-csv PATH Audit a territory CSV file");
+    println!("  product-balance-csv PATH Audit per-product demand balance");
     println!("  capacity-csv PATH Summarize assignee capacity CSV");
     println!("  capacity-audit-csv TERRITORIES CAPACITY Report capacity overloads");
     println!("  diagnose-csv PATH Report territory CSV intake diagnostics");
@@ -165,6 +167,26 @@ fn print_audit(territories: &[terrain_core::Territory]) {
     }
 }
 
+fn print_product_balance_for_csv(csv: &str) {
+    let territories = parse_territories_csv(csv).unwrap_or_else(|error| {
+        eprintln!("{error}");
+        std::process::exit(1);
+    });
+    let audit = audit_product_balance(&territories, 0.25);
+    println!(
+        "status={} overall_product_spread={:.3}",
+        if audit.passes { "pass" } else { "review" },
+        audit.overall_spread_score,
+    );
+    println!("product,min_demand,max_demand,spread_ratio");
+    for balance in audit.balances {
+        println!(
+            "{},{:.1},{:.1},{:.3}",
+            balance.product, balance.min_demand, balance.max_demand, balance.spread_ratio,
+        );
+    }
+}
+
 fn print_diagnostics_for_csv(csv: &str) {
     let diagnostics = diagnose_territories_csv(csv);
     println!(
@@ -219,12 +241,16 @@ fn print_capacity_for_csv(csv: &str) {
         eprintln!("{error}");
         std::process::exit(1);
     });
-    println!("assignee,team,capacity,home_latitude,home_longitude,skills");
+    println!(
+        "assignee,team,responsibility,asset_group,capacity,home_latitude,home_longitude,skills"
+    );
     for capacity in capacities {
         println!(
-            "{},{},{:.1},{:.4},{:.4},{}",
+            "{},{},{},{},{:.1},{:.4},{:.4},{}",
             capacity.assignee,
             capacity.team,
+            capacity.responsibility,
+            capacity.asset_group,
             capacity.capacity,
             capacity.home_latitude,
             capacity.home_longitude,
@@ -870,12 +896,16 @@ fn compactness_exceptions_csv(territories: &[terrain_core::Territory], threshold
 }
 
 fn capacity_roster_csv(capacities: &[terrain_core::AssigneeCapacity]) -> String {
-    let mut csv = String::from("assignee,team,capacity,home_latitude,home_longitude,skills\n");
+    let mut csv = String::from(
+        "assignee,team,responsibility,asset_group,capacity,home_latitude,home_longitude,skills\n",
+    );
     for capacity in capacities {
         csv.push_str(&format!(
-            "{},{},{:.1},{:.4},{:.4},{}\n",
+            "{},{},{},{},{:.1},{:.4},{:.4},{}\n",
             capacity.assignee,
             capacity.team,
+            capacity.responsibility,
+            capacity.asset_group,
             capacity.capacity,
             capacity.home_latitude,
             capacity.home_longitude,

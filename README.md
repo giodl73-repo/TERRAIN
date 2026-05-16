@@ -19,6 +19,7 @@ cargo run -p terrain-cli -- sample-geojson > terrain-split.geojson
 cargo run -p terrain-cli -- sample-csv > sample-territories.csv
 cargo run -p terrain-cli -- sample-proposed-csv > sample-territories-proposed.csv
 cargo run -p terrain-cli -- audit-csv sample-territories.csv
+cargo run -p terrain-cli -- product-balance-csv sample-territories.csv
 cargo run -p terrain-cli -- diagnose-csv sample-territories.csv
 cargo run -p terrain-cli -- compare-csv sample-territories.csv sample-territories-proposed.csv
 cargo run -p terrain-cli -- movement-csv sample-territories.csv sample-territories-proposed.csv
@@ -125,6 +126,13 @@ Reusable fixture and cache-source handoffs are tracked in
 `cargo run -p terrain-cli -- integration-fixtures`.
 The integration packet command writes both manifests plus a policy-boundary
 summary for downstream repos.
+
+## Test scenarios
+
+Richer test scenarios live under `fixtures\scenarios\` and are documented in
+`docs\test-scenarios.md`. They cover steady-state balance, risky reassignment,
+multi-product demand balance, multi-responsibility capacity, movement manifests,
+field review, and growth sweeps.
 
 ## Non-goals
 
