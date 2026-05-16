@@ -111,6 +111,11 @@ tables. The target artifacts are SVG first, then GeoJSON/TopoJSON once real
 geography lands. Visual marks must be data-bound so users can reuse them in
 their own dashboards instead of screenshotting the app.
 
+## Shared-kernel boundary
+
+TERRAIN keeps territory policy local while tracking reusable candidates for
+RLINE and METIS-CORE in `docs\shared-kernel-inventory.md`.
+
 ## Non-goals
 
 - TERRAIN does not own turn-by-turn routing.
