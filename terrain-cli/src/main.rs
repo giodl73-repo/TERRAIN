@@ -1,9 +1,10 @@
 use terrain_core::{
     TerritoryVisualOptions, audit_territories, capacity_exceptions, compactness_exceptions,
     compare_territory_plans, dashboard_schema_json, diagnose_territories_csv,
-    parse_assignee_capacity_csv, parse_sites_csv, parse_territories_csv, partition_count_sweep,
-    partition_sites, render_territory_geojson, render_territory_geojson_with_capacity,
-    render_territory_svg, render_territory_svg_with_capacity, sample_assignee_capacity_csv,
+    integration_fixture_manifest_json, parse_assignee_capacity_csv, parse_sites_csv,
+    parse_territories_csv, partition_count_sweep, partition_sites, render_territory_geojson,
+    render_territory_geojson_with_capacity, render_territory_svg,
+    render_territory_svg_with_capacity, sample_assignee_capacity_csv,
     sample_proposed_territories_csv, sample_sites_csv, sample_territories, sample_territories_csv,
     site_movements,
 };
@@ -21,6 +22,7 @@ fn main() {
     match args.first().map(String::as_str).unwrap_or("sample-audit") {
         "sample-audit" => print_sample_audit(),
         "schema" => print_schema(),
+        "integration-fixtures" => print_integration_fixtures(),
         "sample-svg" => print_sample_svg(),
         "sample-geojson" => print_sample_geojson(),
         "sample-csv" => print_sample_csv(),
@@ -60,6 +62,7 @@ fn print_help() {
     println!();
     println!("Commands:");
     println!("  schema         Emit the TERRAIN dashboard schema contract");
+    println!("  integration-fixtures Emit reusable fixture and cache-source manifest");
     println!("  sample-audit   Run the built-in territory balance audit fixture");
     println!("  sample-svg     Emit a data-bound SVG territory split fixture");
     println!("  sample-geojson Emit a data-bound GeoJSON territory split fixture");
@@ -93,6 +96,10 @@ fn print_sample_audit() {
 
 fn print_schema() {
     println!("{}", dashboard_schema_json());
+}
+
+fn print_integration_fixtures() {
+    println!("{}", integration_fixture_manifest_json());
 }
 
 fn print_audit_for_csv(csv: &str) {

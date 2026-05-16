@@ -209,6 +209,10 @@ pub fn dashboard_schema_json() -> &'static str {
     r#"{"schema_id":"terrain.dashboard.v1","exports":[{"name":"territory","fields":["territory_id","territory_label","site_count","demand","revenue","capacity","overload","owner_count","assignee_count","assignees","centroid_latitude","centroid_longitude","max_radius_degrees"]},{"name":"site","fields":["site_id","territory_id","territory_label","demand","revenue","capacity","overload","owner_count","assignee_count","assignees","latitude","longitude"]},{"name":"scenario_delta","fields":["territory_id","baseline_site_count","proposed_site_count","site_count_delta","baseline_demand","proposed_demand","demand_delta","baseline_revenue","proposed_revenue","revenue_delta"]},{"name":"movement","fields":["site_id","baseline_territory_id","proposed_territory_id","movement_kind","demand","revenue"]},{"name":"capacity_exception","fields":["territory_id","demand","capacity","overload","assignees"]}]}"#
 }
 
+pub fn integration_fixture_manifest_json() -> &'static str {
+    r#"{"manifest_id":"terrain.integration-fixtures.v1","sources":[{"name":"crop-geography-cache","repo":"CROP","role":"cached public geography and boundaries","status":"candidate"},{"name":"pebble-context-packets","repo":"PEBBLE","role":"portable context and benchmark packets","status":"candidate"},{"name":"fletch-fetch-cache","repo":"FLETCH","role":"registered URL/cacheline-backed fixture retrieval","status":"candidate"}],"fixtures":[{"name":"sample-territories","path":"fixtures/sample-territories.csv","schema":"terrain.dashboard.v1","role":"assigned territory baseline"},{"name":"sample-sites","path":"fixtures/sample-sites.csv","schema":"terrain.dashboard.v1","role":"unassigned partition input"},{"name":"sample-capacity","path":"fixtures/sample-capacity.csv","schema":"terrain.dashboard.v1","role":"assignee capacity input"}]}"#
+}
+
 pub fn summarize_territory(territory: &Territory) -> TerritorySummary {
     let site_count = territory.sites.len();
     let demand = territory.sites.iter().map(|site| site.demand).sum();
@@ -1419,6 +1423,17 @@ mod tests {
         assert!(schema.contains("\"territory_id\""));
         assert!(schema.contains("\"site_id\""));
         assert!(schema.contains("\"capacity_exception\""));
+    }
+
+    #[test]
+    fn exposes_integration_fixture_manifest() {
+        let manifest = integration_fixture_manifest_json();
+
+        assert!(manifest.contains("\"manifest_id\":\"terrain.integration-fixtures.v1\""));
+        assert!(manifest.contains("\"repo\":\"CROP\""));
+        assert!(manifest.contains("\"repo\":\"PEBBLE\""));
+        assert!(manifest.contains("\"repo\":\"FLETCH\""));
+        assert!(manifest.contains("fixtures/sample-capacity.csv"));
     }
 
     #[test]

@@ -17,7 +17,7 @@ mechanics only where the boundary is clear.
 |------:|-------|--------|---------|
 | 01 | Shared-kernel inventory | done | Identify which local graph/stat/partition pieces should move to RLINE or METIS-CORE. |
 | 02 | Dashboard schema contract | done | Stabilize CSV, SVG, and GeoJSON field names for BI consumers. |
-| 03 | Cached geography intake | pending | Evaluate CROP/PEBBLE/FLETCH inputs for reusable geography or benchmark fixtures. |
+| 03 | Cached geography intake | done | Evaluate CROP/PEBBLE/FLETCH inputs for reusable geography or benchmark fixtures. |
 | 04 | Integration packet | pending | Package shared-kernel notes, schemas, fixtures, and visual exports for downstream repos. |
 
 ## Success criteria
