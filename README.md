@@ -28,6 +28,8 @@ cargo run -p terrain-cli -- sample-sites-csv > sample-sites.csv
 cargo run -p terrain-cli -- sample-capacity-csv > sample-capacity.csv
 cargo run -p terrain-cli -- capacity-csv sample-capacity.csv
 cargo run -p terrain-cli -- capacity-audit-csv sample-territories.csv sample-capacity.csv
+cargo run -p terrain-cli -- ownership-svg-csv sample-territories.csv sample-capacity.csv > terrain-ownership.svg
+cargo run -p terrain-cli -- ownership-geojson-csv sample-territories.csv sample-capacity.csv > terrain-ownership.geojson
 cargo run -p terrain-cli -- partition-csv sample-sites.csv 2
 cargo run -p terrain-cli -- sweep-csv sample-sites.csv 2 3
 cargo run -p terrain-cli -- partition-svg-csv sample-sites.csv 2 > terrain-partition.svg
@@ -77,6 +79,9 @@ The capacity commands start the Homestead Act phase by parsing assigned people
 or team capacity, home-base coordinates, and skills for later fairness checks.
 Capacity audit reports territories whose demand exceeds summed assigned-person
 capacity.
+
+Ownership visual commands add capacity, overload, owner count, and assignee
+bindings to SVG and GeoJSON outputs for dashboard joins.
 
 ## Product thesis
 

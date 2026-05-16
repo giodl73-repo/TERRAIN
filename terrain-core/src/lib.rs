@@ -410,6 +410,41 @@ pub fn capacity_exceptions(
         .collect()
 }
 
+pub fn territory_capacity(territory: &Territory, capacities: &[AssigneeCapacity]) -> f64 {
+    let capacity_by_assignee = capacities
+        .iter()
+        .map(|capacity| (capacity.assignee.as_str(), capacity.capacity))
+        .collect::<std::collections::BTreeMap<_, _>>();
+    territory
+        .assignees
+        .iter()
+        .filter_map(|assignee| capacity_by_assignee.get(assignee.as_str()))
+        .sum()
+}
+
+pub fn render_territory_svg_with_capacity(
+    territories: &[Territory],
+    capacities: &[AssigneeCapacity],
+    options: &TerritoryVisualOptions,
+) -> String {
+    let mut svg = render_territory_svg(territories, options);
+    for territory in territories {
+        let summary = summarize_territory(territory);
+        let capacity = territory_capacity(territory, capacities);
+        let overload = (summary.demand - capacity).max(0.0);
+        let marker = format!(
+            r#"<g class="territory" data-territory-id="{}""#,
+            escape_attr(&territory.id)
+        );
+        let replacement = format!(
+            r#"{marker} data-capacity="{capacity:.2}" data-overload="{overload:.2}" data-owner-count="{}""#,
+            territory.assignees.len()
+        );
+        svg = svg.replace(&marker, &replacement);
+    }
+    svg
+}
+
 pub fn render_territory_svg(territories: &[Territory], options: &TerritoryVisualOptions) -> String {
     let bounds = bounds(territories);
     let palette = [
@@ -543,6 +578,63 @@ pub fn render_territory_geojson(territories: &[Territory]) -> String {
 
     format!(
         "{{\"type\":\"FeatureCollection\",\"name\":\"terrain-territory-split\",\"features\":[{}]}}",
+        features.join(",")
+    )
+}
+
+pub fn render_territory_geojson_with_capacity(
+    territories: &[Territory],
+    capacities: &[AssigneeCapacity],
+) -> String {
+    let summaries = territories
+        .iter()
+        .map(summarize_territory)
+        .collect::<Vec<_>>();
+    let mut features = Vec::new();
+
+    for (territory, summary) in territories.iter().zip(summaries.iter()) {
+        let capacity = territory_capacity(territory, capacities);
+        let overload = (summary.demand - capacity).max(0.0);
+        features.push(format!(
+            "{{\"type\":\"Feature\",\"geometry\":{{\"type\":\"Point\",\"coordinates\":[{:.6},{:.6}]}},\"properties\":{{\"kind\":\"territory\",\"territory_id\":\"{}\",\"territory_label\":\"{}\",\"site_count\":{},\"demand\":{:.2},\"revenue\":{:.2},\"capacity\":{:.2},\"overload\":{:.2},\"owner_count\":{},\"assignee_count\":{},\"assignees\":{},\"centroid_latitude\":{:.6},\"centroid_longitude\":{:.6},\"max_radius_degrees\":{:.6}}}}}",
+            summary.centroid_longitude,
+            summary.centroid_latitude,
+            escape_json(&territory.id),
+            escape_json(&territory.label),
+            summary.site_count,
+            summary.demand,
+            summary.revenue,
+            capacity,
+            overload,
+            territory.assignees.len(),
+            summary.assignee_count,
+            json_string_array(&summary.assignees),
+            summary.centroid_latitude,
+            summary.centroid_longitude,
+            summary.max_radius_degrees,
+        ));
+
+        for site in &territory.sites {
+            features.push(format!(
+                "{{\"type\":\"Feature\",\"geometry\":{{\"type\":\"Point\",\"coordinates\":[{:.6},{:.6}]}},\"properties\":{{\"kind\":\"site\",\"territory_id\":\"{}\",\"territory_label\":\"{}\",\"site_id\":\"{}\",\"demand\":{:.2},\"revenue\":{:.2},\"capacity\":{:.2},\"overload\":{:.2},\"owner_count\":{},\"assignee_count\":{},\"assignees\":{}}}}}",
+                site.longitude,
+                site.latitude,
+                escape_json(&territory.id),
+                escape_json(&territory.label),
+                escape_json(&site.id),
+                site.demand,
+                site.revenue,
+                capacity,
+                overload,
+                territory.assignees.len(),
+                summary.assignee_count,
+                json_string_array(&summary.assignees),
+            ));
+        }
+    }
+
+    format!(
+        "{{\"type\":\"FeatureCollection\",\"name\":\"terrain-ownership-split\",\"features\":[{}]}}",
         features.join(",")
     )
 }
@@ -1427,6 +1519,27 @@ mod tests {
         near(exceptions[0].demand, 31.0);
         near(exceptions[0].capacity, 30.0);
         near(exceptions[0].overload, 1.0);
+    }
+
+    #[test]
+    fn renders_ownership_visual_bindings() {
+        let territories =
+            parse_territories_csv(sample_territories_csv()).expect("territories parse");
+        let capacities =
+            parse_assignee_capacity_csv(sample_assignee_capacity_csv()).expect("capacity parses");
+
+        let svg = render_territory_svg_with_capacity(
+            &territories,
+            &capacities,
+            &TerritoryVisualOptions::default(),
+        );
+        let geojson = render_territory_geojson_with_capacity(&territories, &capacities);
+
+        assert!(svg.contains("data-capacity=\"30.00\""));
+        assert!(svg.contains("data-overload=\"1.00\""));
+        assert!(geojson.contains("\"capacity\":30.00"));
+        assert!(geojson.contains("\"overload\":1.00"));
+        assert!(geojson.contains("\"owner_count\":2"));
     }
 
     #[test]

@@ -2,7 +2,8 @@ use terrain_core::{
     TerritoryVisualOptions, audit_territories, capacity_exceptions, compactness_exceptions,
     compare_territory_plans, diagnose_territories_csv, parse_assignee_capacity_csv,
     parse_sites_csv, parse_territories_csv, partition_count_sweep, partition_sites,
-    render_territory_geojson, render_territory_svg, sample_assignee_capacity_csv,
+    render_territory_geojson, render_territory_geojson_with_capacity, render_territory_svg,
+    render_territory_svg_with_capacity, sample_assignee_capacity_csv,
     sample_proposed_territories_csv, sample_sites_csv, sample_territories, sample_territories_csv,
     site_movements,
 };
@@ -36,6 +37,8 @@ fn main() {
         "field-review-csv" => run_field_review_command(args.get(1), args.get(2)),
         "svg-csv" => run_csv_command(args.get(1), print_svg_for_csv),
         "geojson-csv" => run_csv_command(args.get(1), print_geojson_for_csv),
+        "ownership-svg-csv" => run_ownership_svg_command(args.get(1), args.get(2)),
+        "ownership-geojson-csv" => run_ownership_geojson_command(args.get(1), args.get(2)),
         "partition-csv" => run_partition_command(args.get(1), args.get(2), print_partition_audit),
         "sweep-csv" => run_sweep_command(args.get(1), args.get(2), args.get(3)),
         "partition-svg-csv" => run_partition_command(args.get(1), args.get(2), print_partition_svg),
@@ -72,6 +75,8 @@ fn print_help() {
     println!("  field-review-csv BASELINE PROPOSED Emit a plain-language field review");
     println!("  svg-csv PATH   Emit a data-bound SVG split from a CSV file");
     println!("  geojson-csv PATH Emit a data-bound GeoJSON split from a CSV file");
+    println!("  ownership-svg-csv TERRITORIES CAPACITY Emit SVG with capacity bindings");
+    println!("  ownership-geojson-csv TERRITORIES CAPACITY Emit GeoJSON with capacity bindings");
     println!("  partition-csv PATH COUNT Audit a deterministic partition from site rows");
     println!("  sweep-csv PATH MIN MAX Compare deterministic partition counts");
     println!("  partition-svg-csv PATH COUNT Emit SVG for a deterministic partition");
@@ -238,6 +243,47 @@ fn print_geojson_for_csv(csv: &str) {
     });
     let geojson = render_territory_geojson(&territories);
     println!("{geojson}");
+}
+
+fn run_ownership_svg_command(territory_path: Option<&String>, capacity_path: Option<&String>) {
+    let (territories, capacities) = read_territories_and_capacities(territory_path, capacity_path);
+    let svg = render_territory_svg_with_capacity(
+        &territories,
+        &capacities,
+        &TerritoryVisualOptions::default(),
+    );
+    println!("{svg}");
+}
+
+fn run_ownership_geojson_command(territory_path: Option<&String>, capacity_path: Option<&String>) {
+    let (territories, capacities) = read_territories_and_capacities(territory_path, capacity_path);
+    let geojson = render_territory_geojson_with_capacity(&territories, &capacities);
+    println!("{geojson}");
+}
+
+fn read_territories_and_capacities(
+    territory_path: Option<&String>,
+    capacity_path: Option<&String>,
+) -> (
+    Vec<terrain_core::Territory>,
+    Vec<terrain_core::AssigneeCapacity>,
+) {
+    let Some(capacity_path) = capacity_path else {
+        eprintln!("missing capacity CSV path");
+        print_help();
+        std::process::exit(2);
+    };
+    let territory_csv = read_csv_file(territory_path);
+    let capacity_csv = read_csv_file(Some(capacity_path));
+    let territories = parse_territories_csv(&territory_csv).unwrap_or_else(|error| {
+        eprintln!("{error}");
+        std::process::exit(1);
+    });
+    let capacities = parse_assignee_capacity_csv(&capacity_csv).unwrap_or_else(|error| {
+        eprintln!("{error}");
+        std::process::exit(1);
+    });
+    (territories, capacities)
 }
 
 fn print_partition_audit(csv: &str, target_count: usize) {
