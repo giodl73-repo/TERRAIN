@@ -450,6 +450,26 @@ fn run_packet_command(
     );
     write_packet_file(
         output_dir,
+        "movement-manifest.csv",
+        &movement_manifest_csv(&baseline, &proposed),
+    );
+    write_packet_file(
+        output_dir,
+        "baseline-diagnostics.csv",
+        &diagnostics_csv(&baseline_csv),
+    );
+    write_packet_file(
+        output_dir,
+        "proposed-diagnostics.csv",
+        &diagnostics_csv(&proposed_csv),
+    );
+    write_packet_file(
+        output_dir,
+        "compactness-exceptions.csv",
+        &compactness_exceptions_csv(&proposed, 0.06),
+    );
+    write_packet_file(
+        output_dir,
         "proposed.svg",
         &render_territory_svg(&proposed, &TerritoryVisualOptions::default()),
     );
@@ -459,7 +479,7 @@ fn run_packet_command(
         &render_territory_geojson(&proposed),
     );
     println!(
-        "wrote scenario packet to {} with 4 files",
+        "wrote scenario packet to {} with 8 files",
         output_dir.display()
     );
 }
@@ -511,6 +531,55 @@ fn territory_deltas_csv(comparison: &terrain_core::ScenarioComparison) -> String
             delta.baseline_revenue,
             delta.proposed_revenue,
             delta.revenue_delta,
+        ));
+    }
+    csv
+}
+
+fn movement_manifest_csv(
+    baseline: &[terrain_core::Territory],
+    proposed: &[terrain_core::Territory],
+) -> String {
+    let mut csv = String::from(
+        "site_id,baseline_territory,proposed_territory,movement_kind,demand,revenue\n",
+    );
+    for movement in site_movements(baseline, proposed) {
+        csv.push_str(&format!(
+            "{},{},{},{},{:.1},{:.0}\n",
+            movement.site_id,
+            movement.baseline_territory_id.unwrap_or_default(),
+            movement.proposed_territory_id.unwrap_or_default(),
+            movement.movement_kind,
+            movement.demand,
+            movement.revenue,
+        ));
+    }
+    csv
+}
+
+fn diagnostics_csv(csv_input: &str) -> String {
+    let mut csv = String::from("severity,line,field,message\n");
+    for diagnostic in diagnose_territories_csv(csv_input) {
+        csv.push_str(&format!(
+            "{},{},{},{}\n",
+            diagnostic.severity,
+            diagnostic.line,
+            diagnostic.field,
+            diagnostic.message.replace(',', ";"),
+        ));
+    }
+    csv
+}
+
+fn compactness_exceptions_csv(territories: &[terrain_core::Territory], threshold: f64) -> String {
+    let mut csv = String::from("territory,sites,max_radius_degrees,threshold_degrees\n");
+    for exception in compactness_exceptions(territories, threshold) {
+        csv.push_str(&format!(
+            "{},{},{:.6},{:.6}\n",
+            exception.territory_id,
+            exception.site_count,
+            exception.max_radius_degrees,
+            exception.threshold_degrees,
         ));
     }
     csv

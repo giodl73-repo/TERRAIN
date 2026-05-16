@@ -56,8 +56,8 @@ above a review threshold, giving early travel-proxy exceptions before full graph
 or route kernels are adopted.
 
 The packet command writes a review folder with scenario summary metrics,
-per-territory deltas, proposed SVG, and proposed GeoJSON for operations and
-dashboard handoff.
+per-territory deltas, movement manifest, diagnostics, compactness exceptions,
+proposed SVG, and proposed GeoJSON for operations and dashboard handoff.
 
 The movement command starts the Oregon Trail phase by listing site-level moves
 between baseline and proposed plans with stable IDs, before/after territories,
