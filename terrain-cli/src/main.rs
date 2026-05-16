@@ -35,6 +35,7 @@ fn main() {
         "compactness-csv" => run_compactness_command(args.get(1), args.get(2)),
         "packet-csv" => run_packet_command(args.get(1), args.get(2), args.get(3)),
         "field-review-csv" => run_field_review_command(args.get(1), args.get(2)),
+        "fairness-packet-csv" => run_fairness_packet_command(args.get(1), args.get(2), args.get(3)),
         "svg-csv" => run_csv_command(args.get(1), print_svg_for_csv),
         "geojson-csv" => run_csv_command(args.get(1), print_geojson_for_csv),
         "ownership-svg-csv" => run_ownership_svg_command(args.get(1), args.get(2)),
@@ -73,6 +74,7 @@ fn print_help() {
     println!("  compactness-csv PATH THRESHOLD Report max-radius compactness exceptions");
     println!("  packet-csv BASELINE PROPOSED OUT_DIR Write a scenario review packet");
     println!("  field-review-csv BASELINE PROPOSED Emit a plain-language field review");
+    println!("  fairness-packet-csv TERRITORIES CAPACITY OUT_DIR Write ownership packet");
     println!("  svg-csv PATH   Emit a data-bound SVG split from a CSV file");
     println!("  geojson-csv PATH Emit a data-bound GeoJSON split from a CSV file");
     println!("  ownership-svg-csv TERRITORIES CAPACITY Emit SVG with capacity bindings");
@@ -677,6 +679,52 @@ fn run_field_review_command(baseline_path: Option<&String>, proposed_path: Optio
     }
 }
 
+fn run_fairness_packet_command(
+    territory_path: Option<&String>,
+    capacity_path: Option<&String>,
+    output_dir: Option<&String>,
+) {
+    let Some(output_dir) = output_dir else {
+        eprintln!("missing output directory");
+        print_help();
+        std::process::exit(2);
+    };
+    let (territories, capacities) = read_territories_and_capacities(territory_path, capacity_path);
+    let output_dir = std::path::Path::new(output_dir);
+    std::fs::create_dir_all(output_dir).unwrap_or_else(|error| {
+        eprintln!("failed to create {}: {error}", output_dir.display());
+        std::process::exit(1);
+    });
+    write_packet_file(
+        output_dir,
+        "capacity-roster.csv",
+        &capacity_roster_csv(&capacities),
+    );
+    write_packet_file(
+        output_dir,
+        "capacity-overloads.csv",
+        &capacity_overloads_csv(&territories, &capacities),
+    );
+    write_packet_file(
+        output_dir,
+        "ownership.svg",
+        &render_territory_svg_with_capacity(
+            &territories,
+            &capacities,
+            &TerritoryVisualOptions::default(),
+        ),
+    );
+    write_packet_file(
+        output_dir,
+        "ownership.geojson",
+        &render_territory_geojson_with_capacity(&territories, &capacities),
+    );
+    println!(
+        "wrote fairness packet to {} with 4 files",
+        output_dir.display()
+    );
+}
+
 fn write_packet_file(output_dir: &std::path::Path, file_name: &str, contents: &str) {
     let path = output_dir.join(file_name);
     std::fs::write(&path, contents).unwrap_or_else(|error| {
@@ -773,6 +821,40 @@ fn compactness_exceptions_csv(territories: &[terrain_core::Territory], threshold
             exception.site_count,
             exception.max_radius_degrees,
             exception.threshold_degrees,
+        ));
+    }
+    csv
+}
+
+fn capacity_roster_csv(capacities: &[terrain_core::AssigneeCapacity]) -> String {
+    let mut csv = String::from("assignee,team,capacity,home_latitude,home_longitude,skills\n");
+    for capacity in capacities {
+        csv.push_str(&format!(
+            "{},{},{:.1},{:.4},{:.4},{}\n",
+            capacity.assignee,
+            capacity.team,
+            capacity.capacity,
+            capacity.home_latitude,
+            capacity.home_longitude,
+            capacity.skills.join(";"),
+        ));
+    }
+    csv
+}
+
+fn capacity_overloads_csv(
+    territories: &[terrain_core::Territory],
+    capacities: &[terrain_core::AssigneeCapacity],
+) -> String {
+    let mut csv = String::from("territory,demand,capacity,overload,assignees\n");
+    for exception in capacity_exceptions(territories, capacities) {
+        csv.push_str(&format!(
+            "{},{:.1},{:.1},{:.1},{}\n",
+            exception.territory_id,
+            exception.demand,
+            exception.capacity,
+            exception.overload,
+            exception.assignees.join(";"),
         ));
     }
     csv

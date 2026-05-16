@@ -30,6 +30,7 @@ cargo run -p terrain-cli -- capacity-csv sample-capacity.csv
 cargo run -p terrain-cli -- capacity-audit-csv sample-territories.csv sample-capacity.csv
 cargo run -p terrain-cli -- ownership-svg-csv sample-territories.csv sample-capacity.csv > terrain-ownership.svg
 cargo run -p terrain-cli -- ownership-geojson-csv sample-territories.csv sample-capacity.csv > terrain-ownership.geojson
+cargo run -p terrain-cli -- fairness-packet-csv sample-territories.csv sample-capacity.csv terrain-fairness-packet
 cargo run -p terrain-cli -- partition-csv sample-sites.csv 2
 cargo run -p terrain-cli -- sweep-csv sample-sites.csv 2 3
 cargo run -p terrain-cli -- partition-svg-csv sample-sites.csv 2 > terrain-partition.svg
@@ -82,6 +83,8 @@ capacity.
 
 Ownership visual commands add capacity, overload, owner count, and assignee
 bindings to SVG and GeoJSON outputs for dashboard joins.
+The fairness packet writes capacity roster, overload exceptions, ownership SVG,
+and ownership GeoJSON into a review folder.
 
 ## Product thesis
 
