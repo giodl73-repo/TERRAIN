@@ -1,7 +1,7 @@
 use terrain_core::{
-    TerritoryVisualOptions, audit_territories, parse_sites_csv, parse_territories_csv,
-    partition_sites, render_territory_geojson, render_territory_svg, sample_sites_csv,
-    sample_territories, sample_territories_csv,
+    TerritoryVisualOptions, audit_territories, compare_territory_plans, parse_sites_csv,
+    parse_territories_csv, partition_sites, render_territory_geojson, render_territory_svg,
+    sample_proposed_territories_csv, sample_sites_csv, sample_territories, sample_territories_csv,
 };
 
 fn main() {
@@ -19,8 +19,10 @@ fn main() {
         "sample-svg" => print_sample_svg(),
         "sample-geojson" => print_sample_geojson(),
         "sample-csv" => print_sample_csv(),
+        "sample-proposed-csv" => print_sample_proposed_csv(),
         "sample-sites-csv" => print_sample_sites_csv(),
         "audit-csv" => run_csv_command(args.get(1), print_audit_for_csv),
+        "compare-csv" => run_compare_command(args.get(1), args.get(2)),
         "svg-csv" => run_csv_command(args.get(1), print_svg_for_csv),
         "geojson-csv" => run_csv_command(args.get(1), print_geojson_for_csv),
         "partition-csv" => run_partition_command(args.get(1), args.get(2), print_partition_audit),
@@ -44,8 +46,10 @@ fn print_help() {
     println!("  sample-svg     Emit a data-bound SVG territory split fixture");
     println!("  sample-geojson Emit a data-bound GeoJSON territory split fixture");
     println!("  sample-csv     Emit the built-in CSV intake fixture");
+    println!("  sample-proposed-csv Emit a proposed-plan CSV fixture for comparison");
     println!("  sample-sites-csv Emit the built-in unassigned site CSV fixture");
     println!("  audit-csv PATH Audit a territory CSV file");
+    println!("  compare-csv BASELINE PROPOSED Compare two territory CSV plans");
     println!("  svg-csv PATH   Emit a data-bound SVG split from a CSV file");
     println!("  geojson-csv PATH Emit a data-bound GeoJSON split from a CSV file");
     println!("  partition-csv PATH COUNT Audit a deterministic partition from site rows");
@@ -102,6 +106,10 @@ fn print_sample_geojson() {
 
 fn print_sample_csv() {
     print!("{}", sample_territories_csv());
+}
+
+fn print_sample_proposed_csv() {
+    print!("{}", sample_proposed_territories_csv());
 }
 
 fn print_sample_sites_csv() {
@@ -187,4 +195,53 @@ fn run_partition_command(
     });
     let csv = read_csv_file(path);
     handler(&csv, target_count);
+}
+
+fn run_compare_command(baseline_path: Option<&String>, proposed_path: Option<&String>) {
+    let Some(proposed_path) = proposed_path else {
+        eprintln!("missing proposed CSV path");
+        print_help();
+        std::process::exit(2);
+    };
+    let baseline_csv = read_csv_file(baseline_path);
+    let proposed_csv = read_csv_file(Some(proposed_path));
+    let baseline = parse_territories_csv(&baseline_csv).unwrap_or_else(|error| {
+        eprintln!("baseline {error}");
+        std::process::exit(1);
+    });
+    let proposed = parse_territories_csv(&proposed_csv).unwrap_or_else(|error| {
+        eprintln!("proposed {error}");
+        std::process::exit(1);
+    });
+    let comparison = compare_territory_plans(&baseline, &proposed, 0.05, 0.05);
+    println!("TERRAIN scenario comparison");
+    println!(
+        "baseline_status={} proposed_status={} demand_spread_delta={:.3} revenue_spread_delta={:.3}",
+        if comparison.baseline.passes {
+            "pass"
+        } else {
+            "review"
+        },
+        if comparison.proposed.passes {
+            "pass"
+        } else {
+            "review"
+        },
+        comparison.proposed.demand_spread_ratio - comparison.baseline.demand_spread_ratio,
+        comparison.proposed.revenue_spread_ratio - comparison.baseline.revenue_spread_ratio,
+    );
+    println!(
+        "territory,site_count_delta,demand_delta,revenue_delta,baseline_demand,proposed_demand"
+    );
+    for delta in comparison.territory_deltas {
+        println!(
+            "{},{},{:.1},{:.0},{:.1},{:.1}",
+            delta.territory_id,
+            delta.site_count_delta,
+            delta.demand_delta,
+            delta.revenue_delta,
+            delta.baseline_demand,
+            delta.proposed_demand,
+        );
+    }
 }

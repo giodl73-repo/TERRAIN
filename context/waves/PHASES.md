@@ -9,15 +9,15 @@ historical harms or politics of expansion.
 
 | Phase | Historical motif | TERRAIN focus | Status |
 |---:|---|---|---|
-| 1 | Louisiana Purchase | Foundation: domain bounds, contracts, roles, and sample artifacts | active |
-| 2 | Lewis and Clark | Real data exploration and intake validation | planned |
+| 1 | Louisiana Purchase | Foundation: domain bounds, contracts, roles, and sample artifacts | done |
+| 2 | Lewis and Clark | Real data exploration and intake validation | active |
 | 3 | Oregon Trail | First movement/territory split scenarios | planned |
 | 4 | Homestead Act | People, capacity, ownership, and fairness | planned |
 | 5 | Transcontinental Railroad | Shared kernels, dashboards, and integrations | planned |
 
 ## Active phase
 
-- `terrain-foundation`
+- `lewis-and-clark-scenario-audit`
 
 ## Protocol
 

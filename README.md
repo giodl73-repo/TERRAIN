@@ -14,7 +14,9 @@ cargo run -p terrain-cli -- sample-audit
 cargo run -p terrain-cli -- sample-svg > terrain-split.svg
 cargo run -p terrain-cli -- sample-geojson > terrain-split.geojson
 cargo run -p terrain-cli -- sample-csv > sample-territories.csv
+cargo run -p terrain-cli -- sample-proposed-csv > sample-territories-proposed.csv
 cargo run -p terrain-cli -- audit-csv sample-territories.csv
+cargo run -p terrain-cli -- compare-csv sample-territories.csv sample-territories-proposed.csv
 cargo run -p terrain-cli -- svg-csv sample-territories.csv > terrain-split.svg
 cargo run -p terrain-cli -- geojson-csv sample-territories.csv > terrain-split.geojson
 cargo run -p terrain-cli -- sample-sites-csv > sample-sites.csv
@@ -35,6 +37,10 @@ The partition commands prove the first unassigned-site workflow: take site rows
 with `site_id`, `demand`, `revenue`, `latitude`, and `longitude`, create a
 deterministic initial split for the requested territory count, then audit or
 render the result with the same dashboard-ready bindings in SVG or GeoJSON.
+
+The scenario command starts the Lewis and Clark phase: compare a baseline plan
+to a proposed plan and report pass/review status changes plus territory-level
+site count, demand, and revenue deltas.
 
 ## Product thesis
 

@@ -38,6 +38,27 @@ pub struct BalanceAudit {
 }
 
 #[derive(Debug, Clone, PartialEq)]
+pub struct TerritoryScenarioDelta {
+    pub territory_id: String,
+    pub baseline_site_count: usize,
+    pub proposed_site_count: usize,
+    pub site_count_delta: isize,
+    pub baseline_demand: f64,
+    pub proposed_demand: f64,
+    pub demand_delta: f64,
+    pub baseline_revenue: f64,
+    pub proposed_revenue: f64,
+    pub revenue_delta: f64,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ScenarioComparison {
+    pub baseline: BalanceAudit,
+    pub proposed: BalanceAudit,
+    pub territory_deltas: Vec<TerritoryScenarioDelta>,
+}
+
+#[derive(Debug, Clone, PartialEq)]
 pub struct TerritoryVisualOptions {
     pub width: u32,
     pub height: u32,
@@ -188,6 +209,65 @@ pub fn audit_territories(
         revenue_spread_ratio,
         max_radius_degrees,
         passes,
+    }
+}
+
+pub fn compare_territory_plans(
+    baseline: &[Territory],
+    proposed: &[Territory],
+    max_demand_spread_ratio: f64,
+    max_revenue_spread_ratio: f64,
+) -> ScenarioComparison {
+    let baseline_audit =
+        audit_territories(baseline, max_demand_spread_ratio, max_revenue_spread_ratio);
+    let proposed_audit =
+        audit_territories(proposed, max_demand_spread_ratio, max_revenue_spread_ratio);
+    let baseline_summaries = baseline_audit
+        .summaries
+        .iter()
+        .map(|summary| (summary.territory_id.clone(), summary))
+        .collect::<std::collections::BTreeMap<_, _>>();
+    let proposed_summaries = proposed_audit
+        .summaries
+        .iter()
+        .map(|summary| (summary.territory_id.clone(), summary))
+        .collect::<std::collections::BTreeMap<_, _>>();
+    let territory_ids = baseline_summaries
+        .keys()
+        .chain(proposed_summaries.keys())
+        .cloned()
+        .collect::<std::collections::BTreeSet<_>>();
+
+    let territory_deltas = territory_ids
+        .into_iter()
+        .map(|territory_id| {
+            let baseline = baseline_summaries.get(&territory_id);
+            let proposed = proposed_summaries.get(&territory_id);
+            let baseline_site_count = baseline.map_or(0, |summary| summary.site_count);
+            let proposed_site_count = proposed.map_or(0, |summary| summary.site_count);
+            let baseline_demand = baseline.map_or(0.0, |summary| summary.demand);
+            let proposed_demand = proposed.map_or(0.0, |summary| summary.demand);
+            let baseline_revenue = baseline.map_or(0.0, |summary| summary.revenue);
+            let proposed_revenue = proposed.map_or(0.0, |summary| summary.revenue);
+            TerritoryScenarioDelta {
+                territory_id,
+                baseline_site_count,
+                proposed_site_count,
+                site_count_delta: proposed_site_count as isize - baseline_site_count as isize,
+                baseline_demand,
+                proposed_demand,
+                demand_delta: proposed_demand - baseline_demand,
+                baseline_revenue,
+                proposed_revenue,
+                revenue_delta: proposed_revenue - baseline_revenue,
+            }
+        })
+        .collect();
+
+    ScenarioComparison {
+        baseline: baseline_audit,
+        proposed: proposed_audit,
+        territory_deltas,
     }
 }
 
@@ -579,6 +659,16 @@ south,South field team,Jordan;Riley,S-002,10,95000,47.46,-122.33\n\
 south,South field team,Jordan;Riley,S-003,10,92000,47.53,-122.38\n"
 }
 
+pub fn sample_proposed_territories_csv() -> &'static str {
+    "territory_id,territory_label,assignees,site_id,demand,revenue,latitude,longitude\n\
+north,North field team,Avery;Morgan;Sam,N-001,12,120000,47.62,-122.35\n\
+north,North field team,Avery;Morgan;Sam,N-002,10,90000,47.67,-122.31\n\
+south,South field team,Jordan;Riley,N-003,9,80000,47.58,-122.29\n\
+south,South field team,Jordan;Riley,S-001,11,105000,47.50,-122.27\n\
+south,South field team,Jordan;Riley,S-002,10,95000,47.46,-122.33\n\
+south,South field team,Jordan;Riley,S-003,10,92000,47.53,-122.38\n"
+}
+
 pub fn sample_sites_csv() -> &'static str {
     "site_id,demand,revenue,latitude,longitude\n\
 N-001,12,120000,47.62,-122.35\n\
@@ -832,6 +922,21 @@ mod tests {
         assert!(geojson.contains("\"territory_id\":\"north\""));
         assert!(geojson.contains("\"site_id\":\"N-001\""));
         assert!(geojson.contains("\"assignees\":[\"Avery\",\"Morgan\",\"Sam\"]"));
+    }
+
+    #[test]
+    fn compares_baseline_and_proposed_plans() {
+        let baseline = parse_territories_csv(sample_territories_csv()).expect("baseline parses");
+        let proposed =
+            parse_territories_csv(sample_proposed_territories_csv()).expect("proposed parses");
+        let comparison = compare_territory_plans(&baseline, &proposed, 0.05, 0.05);
+
+        assert!(comparison.baseline.passes);
+        assert!(!comparison.proposed.passes);
+        assert_eq!(comparison.territory_deltas.len(), 2);
+        assert_eq!(comparison.territory_deltas[0].territory_id, "north");
+        assert_eq!(comparison.territory_deltas[0].site_count_delta, -1);
+        near(comparison.territory_deltas[1].demand_delta, 9.0);
     }
 
     #[test]
