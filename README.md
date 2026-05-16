@@ -21,6 +21,7 @@ cargo run -p terrain-cli -- compare-csv sample-territories.csv sample-territorie
 cargo run -p terrain-cli -- movement-csv sample-territories.csv sample-territories-proposed.csv
 cargo run -p terrain-cli -- compactness-csv sample-territories.csv 0.06
 cargo run -p terrain-cli -- packet-csv sample-territories.csv sample-territories-proposed.csv terrain-packet
+cargo run -p terrain-cli -- field-review-csv sample-territories.csv sample-territories-proposed.csv
 cargo run -p terrain-cli -- svg-csv sample-territories.csv > terrain-split.svg
 cargo run -p terrain-cli -- geojson-csv sample-territories.csv > terrain-split.geojson
 cargo run -p terrain-cli -- sample-sites-csv > sample-sites.csv
@@ -65,6 +66,9 @@ movement kind, demand, and revenue.
 
 The sweep command compares deterministic partitions across a target territory
 count range, producing audit rows that can be sorted or charted.
+
+The field review command emits a plain-language recommendation, balance summary,
+site movement list, and compactness exceptions for field manager review.
 
 ## Product thesis
 

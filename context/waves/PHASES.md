@@ -11,13 +11,13 @@ historical harms or politics of expansion.
 |---:|---|---|---|
 | 1 | Louisiana Purchase | Foundation: domain bounds, contracts, roles, and sample artifacts | done |
 | 2 | Lewis and Clark | Real data exploration and intake validation | done |
-| 3 | Oregon Trail | First movement/territory split scenarios | active |
-| 4 | Homestead Act | People, capacity, ownership, and fairness | planned |
+| 3 | Oregon Trail | First movement/territory split scenarios | done |
+| 4 | Homestead Act | People, capacity, ownership, and fairness | active |
 | 5 | Transcontinental Railroad | Shared kernels, dashboards, and integrations | planned |
 
 ## Active phase
 
-- `oregon-trail-movement-scenarios`
+- `homestead-act-ownership`
 
 ## Protocol
 

@@ -29,6 +29,7 @@ fn main() {
         "movement-csv" => run_movement_command(args.get(1), args.get(2)),
         "compactness-csv" => run_compactness_command(args.get(1), args.get(2)),
         "packet-csv" => run_packet_command(args.get(1), args.get(2), args.get(3)),
+        "field-review-csv" => run_field_review_command(args.get(1), args.get(2)),
         "svg-csv" => run_csv_command(args.get(1), print_svg_for_csv),
         "geojson-csv" => run_csv_command(args.get(1), print_geojson_for_csv),
         "partition-csv" => run_partition_command(args.get(1), args.get(2), print_partition_audit),
@@ -61,6 +62,7 @@ fn print_help() {
     println!("  movement-csv BASELINE PROPOSED List stable site movement between plans");
     println!("  compactness-csv PATH THRESHOLD Report max-radius compactness exceptions");
     println!("  packet-csv BASELINE PROPOSED OUT_DIR Write a scenario review packet");
+    println!("  field-review-csv BASELINE PROPOSED Emit a plain-language field review");
     println!("  svg-csv PATH   Emit a data-bound SVG split from a CSV file");
     println!("  geojson-csv PATH Emit a data-bound GeoJSON split from a CSV file");
     println!("  partition-csv PATH COUNT Audit a deterministic partition from site rows");
@@ -482,6 +484,82 @@ fn run_packet_command(
         "wrote scenario packet to {} with 8 files",
         output_dir.display()
     );
+}
+
+fn run_field_review_command(baseline_path: Option<&String>, proposed_path: Option<&String>) {
+    let Some(proposed_path) = proposed_path else {
+        eprintln!("missing proposed CSV path");
+        print_help();
+        std::process::exit(2);
+    };
+    let baseline_csv = read_csv_file(baseline_path);
+    let proposed_csv = read_csv_file(Some(proposed_path));
+    let baseline = parse_territories_csv(&baseline_csv).unwrap_or_else(|error| {
+        eprintln!("baseline {error}");
+        std::process::exit(1);
+    });
+    let proposed = parse_territories_csv(&proposed_csv).unwrap_or_else(|error| {
+        eprintln!("proposed {error}");
+        std::process::exit(1);
+    });
+    let comparison = compare_territory_plans(&baseline, &proposed, 0.05, 0.05);
+    let movements = site_movements(&baseline, &proposed);
+    let moved_sites = movements
+        .iter()
+        .filter(|movement| movement.movement_kind != "unchanged")
+        .collect::<Vec<_>>();
+    let compactness = compactness_exceptions(&proposed, 0.06);
+
+    println!("TERRAIN field review");
+    println!(
+        "Recommendation: {}",
+        if comparison.proposed.passes && compactness.is_empty() {
+            "ready for field review"
+        } else {
+            "needs manager review"
+        }
+    );
+    println!(
+        "Balance: proposed plan is {} with demand spread {:.1}% and revenue spread {:.1}%.",
+        if comparison.proposed.passes {
+            "within threshold"
+        } else {
+            "outside threshold"
+        },
+        comparison.proposed.demand_spread_ratio * 100.0,
+        comparison.proposed.revenue_spread_ratio * 100.0,
+    );
+    println!(
+        "Movement: {} of {} sites change territory.",
+        moved_sites.len(),
+        movements.len()
+    );
+    for movement in moved_sites {
+        println!(
+            "- {} moves from {} to {} ({:.1} demand, ${:.0} revenue).",
+            movement.site_id,
+            movement
+                .baseline_territory_id
+                .as_deref()
+                .unwrap_or("unassigned"),
+            movement
+                .proposed_territory_id
+                .as_deref()
+                .unwrap_or("unassigned"),
+            movement.demand,
+            movement.revenue,
+        );
+    }
+    println!(
+        "Compactness: {} territories exceed the review radius.",
+        compactness.len()
+    );
+    for exception in compactness {
+        println!(
+            "- {} has max radius {:.3} degrees across {} sites.",
+            exception.territory_id, exception.max_radius_degrees, exception.site_count,
+        );
+    }
 }
 
 fn write_packet_file(output_dir: &std::path::Path, file_name: &str, contents: &str) {
