@@ -13,6 +13,7 @@ territories, then explain balance, compactness, and workload gaps.
 cargo run -p terrain-cli -- sample-audit
 cargo run -p terrain-cli -- schema
 cargo run -p terrain-cli -- integration-fixtures
+cargo run -p terrain-cli -- integration-packet terrain-integration-packet
 cargo run -p terrain-cli -- sample-svg > terrain-split.svg
 cargo run -p terrain-cli -- sample-geojson > terrain-split.geojson
 cargo run -p terrain-cli -- sample-csv > sample-territories.csv
@@ -122,6 +123,8 @@ Dashboard bindings are tracked in `docs\dashboard-schema.md` and emitted with
 Reusable fixture and cache-source handoffs are tracked in
 `docs\integration-fixtures.md` and emitted with
 `cargo run -p terrain-cli -- integration-fixtures`.
+The integration packet command writes both manifests plus a policy-boundary
+summary for downstream repos.
 
 ## Non-goals
 

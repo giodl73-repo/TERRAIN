@@ -23,6 +23,7 @@ fn main() {
         "sample-audit" => print_sample_audit(),
         "schema" => print_schema(),
         "integration-fixtures" => print_integration_fixtures(),
+        "integration-packet" => run_integration_packet_command(args.get(1)),
         "sample-svg" => print_sample_svg(),
         "sample-geojson" => print_sample_geojson(),
         "sample-csv" => print_sample_csv(),
@@ -63,6 +64,7 @@ fn print_help() {
     println!("Commands:");
     println!("  schema         Emit the TERRAIN dashboard schema contract");
     println!("  integration-fixtures Emit reusable fixture and cache-source manifest");
+    println!("  integration-packet OUT_DIR Write schema and fixture manifests");
     println!("  sample-audit   Run the built-in territory balance audit fixture");
     println!("  sample-svg     Emit a data-bound SVG territory split fixture");
     println!("  sample-geojson Emit a data-bound GeoJSON territory split fixture");
@@ -100,6 +102,34 @@ fn print_schema() {
 
 fn print_integration_fixtures() {
     println!("{}", integration_fixture_manifest_json());
+}
+
+fn run_integration_packet_command(output_dir: Option<&String>) {
+    let Some(output_dir) = output_dir else {
+        eprintln!("missing output directory");
+        print_help();
+        std::process::exit(2);
+    };
+    let output_dir = std::path::Path::new(output_dir);
+    std::fs::create_dir_all(output_dir).unwrap_or_else(|error| {
+        eprintln!("failed to create {}: {error}", output_dir.display());
+        std::process::exit(1);
+    });
+    write_packet_file(output_dir, "dashboard-schema.json", dashboard_schema_json());
+    write_packet_file(
+        output_dir,
+        "integration-fixtures.json",
+        integration_fixture_manifest_json(),
+    );
+    write_packet_file(
+        output_dir,
+        "integration-summary.txt",
+        "TERRAIN integration packet\nschema=terrain.dashboard.v1\nfixtures=terrain.integration-fixtures.v1\npolicy_boundary=TERRAIN keeps territory policy local; RLINE/METIS/CROP/PEBBLE/FLETCH are candidate integration surfaces.\n",
+    );
+    println!(
+        "wrote integration packet to {} with 3 files",
+        output_dir.display()
+    );
 }
 
 fn print_audit_for_csv(csv: &str) {

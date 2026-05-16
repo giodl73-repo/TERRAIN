@@ -13,11 +13,11 @@ historical harms or politics of expansion.
 | 2 | Lewis and Clark | Real data exploration and intake validation | done |
 | 3 | Oregon Trail | First movement/territory split scenarios | done |
 | 4 | Homestead Act | People, capacity, ownership, and fairness | done |
-| 5 | Transcontinental Railroad | Shared kernels, dashboards, and integrations | active |
+| 5 | Transcontinental Railroad | Shared kernels, dashboards, and integrations | done |
 
 ## Active phase
 
-- `transcontinental-railroad-integrations`
+- none
 
 ## Protocol
 
