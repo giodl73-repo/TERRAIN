@@ -1,4 +1,4 @@
-# Wave: TERRAIN Foundation
+# Phase 1: Louisiana Purchase - TERRAIN Foundation
 
 ## Goal
 
@@ -11,6 +11,19 @@ The first useful artifact is an auditable territory plan plus a visual split
 that can be dropped into dashboards. Mapping and partition refinement can land
 after the model proves stable IDs, counts, assignees, demand, revenue, and
 centroid bindings.
+
+## Role review
+
+| Role | Plan pressure | Resulting requirement |
+|---|---|---|
+| Territory Planner | A balanced table can still be a bad operational split. | Track demand, revenue, site count, compactness/travel proxy, and exceptions together. |
+| Operations Buyer | The first wedge needs to show workflow and ROI, not algorithm spectacle. | Keep CSV/SVG/report outputs usable beside spreadsheets, CRM exports, and dashboards. |
+| Visual Split Designer | Customers need a nice-looking split they can show. | SVG/GeoJSON exports are product artifacts, not debug output. |
+| Data Binding Auditor | Screenshots are dead ends for dashboards. | Every territory/site visual mark carries stable IDs and metric bindings. |
+| Fairness & Capacity Auditor | Territory balance can hide overloaded people. | Assigned people, assignee counts, and future capacity flags are core fields. |
+| Kernel Boundary Engineer | Shared kernels should not absorb customer policy. | Keep policy in TERRAIN; only extract graph/stat/partition mechanics after contracts stabilize. |
+| Field Manager | Field teams need plain explanations. | Output must show who owns each territory and why the split is reviewable. |
+| Dashboard Builder | Downstream BI needs joins. | CSV/SVG/JSON/GeoJSON must share IDs and units. |
 
 ## Pulse table
 

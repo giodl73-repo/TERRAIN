@@ -5,7 +5,22 @@
 Balanced sales/service territories for field service, home health, pest
 control, franchise operations, and sales teams.
 
-## Wave 1: Foundation
+## Phase naming motif
+
+TERRAIN phases use famous American expansion and infrastructure-history moments
+as mnemonics for product maturity. These names are product metaphors for survey,
+movement, settlement, and connection work; they are not endorsements of the
+historical harms or politics of expansion.
+
+| Phase | Historical motif | Product meaning |
+|---:|---|---|
+| 1 | Louisiana Purchase | Define the territory domain: inputs, bounds, contracts, and review roles. |
+| 2 | Lewis and Clark | Explore real customer/job data and validate the intake model. |
+| 3 | Oregon Trail | Produce usable route/territory movement scenarios and visual handoffs. |
+| 4 | Homestead Act | Assign people, capacity, and ownership to stable territories. |
+| 5 | Transcontinental Railroad | Connect optimization kernels, dashboards, exports, and reusable integrations. |
+
+## Phase 1: Louisiana Purchase - Foundation
 
 Goal: establish the repo, first balance-audit contract, dashboard-ready visual
 artifact direction, and wave/pulse workflow.
@@ -19,19 +34,58 @@ Pulses:
 4. Visual split export: emit data-bound SVG, then GeoJSON/TopoJSON, with
    territory IDs, site IDs, assignees, counts, demand, revenue, and centroids.
 
-## Wave 2: Scenario audit
+Role review emphasis:
+
+- Territory Planner: model must balance demand, revenue, compactness, and travel
+  proxy together, not one metric at a time.
+- Operations Buyer: outputs must show ROI/workflow fit before algorithms become
+  complex.
+- Visual Split Designer: visual territory splits are first-class artifacts.
+- Data Binding Auditor: visuals must expose stable IDs and fields for dashboards.
+- Fairness & Capacity Auditor: assigned people, counts, and capacity flags are
+  part of the plan, not decoration.
+- Kernel Boundary Engineer: keep product policy in TERRAIN; extract reusable
+  graph/stat/partition mechanics only after contracts stabilize.
+
+## Phase 2: Lewis and Clark - Scenario audit
 
 Goal: compare territory plans with explainable tradeoffs.
 
 Planned capabilities:
 
-- Balance metrics for demand, revenue, site count, and travel proxy.
+- CSV/JSON intake for customer/job rows, coordinates, demand, revenue, and
+  assigned people/team fields.
+- Balance metrics for demand, revenue, site count, people capacity, and travel
+  proxy.
 - Compactness and contiguity checks.
 - Before/after scenario reports.
 - Dashboard-ready SVG/GeoJSON outputs with stable data bindings.
 - People/team assignment counts and capacity flags per territory.
 
-## Wave 3: Shared-kernel adoption
+## Phase 3: Oregon Trail - First movement scenarios
+
+Goal: produce real territory split scenarios that can be reviewed by field
+teams.
+
+Planned capabilities:
+
+- Deterministic initial assignment from customer/job rows.
+- Scenario comparison across target territory counts.
+- Exceptions list for outliers, disconnected clusters, and capacity overload.
+- Exportable visual packets for operations review.
+
+## Phase 4: Homestead Act - People and ownership
+
+Goal: make every territory operationally owned and fair to the people assigned
+there.
+
+Planned capabilities:
+
+- Assignee/team model with capacity, home base, skills, and workload limits.
+- Per-person and per-team counts, demand, revenue, and route/travel proxy.
+- Fairness/capacity flags surfaced in CSV, SVG, and future JSON/GeoJSON.
+
+## Phase 5: Transcontinental Railroad - Shared-kernel adoption
 
 Goal: move reusable graph and partition mechanics into shared dependencies.
 

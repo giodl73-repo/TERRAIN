@@ -26,6 +26,17 @@ manual assignment rules. TERRAIN should make the hard part local, fast, and
 auditable: graph construction, partitioning, compactness scoring, constraint
 sweeps, scenario comparison, and dashboard-ready split visuals.
 
+## Development phases
+
+TERRAIN uses American expansion/infrastructure-history motifs as planning
+mnemonics:
+
+1. **Louisiana Purchase** - product bounds, contracts, roles, and sample outputs.
+2. **Lewis and Clark** - real data intake and exploration.
+3. **Oregon Trail** - first movement/territory scenarios.
+4. **Homestead Act** - people assignment, capacity, and ownership.
+5. **Transcontinental Railroad** - shared kernels, dashboards, and integrations.
+
 ## Visual artifacts
 
 TERRAIN should produce attractive, embeddable visual territory splits, not just
