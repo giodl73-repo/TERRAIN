@@ -16,7 +16,7 @@ geographic split.
 | Pulse | Title | Status | Outcome |
 |------:|-------|--------|---------|
 | 01 | Assignee capacity intake | done | Parse capacity, home-base, team, and skill fields for assigned people or teams. |
-| 02 | Capacity flags | pending | Flag overloaded territories and assignees in audit output. |
+| 02 | Capacity flags | done | Flag overloaded territories and assignees in audit output. |
 | 03 | Ownership visual bindings | pending | Carry capacity and owner fields into SVG and GeoJSON exports. |
 | 04 | Fairness review packet | pending | Package people, capacity, movement, and exception outputs for review. |
 

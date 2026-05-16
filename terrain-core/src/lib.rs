@@ -87,6 +87,15 @@ pub struct AssigneeCapacity {
 }
 
 #[derive(Debug, Clone, PartialEq)]
+pub struct CapacityException {
+    pub territory_id: String,
+    pub demand: f64,
+    pub capacity: f64,
+    pub overload: f64,
+    pub assignees: Vec<String>,
+}
+
+#[derive(Debug, Clone, PartialEq)]
 pub struct PartitionSweepResult {
     pub target_territory_count: usize,
     pub actual_territory_count: usize,
@@ -368,6 +377,36 @@ pub fn site_movements(baseline: &[Territory], proposed: &[Territory]) -> Vec<Sit
                 revenue: site.revenue,
             }
         })
+        .collect()
+}
+
+pub fn capacity_exceptions(
+    territories: &[Territory],
+    capacities: &[AssigneeCapacity],
+) -> Vec<CapacityException> {
+    let capacity_by_assignee = capacities
+        .iter()
+        .map(|capacity| (capacity.assignee.clone(), capacity.capacity))
+        .collect::<std::collections::BTreeMap<_, _>>();
+
+    territories
+        .iter()
+        .map(|territory| {
+            let summary = summarize_territory(territory);
+            let capacity = territory
+                .assignees
+                .iter()
+                .filter_map(|assignee| capacity_by_assignee.get(assignee))
+                .sum::<f64>();
+            CapacityException {
+                territory_id: territory.id.clone(),
+                demand: summary.demand,
+                capacity,
+                overload: (summary.demand - capacity).max(0.0),
+                assignees: territory.assignees.clone(),
+            }
+        })
+        .filter(|exception| exception.overload > 0.0)
         .collect()
 }
 
@@ -1373,6 +1412,21 @@ mod tests {
         assert_eq!(capacities[0].team, "north");
         near(capacities[0].capacity, 14.0);
         assert_eq!(capacities[0].skills, ["enterprise", "onsite"]);
+    }
+
+    #[test]
+    fn flags_capacity_overloads() {
+        let territories =
+            parse_territories_csv(sample_territories_csv()).expect("territories parse");
+        let capacities =
+            parse_assignee_capacity_csv(sample_assignee_capacity_csv()).expect("capacity parses");
+        let exceptions = capacity_exceptions(&territories, &capacities);
+
+        assert_eq!(exceptions.len(), 1);
+        assert_eq!(exceptions[0].territory_id, "south");
+        near(exceptions[0].demand, 31.0);
+        near(exceptions[0].capacity, 30.0);
+        near(exceptions[0].overload, 1.0);
     }
 
     #[test]
