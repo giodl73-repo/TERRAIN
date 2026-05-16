@@ -16,6 +16,7 @@ cargo run -p terrain-cli -- sample-geojson > terrain-split.geojson
 cargo run -p terrain-cli -- sample-csv > sample-territories.csv
 cargo run -p terrain-cli -- sample-proposed-csv > sample-territories-proposed.csv
 cargo run -p terrain-cli -- audit-csv sample-territories.csv
+cargo run -p terrain-cli -- diagnose-csv sample-territories.csv
 cargo run -p terrain-cli -- compare-csv sample-territories.csv sample-territories-proposed.csv
 cargo run -p terrain-cli -- svg-csv sample-territories.csv > terrain-split.svg
 cargo run -p terrain-cli -- geojson-csv sample-territories.csv > terrain-split.geojson
@@ -41,6 +42,10 @@ render the result with the same dashboard-ready bindings in SVG or GeoJSON.
 The scenario command starts the Lewis and Clark phase: compare a baseline plan
 to a proposed plan and report pass/review status changes plus territory-level
 site count, demand, and revenue deltas.
+
+The diagnostics command checks messy territory CSV exports before parsing them
+into a plan. It reports severity, line, field, and message for missing values,
+duplicate site IDs, invalid numbers, and suspicious coordinates.
 
 ## Product thesis
 

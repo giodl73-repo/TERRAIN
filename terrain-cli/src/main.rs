@@ -1,7 +1,8 @@
 use terrain_core::{
-    TerritoryVisualOptions, audit_territories, compare_territory_plans, parse_sites_csv,
-    parse_territories_csv, partition_sites, render_territory_geojson, render_territory_svg,
-    sample_proposed_territories_csv, sample_sites_csv, sample_territories, sample_territories_csv,
+    TerritoryVisualOptions, audit_territories, compare_territory_plans, diagnose_territories_csv,
+    parse_sites_csv, parse_territories_csv, partition_sites, render_territory_geojson,
+    render_territory_svg, sample_proposed_territories_csv, sample_sites_csv, sample_territories,
+    sample_territories_csv,
 };
 
 fn main() {
@@ -22,6 +23,7 @@ fn main() {
         "sample-proposed-csv" => print_sample_proposed_csv(),
         "sample-sites-csv" => print_sample_sites_csv(),
         "audit-csv" => run_csv_command(args.get(1), print_audit_for_csv),
+        "diagnose-csv" => run_csv_command(args.get(1), print_diagnostics_for_csv),
         "compare-csv" => run_compare_command(args.get(1), args.get(2)),
         "svg-csv" => run_csv_command(args.get(1), print_svg_for_csv),
         "geojson-csv" => run_csv_command(args.get(1), print_geojson_for_csv),
@@ -49,6 +51,7 @@ fn print_help() {
     println!("  sample-proposed-csv Emit a proposed-plan CSV fixture for comparison");
     println!("  sample-sites-csv Emit the built-in unassigned site CSV fixture");
     println!("  audit-csv PATH Audit a territory CSV file");
+    println!("  diagnose-csv PATH Report territory CSV intake diagnostics");
     println!("  compare-csv BASELINE PROPOSED Compare two territory CSV plans");
     println!("  svg-csv PATH   Emit a data-bound SVG split from a CSV file");
     println!("  geojson-csv PATH Emit a data-bound GeoJSON split from a CSV file");
@@ -90,6 +93,29 @@ fn print_audit(territories: &[terrain_core::Territory]) {
             summary.centroid_latitude,
             summary.centroid_longitude,
             summary.assignees.join(";"),
+        );
+    }
+}
+
+fn print_diagnostics_for_csv(csv: &str) {
+    let diagnostics = diagnose_territories_csv(csv);
+    println!(
+        "status={} diagnostic_count={}",
+        if diagnostics.is_empty() {
+            "pass"
+        } else {
+            "review"
+        },
+        diagnostics.len()
+    );
+    println!("severity,line,field,message");
+    for diagnostic in diagnostics {
+        println!(
+            "{},{},{},{}",
+            diagnostic.severity,
+            diagnostic.line,
+            diagnostic.field,
+            diagnostic.message.replace(',', ";"),
         );
     }
 }

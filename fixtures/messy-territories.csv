@@ -1,0 +1,4 @@
+territory_id,territory_label,assignees,site_id,demand,revenue,latitude,longitude
+north,North field team,Avery;Morgan;Sam,N-001,12,120000,47.62,-122.35
+north,North field team,Avery;Morgan;Sam,N-001,nope,90000,147.67,-122.31
+south,South field team,Jordan;Riley,,10,95000,47.46,-222.33

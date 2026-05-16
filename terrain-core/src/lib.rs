@@ -72,6 +72,14 @@ pub struct CsvIntakeError {
 }
 
 #[derive(Debug, Clone, PartialEq)]
+pub struct CsvDiagnostic {
+    pub severity: String,
+    pub line: usize,
+    pub field: String,
+    pub message: String,
+}
+
+#[derive(Debug, Clone, PartialEq)]
 pub enum PartitionError {
     EmptySiteSet,
     ZeroTerritories,
@@ -524,6 +532,139 @@ pub fn parse_territories_csv(input: &str) -> Result<Vec<Territory>, CsvIntakeErr
         .collect())
 }
 
+pub fn diagnose_territories_csv(input: &str) -> Vec<CsvDiagnostic> {
+    let mut diagnostics = Vec::new();
+    let mut lines = input.lines().enumerate();
+    let Some((header_idx, header_line)) = lines.find(|(_, line)| !line.trim().is_empty()) else {
+        diagnostics.push(CsvDiagnostic {
+            severity: "error".to_string(),
+            line: 1,
+            field: "".to_string(),
+            message: "missing header row".to_string(),
+        });
+        return diagnostics;
+    };
+    let headers = match parse_csv_line(header_line) {
+        Ok(headers) => headers,
+        Err(message) => {
+            diagnostics.push(CsvDiagnostic {
+                severity: "error".to_string(),
+                line: header_idx + 1,
+                field: "".to_string(),
+                message,
+            });
+            return diagnostics;
+        }
+    };
+    let header_map = headers
+        .iter()
+        .enumerate()
+        .map(|(idx, header)| (header.trim().to_ascii_lowercase(), idx))
+        .collect::<std::collections::BTreeMap<_, _>>();
+    for header in [
+        "site_id",
+        "territory_id",
+        "demand",
+        "revenue",
+        "latitude",
+        "longitude",
+    ] {
+        if !header_map.contains_key(header) {
+            diagnostics.push(CsvDiagnostic {
+                severity: "error".to_string(),
+                line: header_idx + 1,
+                field: header.to_string(),
+                message: format!("missing required header '{header}'"),
+            });
+        }
+    }
+
+    let mut site_lines = std::collections::BTreeMap::<String, usize>::new();
+    for (line_idx, line) in lines {
+        if line.trim().is_empty() {
+            continue;
+        }
+        let line_number = line_idx + 1;
+        let fields = match parse_csv_line(line) {
+            Ok(fields) => fields,
+            Err(message) => {
+                diagnostics.push(CsvDiagnostic {
+                    severity: "error".to_string(),
+                    line: line_number,
+                    field: "".to_string(),
+                    message,
+                });
+                continue;
+            }
+        };
+
+        for header in [
+            "site_id",
+            "territory_id",
+            "demand",
+            "revenue",
+            "latitude",
+            "longitude",
+        ] {
+            if header_map.contains_key(header) && csv_field(&fields, &header_map, header).is_empty()
+            {
+                diagnostics.push(CsvDiagnostic {
+                    severity: "error".to_string(),
+                    line: line_number,
+                    field: header.to_string(),
+                    message: format!("field '{header}' cannot be empty"),
+                });
+            }
+        }
+
+        let site_id = csv_field(&fields, &header_map, "site_id").trim();
+        if !site_id.is_empty() {
+            if let Some(first_line) = site_lines.insert(site_id.to_string(), line_number) {
+                diagnostics.push(CsvDiagnostic {
+                    severity: "error".to_string(),
+                    line: line_number,
+                    field: "site_id".to_string(),
+                    message: format!(
+                        "duplicate site_id '{site_id}' first seen on line {first_line}"
+                    ),
+                });
+            }
+        }
+
+        for header in ["demand", "revenue", "latitude", "longitude"] {
+            let value = csv_field(&fields, &header_map, header).trim();
+            if !value.is_empty() && value.parse::<f64>().is_err() {
+                diagnostics.push(CsvDiagnostic {
+                    severity: "error".to_string(),
+                    line: line_number,
+                    field: header.to_string(),
+                    message: format!("field '{header}' must be a number"),
+                });
+            }
+        }
+
+        diagnose_coordinate(
+            &mut diagnostics,
+            &fields,
+            &header_map,
+            line_number,
+            "latitude",
+            -90.0,
+            90.0,
+        );
+        diagnose_coordinate(
+            &mut diagnostics,
+            &fields,
+            &header_map,
+            line_number,
+            "longitude",
+            -180.0,
+            180.0,
+        );
+    }
+    diagnostics
+}
+
 pub fn parse_sites_csv(input: &str) -> Result<Vec<Site>, CsvIntakeError> {
     let mut lines = input.lines().enumerate();
     let Some((header_idx, header_line)) = lines.find(|(_, line)| !line.trim().is_empty()) else {
@@ -709,6 +850,29 @@ fn parse_f64(value: &str, line: usize, field: &str) -> Result<f64, CsvIntakeErro
         line,
         message: format!("field '{field}' must be a number"),
     })
+}
+
+fn diagnose_coordinate(
+    diagnostics: &mut Vec<CsvDiagnostic>,
+    fields: &[String],
+    header_map: &std::collections::BTreeMap<String, usize>,
+    line: usize,
+    field: &str,
+    min: f64,
+    max: f64,
+) {
+    let value = csv_field(fields, header_map, field).trim();
+    let Ok(value) = value.parse::<f64>() else {
+        return;
+    };
+    if !(min..=max).contains(&value) {
+        diagnostics.push(CsvDiagnostic {
+            severity: "warning".to_string(),
+            line,
+            field: field.to_string(),
+            message: format!("field '{field}' is outside expected range {min}..{max}"),
+        });
+    }
 }
 
 fn csv_field<'a>(
@@ -937,6 +1101,33 @@ mod tests {
         assert_eq!(comparison.territory_deltas[0].territory_id, "north");
         assert_eq!(comparison.territory_deltas[0].site_count_delta, -1);
         near(comparison.territory_deltas[1].demand_delta, 9.0);
+    }
+
+    #[test]
+    fn diagnoses_messy_territory_csv_with_row_context() {
+        let diagnostics = diagnose_territories_csv(
+            "territory_id,site_id,demand,revenue,latitude,longitude\n\
+north,N-001,12,120000,47.62,-122.35\n\
+north,N-001,nope,90000,147.67,-122.31\n\
+south,,10,95000,47.46,-222.33\n",
+        );
+
+        assert_eq!(diagnostics.len(), 5);
+        assert!(diagnostics.iter().any(|diagnostic| {
+            diagnostic.line == 3
+                && diagnostic.field == "site_id"
+                && diagnostic.message.contains("duplicate")
+        }));
+        assert!(diagnostics.iter().any(|diagnostic| {
+            diagnostic.line == 3
+                && diagnostic.field == "demand"
+                && diagnostic.message.contains("number")
+        }));
+        assert!(diagnostics.iter().any(|diagnostic| {
+            diagnostic.line == 4
+                && diagnostic.field == "longitude"
+                && diagnostic.severity == "warning"
+        }));
     }
 
     #[test]
