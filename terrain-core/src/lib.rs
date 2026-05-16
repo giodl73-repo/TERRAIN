@@ -59,6 +59,14 @@ pub struct ScenarioComparison {
 }
 
 #[derive(Debug, Clone, PartialEq)]
+pub struct CompactnessException {
+    pub territory_id: String,
+    pub site_count: usize,
+    pub max_radius_degrees: f64,
+    pub threshold_degrees: f64,
+}
+
+#[derive(Debug, Clone, PartialEq)]
 pub struct TerritoryVisualOptions {
     pub width: u32,
     pub height: u32,
@@ -277,6 +285,23 @@ pub fn compare_territory_plans(
         proposed: proposed_audit,
         territory_deltas,
     }
+}
+
+pub fn compactness_exceptions(
+    territories: &[Territory],
+    threshold_degrees: f64,
+) -> Vec<CompactnessException> {
+    territories
+        .iter()
+        .map(summarize_territory)
+        .filter(|summary| summary.max_radius_degrees > threshold_degrees)
+        .map(|summary| CompactnessException {
+            territory_id: summary.territory_id,
+            site_count: summary.site_count,
+            max_radius_degrees: summary.max_radius_degrees,
+            threshold_degrees,
+        })
+        .collect()
 }
 
 pub fn render_territory_svg(territories: &[Territory], options: &TerritoryVisualOptions) -> String {
@@ -1101,6 +1126,16 @@ mod tests {
         assert_eq!(comparison.territory_deltas[0].territory_id, "north");
         assert_eq!(comparison.territory_deltas[0].site_count_delta, -1);
         near(comparison.territory_deltas[1].demand_delta, 9.0);
+    }
+
+    #[test]
+    fn reports_compactness_exceptions() {
+        let exceptions = compactness_exceptions(&sample_territories(), 0.06);
+
+        assert_eq!(exceptions.len(), 1);
+        assert_eq!(exceptions[0].territory_id, "south");
+        assert_eq!(exceptions[0].site_count, 3);
+        assert!(exceptions[0].max_radius_degrees > exceptions[0].threshold_degrees);
     }
 
     #[test]

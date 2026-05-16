@@ -1,8 +1,8 @@
 use terrain_core::{
-    TerritoryVisualOptions, audit_territories, compare_territory_plans, diagnose_territories_csv,
-    parse_sites_csv, parse_territories_csv, partition_sites, render_territory_geojson,
-    render_territory_svg, sample_proposed_territories_csv, sample_sites_csv, sample_territories,
-    sample_territories_csv,
+    TerritoryVisualOptions, audit_territories, compactness_exceptions, compare_territory_plans,
+    diagnose_territories_csv, parse_sites_csv, parse_territories_csv, partition_sites,
+    render_territory_geojson, render_territory_svg, sample_proposed_territories_csv,
+    sample_sites_csv, sample_territories, sample_territories_csv,
 };
 
 fn main() {
@@ -25,6 +25,7 @@ fn main() {
         "audit-csv" => run_csv_command(args.get(1), print_audit_for_csv),
         "diagnose-csv" => run_csv_command(args.get(1), print_diagnostics_for_csv),
         "compare-csv" => run_compare_command(args.get(1), args.get(2)),
+        "compactness-csv" => run_compactness_command(args.get(1), args.get(2)),
         "svg-csv" => run_csv_command(args.get(1), print_svg_for_csv),
         "geojson-csv" => run_csv_command(args.get(1), print_geojson_for_csv),
         "partition-csv" => run_partition_command(args.get(1), args.get(2), print_partition_audit),
@@ -53,6 +54,7 @@ fn print_help() {
     println!("  audit-csv PATH Audit a territory CSV file");
     println!("  diagnose-csv PATH Report territory CSV intake diagnostics");
     println!("  compare-csv BASELINE PROPOSED Compare two territory CSV plans");
+    println!("  compactness-csv PATH THRESHOLD Report max-radius compactness exceptions");
     println!("  svg-csv PATH   Emit a data-bound SVG split from a CSV file");
     println!("  geojson-csv PATH Emit a data-bound GeoJSON split from a CSV file");
     println!("  partition-csv PATH COUNT Audit a deterministic partition from site rows");
@@ -268,6 +270,44 @@ fn run_compare_command(baseline_path: Option<&String>, proposed_path: Option<&St
             delta.revenue_delta,
             delta.baseline_demand,
             delta.proposed_demand,
+        );
+    }
+}
+
+fn run_compactness_command(path: Option<&String>, threshold: Option<&String>) {
+    let Some(threshold) = threshold else {
+        eprintln!("missing compactness threshold");
+        print_help();
+        std::process::exit(2);
+    };
+    let threshold = threshold.parse::<f64>().unwrap_or_else(|_| {
+        eprintln!("compactness threshold must be a number");
+        std::process::exit(2);
+    });
+    let csv = read_csv_file(path);
+    let territories = parse_territories_csv(&csv).unwrap_or_else(|error| {
+        eprintln!("{error}");
+        std::process::exit(1);
+    });
+    let exceptions = compactness_exceptions(&territories, threshold);
+    println!(
+        "status={} exception_count={} threshold_degrees={:.3}",
+        if exceptions.is_empty() {
+            "pass"
+        } else {
+            "review"
+        },
+        exceptions.len(),
+        threshold,
+    );
+    println!("territory,sites,max_radius_degrees,threshold_degrees");
+    for exception in exceptions {
+        println!(
+            "{},{},{:.6},{:.6}",
+            exception.territory_id,
+            exception.site_count,
+            exception.max_radius_degrees,
+            exception.threshold_degrees,
         );
     }
 }

@@ -18,6 +18,7 @@ cargo run -p terrain-cli -- sample-proposed-csv > sample-territories-proposed.cs
 cargo run -p terrain-cli -- audit-csv sample-territories.csv
 cargo run -p terrain-cli -- diagnose-csv sample-territories.csv
 cargo run -p terrain-cli -- compare-csv sample-territories.csv sample-territories-proposed.csv
+cargo run -p terrain-cli -- compactness-csv sample-territories.csv 0.06
 cargo run -p terrain-cli -- svg-csv sample-territories.csv > terrain-split.svg
 cargo run -p terrain-cli -- geojson-csv sample-territories.csv > terrain-split.geojson
 cargo run -p terrain-cli -- sample-sites-csv > sample-sites.csv
@@ -46,6 +47,10 @@ site count, demand, and revenue deltas.
 The diagnostics command checks messy territory CSV exports before parsing them
 into a plan. It reports severity, line, field, and message for missing values,
 duplicate site IDs, invalid numbers, and suspicious coordinates.
+
+The compactness command reports territories whose max radius from centroid is
+above a review threshold, giving early travel-proxy exceptions before full graph
+or route kernels are adopted.
 
 ## Product thesis
 

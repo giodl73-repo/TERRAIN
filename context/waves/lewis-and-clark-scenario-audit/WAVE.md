@@ -17,7 +17,7 @@ hurts balance, workload, revenue, and reviewability.
 |------:|-------|--------|---------|
 | 01 | Scenario comparison | done | Compare baseline and proposed territory CSV plans with audit and per-territory deltas. |
 | 02 | Intake diagnostics | done | Report missing fields, duplicate sites, invalid numbers, and suspicious coordinates without losing row context. |
-| 03 | Compactness checks | pending | Surface simple compactness/travel-proxy exceptions for scenario review. |
+| 03 | Compactness checks | done | Surface simple max-radius compactness/travel-proxy exceptions for scenario review. |
 | 04 | Scenario packet | pending | Export audit, deltas, SVG, and GeoJSON as a reviewable operations packet. |
 
 ## Success criteria
