@@ -205,6 +205,10 @@ impl Territory {
     }
 }
 
+pub fn dashboard_schema_json() -> &'static str {
+    r#"{"schema_id":"terrain.dashboard.v1","exports":[{"name":"territory","fields":["territory_id","territory_label","site_count","demand","revenue","capacity","overload","owner_count","assignee_count","assignees","centroid_latitude","centroid_longitude","max_radius_degrees"]},{"name":"site","fields":["site_id","territory_id","territory_label","demand","revenue","capacity","overload","owner_count","assignee_count","assignees","latitude","longitude"]},{"name":"scenario_delta","fields":["territory_id","baseline_site_count","proposed_site_count","site_count_delta","baseline_demand","proposed_demand","demand_delta","baseline_revenue","proposed_revenue","revenue_delta"]},{"name":"movement","fields":["site_id","baseline_territory_id","proposed_territory_id","movement_kind","demand","revenue"]},{"name":"capacity_exception","fields":["territory_id","demand","capacity","overload","assignees"]}]}"#
+}
+
 pub fn summarize_territory(territory: &Territory) -> TerritorySummary {
     let site_count = territory.sites.len();
     let demand = territory.sites.iter().map(|site| site.demand).sum();
@@ -1405,6 +1409,16 @@ mod tests {
         assert_eq!(summary.assignee_count, 0);
         near(summary.centroid_latitude, 2.0);
         near(summary.centroid_longitude, 4.0);
+    }
+
+    #[test]
+    fn exposes_dashboard_schema_contract() {
+        let schema = dashboard_schema_json();
+
+        assert!(schema.contains("\"schema_id\":\"terrain.dashboard.v1\""));
+        assert!(schema.contains("\"territory_id\""));
+        assert!(schema.contains("\"site_id\""));
+        assert!(schema.contains("\"capacity_exception\""));
     }
 
     #[test]

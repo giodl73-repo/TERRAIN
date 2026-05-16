@@ -11,6 +11,7 @@ territories, then explain balance, compactness, and workload gaps.
 
 ```powershell
 cargo run -p terrain-cli -- sample-audit
+cargo run -p terrain-cli -- schema
 cargo run -p terrain-cli -- sample-svg > terrain-split.svg
 cargo run -p terrain-cli -- sample-geojson > terrain-split.geojson
 cargo run -p terrain-cli -- sample-csv > sample-territories.csv
@@ -115,6 +116,8 @@ their own dashboards instead of screenshotting the app.
 
 TERRAIN keeps territory policy local while tracking reusable candidates for
 RLINE and METIS-CORE in `docs\shared-kernel-inventory.md`.
+Dashboard bindings are tracked in `docs\dashboard-schema.md` and emitted with
+`cargo run -p terrain-cli -- schema`.
 
 ## Non-goals
 
