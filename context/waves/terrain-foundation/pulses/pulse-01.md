@@ -11,12 +11,14 @@ Create the repository foundation and first tested contract.
 - Add wave and pulse scaffolding.
 - Add TERRAIN-specific skills.
 - Add first balance-audit library contract and sample CLI command.
+- Add sample data-bound SVG split output for dashboard embedding.
 
 ## Validation
 
 - `cargo fmt --check`
 - `cargo test --workspace`
 - `cargo run -p terrain-cli -- sample-audit`
+- `cargo run -p terrain-cli -- sample-svg`
 - `git diff --check`
 
 ## Status

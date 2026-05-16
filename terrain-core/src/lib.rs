@@ -10,6 +10,8 @@ pub struct Site {
 #[derive(Debug, Clone, PartialEq)]
 pub struct Territory {
     pub id: String,
+    pub label: String,
+    pub assignees: Vec<String>,
     pub sites: Vec<Site>,
 }
 
@@ -19,6 +21,8 @@ pub struct TerritorySummary {
     pub site_count: usize,
     pub demand: f64,
     pub revenue: f64,
+    pub assignee_count: usize,
+    pub assignees: Vec<String>,
     pub centroid_latitude: f64,
     pub centroid_longitude: f64,
     pub max_radius_degrees: f64,
@@ -31,6 +35,23 @@ pub struct BalanceAudit {
     pub revenue_spread_ratio: f64,
     pub max_radius_degrees: f64,
     pub passes: bool,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct TerritoryVisualOptions {
+    pub width: u32,
+    pub height: u32,
+    pub title: String,
+}
+
+impl Default for TerritoryVisualOptions {
+    fn default() -> Self {
+        Self {
+            width: 960,
+            height: 640,
+            title: "TERRAIN territory split".to_string(),
+        }
+    }
 }
 
 impl Site {
@@ -53,10 +74,26 @@ impl Site {
 
 impl Territory {
     pub fn new(id: impl Into<String>, sites: Vec<Site>) -> Self {
+        let id = id.into();
         Self {
-            id: id.into(),
+            label: id.clone(),
+            id,
+            assignees: Vec::new(),
             sites,
         }
+    }
+
+    pub fn with_label(mut self, label: impl Into<String>) -> Self {
+        self.label = label.into();
+        self
+    }
+
+    pub fn with_assignees(
+        mut self,
+        assignees: impl IntoIterator<Item = impl Into<String>>,
+    ) -> Self {
+        self.assignees = assignees.into_iter().map(Into::into).collect();
+        self
     }
 }
 
@@ -84,6 +121,8 @@ pub fn summarize_territory(territory: &Territory) -> TerritorySummary {
         site_count,
         demand,
         revenue,
+        assignee_count: territory.assignees.len(),
+        assignees: territory.assignees.clone(),
         centroid_latitude,
         centroid_longitude,
         max_radius_degrees,
@@ -117,6 +156,97 @@ pub fn audit_territories(
     }
 }
 
+pub fn render_territory_svg(territories: &[Territory], options: &TerritoryVisualOptions) -> String {
+    let bounds = bounds(territories);
+    let palette = [
+        "#2563eb", "#16a34a", "#f97316", "#7c3aed", "#dc2626", "#0891b2",
+    ];
+    let summaries = territories
+        .iter()
+        .map(summarize_territory)
+        .collect::<Vec<_>>();
+    let mut svg = String::new();
+    svg.push_str(&format!(
+        r#"<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {} {}" role="img" aria-labelledby="terrain-title terrain-desc">"#,
+        options.width, options.height
+    ));
+    svg.push_str(&format!(
+        "<title id=\"terrain-title\">{}</title>",
+        escape_xml(&options.title)
+    ));
+    svg.push_str("<desc id=\"terrain-desc\">Data-bound territory split with site, demand, revenue, assignee, and centroid metadata for dashboard embedding.</desc>");
+    svg.push_str(r##"<rect width="100%" height="100%" fill="#f8fafc"/>"##);
+    svg.push_str(r#"<g transform="translate(28 64)">"#);
+    svg.push_str(r##"<text x="0" y="-28" font-family="Inter,Segoe UI,sans-serif" font-size="28" font-weight="700" fill="#0f172a">TERRAIN split preview</text>"##);
+    svg.push_str(r##"<text x="0" y="-6" font-family="Inter,Segoe UI,sans-serif" font-size="13" fill="#475569">Every territory and site carries data-* bindings for dashboard joins.</text>"##);
+
+    for (idx, territory) in territories.iter().enumerate() {
+        let color = palette[idx % palette.len()];
+        let summary = &summaries[idx];
+        svg.push_str(&format!(
+            r#"<g class="territory" data-territory-id="{}" data-site-count="{}" data-demand="{:.2}" data-revenue="{:.2}" data-assignee-count="{}" data-assignees="{}">"#,
+            escape_attr(&territory.id),
+            summary.site_count,
+            summary.demand,
+            summary.revenue,
+            summary.assignee_count,
+            escape_attr(&summary.assignees.join(";"))
+        ));
+        for site in &territory.sites {
+            let (x, y) = project(
+                site.latitude,
+                site.longitude,
+                &bounds,
+                options.width,
+                options.height,
+            );
+            svg.push_str(&format!(
+                r##"<circle class="site" data-site-id="{}" data-territory-id="{}" data-demand="{:.2}" data-revenue="{:.2}" cx="{:.1}" cy="{:.1}" r="9" fill="{}" fill-opacity="0.82" stroke="#ffffff" stroke-width="2"/>"##,
+                escape_attr(&site.id),
+                escape_attr(&territory.id),
+                site.demand,
+                site.revenue,
+                x,
+                y,
+                color
+            ));
+        }
+        let (cx, cy) = project(
+            summary.centroid_latitude,
+            summary.centroid_longitude,
+            &bounds,
+            options.width,
+            options.height,
+        );
+        let label_x = (cx + 28.0).min(options.width as f64 - 216.0);
+        let card_x = (cx + 14.0).min(options.width as f64 - 230.0);
+        let card_y = (cy - 32.0).max(0.0);
+        svg.push_str(&format!(
+            r##"<rect x="{card_x:.1}" y="{card_y:.1}" width="188" height="64" rx="12" fill="#ffffff" stroke="{color}" stroke-width="2"/>"##
+        ));
+        svg.push_str(&format!(
+            r##"<text x="{label_x:.1}" y="{:.1}" font-family="Inter,Segoe UI,sans-serif" font-size="14" font-weight="700" fill="#0f172a">{}</text>"##,
+            (cy - 8.0).max(24.0),
+            escape_xml(&territory.label)
+        ));
+        svg.push_str(&format!(
+            r##"<text x="{label_x:.1}" y="{:.1}" font-family="Inter,Segoe UI,sans-serif" font-size="12" fill="#334155">{} sites - {} people - ${:.0}k</text>"##,
+            (cy + 12.0).max(44.0),
+            summary.site_count,
+            summary.assignee_count,
+            summary.revenue / 1000.0
+        ));
+        svg.push_str(&format!(
+            r##"<text x="{label_x:.1}" y="{:.1}" font-family="Inter,Segoe UI,sans-serif" font-size="11" fill="#64748b">{}</text>"##,
+            (cy + 30.0).max(62.0),
+            escape_xml(&summary.assignees.join(", "))
+        ));
+        svg.push_str("</g>");
+    }
+    svg.push_str("</g></svg>");
+    svg
+}
+
 pub fn sample_territories() -> Vec<Territory> {
     vec![
         Territory::new(
@@ -126,7 +256,9 @@ pub fn sample_territories() -> Vec<Territory> {
                 Site::new("N-002", 10.0, 90_000.0, 47.67, -122.31),
                 Site::new("N-003", 9.0, 80_000.0, 47.58, -122.29),
             ],
-        ),
+        )
+        .with_label("North field team")
+        .with_assignees(["Avery", "Morgan", "Sam"]),
         Territory::new(
             "south",
             vec![
@@ -134,7 +266,9 @@ pub fn sample_territories() -> Vec<Territory> {
                 Site::new("S-002", 10.0, 95_000.0, 47.46, -122.33),
                 Site::new("S-003", 10.0, 92_000.0, 47.53, -122.38),
             ],
-        ),
+        )
+        .with_label("South field team")
+        .with_assignees(["Jordan", "Riley"]),
     ]
 }
 
@@ -156,6 +290,58 @@ fn spread_ratio(values: impl Iterator<Item = f64>) -> f64 {
         return 0.0;
     }
     (max - min) / min
+}
+
+#[derive(Debug, Clone, Copy)]
+struct Bounds {
+    min_lat: f64,
+    max_lat: f64,
+    min_lon: f64,
+    max_lon: f64,
+}
+
+fn bounds(territories: &[Territory]) -> Bounds {
+    let mut bounds = Bounds {
+        min_lat: f64::INFINITY,
+        max_lat: f64::NEG_INFINITY,
+        min_lon: f64::INFINITY,
+        max_lon: f64::NEG_INFINITY,
+    };
+    for site in territories.iter().flat_map(|territory| &territory.sites) {
+        bounds.min_lat = bounds.min_lat.min(site.latitude);
+        bounds.max_lat = bounds.max_lat.max(site.latitude);
+        bounds.min_lon = bounds.min_lon.min(site.longitude);
+        bounds.max_lon = bounds.max_lon.max(site.longitude);
+    }
+    if !bounds.min_lat.is_finite() {
+        return Bounds {
+            min_lat: 0.0,
+            max_lat: 1.0,
+            min_lon: 0.0,
+            max_lon: 1.0,
+        };
+    }
+    bounds
+}
+
+fn project(lat: f64, lon: f64, bounds: &Bounds, width: u32, height: u32) -> (f64, f64) {
+    let pad = 56.0;
+    let span_lat = (bounds.max_lat - bounds.min_lat).max(0.000_001);
+    let span_lon = (bounds.max_lon - bounds.min_lon).max(0.000_001);
+    let x = pad + ((lon - bounds.min_lon) / span_lon) * (width as f64 - pad * 2.0);
+    let y = pad + ((bounds.max_lat - lat) / span_lat) * (height as f64 - pad * 2.0 - 64.0);
+    (x, y)
+}
+
+fn escape_xml(value: &str) -> String {
+    value
+        .replace('&', "&amp;")
+        .replace('<', "&lt;")
+        .replace('>', "&gt;")
+}
+
+fn escape_attr(value: &str) -> String {
+    escape_xml(value).replace('"', "&quot;")
 }
 
 #[cfg(test)]
@@ -182,6 +368,7 @@ mod tests {
         assert_eq!(summary.site_count, 2);
         near(summary.demand, 8.0);
         near(summary.revenue, 100.0);
+        assert_eq!(summary.assignee_count, 0);
         near(summary.centroid_latitude, 2.0);
         near(summary.centroid_longitude, 4.0);
     }
@@ -194,5 +381,15 @@ mod tests {
         near(audit.demand_spread_ratio, 0.0);
         assert!(audit.revenue_spread_ratio < 0.01);
         assert!(audit.passes);
+    }
+
+    #[test]
+    fn renders_data_bound_svg_for_dashboards() {
+        let svg = render_territory_svg(&sample_territories(), &TerritoryVisualOptions::default());
+
+        assert!(svg.contains("data-territory-id=\"north\""));
+        assert!(svg.contains("data-site-count=\"3\""));
+        assert!(svg.contains("data-assignee-count=\"3\""));
+        assert!(svg.contains("data-site-id=\"N-001\""));
     }
 }

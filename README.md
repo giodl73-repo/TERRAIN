@@ -11,22 +11,34 @@ territories, then explain balance, compactness, and workload gaps.
 
 ```powershell
 cargo run -p terrain-cli -- sample-audit
+cargo run -p terrain-cli -- sample-svg > terrain-split.svg
 ```
 
 The scaffold command runs a built-in fixture and prints a small territory
-balance audit.
+balance audit. The SVG command emits a dashboard-ready visual split where each
+territory and site carries stable `data-*` bindings for territory ID, site ID,
+demand, revenue, assigned people, assignee counts, and dashboard joins.
 
 ## Product thesis
 
 Most territory tools are either GIS-heavy dashboards or spreadsheets with
 manual assignment rules. TERRAIN should make the hard part local, fast, and
 auditable: graph construction, partitioning, compactness scoring, constraint
-sweeps, and scenario comparison.
+sweeps, scenario comparison, and dashboard-ready split visuals.
+
+## Visual artifacts
+
+TERRAIN should produce attractive, embeddable visual territory splits, not just
+tables. The target artifacts are SVG first, then GeoJSON/TopoJSON once real
+geography lands. Visual marks must be data-bound so users can reuse them in
+their own dashboards instead of screenshotting the app.
 
 ## Non-goals
 
 - TERRAIN does not own turn-by-turn routing.
 - TERRAIN does not replace a CRM, dispatch system, or GIS.
+- TERRAIN does not trap users in a proprietary dashboard; exports should be
+  reusable in downstream BI and reporting tools.
 - TERRAIN does not put customer-specific policy into shared kernels such as
   RLINE or METIS-CORE.
 

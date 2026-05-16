@@ -1,4 +1,4 @@
-# TERRAIN — Claude Code Context
+# TERRAIN - Claude Code Context
 
 Project: TERRAIN balanced territory planner.
 
@@ -16,6 +16,7 @@ Working directory: `C:\src\TERRAIN`.
 cargo fmt --check
 cargo test --workspace
 cargo run -p terrain-cli -- sample-audit
+cargo run -p terrain-cli -- sample-svg
 git diff --check
 ```
 
