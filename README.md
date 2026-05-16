@@ -12,12 +12,18 @@ territories, then explain balance, compactness, and workload gaps.
 ```powershell
 cargo run -p terrain-cli -- sample-audit
 cargo run -p terrain-cli -- sample-svg > terrain-split.svg
+cargo run -p terrain-cli -- sample-csv > sample-territories.csv
+cargo run -p terrain-cli -- audit-csv sample-territories.csv
+cargo run -p terrain-cli -- svg-csv sample-territories.csv > terrain-split.svg
 ```
 
 The scaffold command runs a built-in fixture and prints a small territory
-balance audit. The SVG command emits a dashboard-ready visual split where each
-territory and site carries stable `data-*` bindings for territory ID, site ID,
-demand, revenue, assigned people, assignee counts, and dashboard joins.
+balance audit. The CSV commands prove the first intake contract:
+`territory_id`, `territory_label`, `assignees`, `site_id`, `demand`,
+`revenue`, `latitude`, and `longitude`. The SVG commands emit a
+dashboard-ready visual split where each territory and site carries stable
+`data-*` bindings for territory ID, site ID, demand, revenue, assigned people,
+assignee counts, and dashboard joins.
 
 ## Product thesis
 

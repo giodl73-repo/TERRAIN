@@ -44,6 +44,24 @@ pub struct TerritoryVisualOptions {
     pub title: String,
 }
 
+#[derive(Debug, Clone, PartialEq)]
+pub struct CsvIntakeError {
+    pub line: usize,
+    pub message: String,
+}
+
+impl std::fmt::Display for CsvIntakeError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "CSV intake error on line {}: {}",
+            self.line, self.message
+        )
+    }
+}
+
+impl std::error::Error for CsvIntakeError {}
+
 impl Default for TerritoryVisualOptions {
     fn default() -> Self {
         Self {
@@ -247,6 +265,132 @@ pub fn render_territory_svg(territories: &[Territory], options: &TerritoryVisual
     svg
 }
 
+pub fn parse_territories_csv(input: &str) -> Result<Vec<Territory>, CsvIntakeError> {
+    let mut lines = input.lines().enumerate();
+    let Some((header_idx, header_line)) = lines.find(|(_, line)| !line.trim().is_empty()) else {
+        return Err(CsvIntakeError {
+            line: 1,
+            message: "missing header row".to_string(),
+        });
+    };
+    let headers = parse_csv_line(header_line).map_err(|message| CsvIntakeError {
+        line: header_idx + 1,
+        message,
+    })?;
+    let header_map = headers
+        .iter()
+        .enumerate()
+        .map(|(idx, header)| (header.trim().to_ascii_lowercase(), idx))
+        .collect::<std::collections::BTreeMap<_, _>>();
+    let required = [
+        "site_id",
+        "territory_id",
+        "demand",
+        "revenue",
+        "latitude",
+        "longitude",
+    ];
+    for header in required {
+        if !header_map.contains_key(header) {
+            return Err(CsvIntakeError {
+                line: header_idx + 1,
+                message: format!("missing required header '{header}'"),
+            });
+        }
+    }
+
+    let mut order = Vec::<String>::new();
+    let mut territories = std::collections::BTreeMap::<String, Territory>::new();
+    for (line_idx, line) in lines {
+        if line.trim().is_empty() {
+            continue;
+        }
+        let fields = parse_csv_line(line).map_err(|message| CsvIntakeError {
+            line: line_idx + 1,
+            message,
+        })?;
+        let territory_id = csv_field(&fields, &header_map, "territory_id")
+            .trim()
+            .to_string();
+        if territory_id.is_empty() {
+            return Err(CsvIntakeError {
+                line: line_idx + 1,
+                message: "territory_id cannot be empty".to_string(),
+            });
+        }
+        let site_id = csv_field(&fields, &header_map, "site_id")
+            .trim()
+            .to_string();
+        if site_id.is_empty() {
+            return Err(CsvIntakeError {
+                line: line_idx + 1,
+                message: "site_id cannot be empty".to_string(),
+            });
+        }
+        let site = Site::new(
+            site_id,
+            parse_f64(
+                csv_field(&fields, &header_map, "demand"),
+                line_idx + 1,
+                "demand",
+            )?,
+            parse_f64(
+                csv_field(&fields, &header_map, "revenue"),
+                line_idx + 1,
+                "revenue",
+            )?,
+            parse_f64(
+                csv_field(&fields, &header_map, "latitude"),
+                line_idx + 1,
+                "latitude",
+            )?,
+            parse_f64(
+                csv_field(&fields, &header_map, "longitude"),
+                line_idx + 1,
+                "longitude",
+            )?,
+        );
+        if !territories.contains_key(&territory_id) {
+            order.push(territory_id.clone());
+            let label = optional_csv_field(&fields, &header_map, "territory_label")
+                .filter(|label| !label.trim().is_empty())
+                .unwrap_or(&territory_id)
+                .trim()
+                .to_string();
+            territories.insert(
+                territory_id.clone(),
+                Territory::new(&territory_id, Vec::new()).with_label(label),
+            );
+        }
+        let territory = territories
+            .get_mut(&territory_id)
+            .expect("territory was inserted above");
+        territory.sites.push(site);
+        if let Some(assignees) = optional_csv_field(&fields, &header_map, "assignees") {
+            for assignee in split_assignees(assignees) {
+                if !territory.assignees.contains(&assignee) {
+                    territory.assignees.push(assignee);
+                }
+            }
+        }
+    }
+
+    Ok(order
+        .into_iter()
+        .filter_map(|id| territories.remove(&id))
+        .collect())
+}
+
+pub fn sample_territories_csv() -> &'static str {
+    "territory_id,territory_label,assignees,site_id,demand,revenue,latitude,longitude\n\
+north,North field team,Avery;Morgan;Sam,N-001,12,120000,47.62,-122.35\n\
+north,North field team,Avery;Morgan;Sam,N-002,10,90000,47.67,-122.31\n\
+north,North field team,Avery;Morgan;Sam,N-003,9,80000,47.58,-122.29\n\
+south,South field team,Jordan;Riley,S-001,11,105000,47.50,-122.27\n\
+south,South field team,Jordan;Riley,S-002,10,95000,47.46,-122.33\n\
+south,South field team,Jordan;Riley,S-003,10,92000,47.53,-122.38\n"
+}
+
 pub fn sample_territories() -> Vec<Territory> {
     vec![
         Territory::new(
@@ -270,6 +414,67 @@ pub fn sample_territories() -> Vec<Territory> {
         .with_label("South field team")
         .with_assignees(["Jordan", "Riley"]),
     ]
+}
+
+fn parse_f64(value: &str, line: usize, field: &str) -> Result<f64, CsvIntakeError> {
+    value.trim().parse::<f64>().map_err(|_| CsvIntakeError {
+        line,
+        message: format!("field '{field}' must be a number"),
+    })
+}
+
+fn csv_field<'a>(
+    fields: &'a [String],
+    header_map: &std::collections::BTreeMap<String, usize>,
+    header: &str,
+) -> &'a str {
+    optional_csv_field(fields, header_map, header).unwrap_or("")
+}
+
+fn optional_csv_field<'a>(
+    fields: &'a [String],
+    header_map: &std::collections::BTreeMap<String, usize>,
+    header: &str,
+) -> Option<&'a str> {
+    header_map
+        .get(header)
+        .and_then(|idx| fields.get(*idx))
+        .map(String::as_str)
+}
+
+fn split_assignees(value: &str) -> Vec<String> {
+    value
+        .split([';', '|'])
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .map(ToString::to_string)
+        .collect()
+}
+
+fn parse_csv_line(line: &str) -> Result<Vec<String>, String> {
+    let mut fields = Vec::new();
+    let mut field = String::new();
+    let mut chars = line.chars().peekable();
+    let mut quoted = false;
+    while let Some(ch) = chars.next() {
+        match ch {
+            '"' if quoted && chars.peek() == Some(&'"') => {
+                field.push('"');
+                chars.next();
+            }
+            '"' => quoted = !quoted,
+            ',' if !quoted => {
+                fields.push(field.trim().to_string());
+                field.clear();
+            }
+            _ => field.push(ch),
+        }
+    }
+    if quoted {
+        return Err("unterminated quoted field".to_string());
+    }
+    fields.push(field.trim().to_string());
+    Ok(fields)
 }
 
 fn mean(count: usize, values: impl Iterator<Item = f64>) -> f64 {
@@ -391,5 +596,28 @@ mod tests {
         assert!(svg.contains("data-site-count=\"3\""));
         assert!(svg.contains("data-assignee-count=\"3\""));
         assert!(svg.contains("data-site-id=\"N-001\""));
+    }
+
+    #[test]
+    fn parses_csv_into_territories_with_assignees() {
+        let territories = parse_territories_csv(sample_territories_csv()).expect("sample parses");
+
+        assert_eq!(territories.len(), 2);
+        assert_eq!(territories[0].id, "north");
+        assert_eq!(territories[0].label, "North field team");
+        assert_eq!(territories[0].sites.len(), 3);
+        assert_eq!(territories[0].assignees, ["Avery", "Morgan", "Sam"]);
+        assert_eq!(territories[1].assignees, ["Jordan", "Riley"]);
+    }
+
+    #[test]
+    fn csv_reports_line_numbers_for_bad_numbers() {
+        let error = parse_territories_csv(
+            "territory_id,site_id,demand,revenue,latitude,longitude\nnorth,N-001,nope,1,2,3\n",
+        )
+        .expect_err("bad demand should fail");
+
+        assert_eq!(error.line, 2);
+        assert!(error.message.contains("demand"));
     }
 }
