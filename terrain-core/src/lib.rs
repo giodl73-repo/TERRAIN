@@ -77,6 +77,13 @@ pub struct SiteMovement {
 }
 
 #[derive(Debug, Clone, PartialEq)]
+pub struct PartitionSweepResult {
+    pub target_territory_count: usize,
+    pub actual_territory_count: usize,
+    pub audit: BalanceAudit,
+}
+
+#[derive(Debug, Clone, PartialEq)]
 pub struct TerritoryVisualOptions {
     pub width: u32,
     pub height: u32,
@@ -865,6 +872,41 @@ pub fn partition_sites(
     Ok(territories)
 }
 
+pub fn partition_count_sweep(
+    sites: &[Site],
+    min_territories: usize,
+    max_territories: usize,
+    max_demand_spread_ratio: f64,
+    max_revenue_spread_ratio: f64,
+) -> Result<Vec<PartitionSweepResult>, PartitionError> {
+    if min_territories == 0 || max_territories == 0 {
+        return Err(PartitionError::ZeroTerritories);
+    }
+    if sites.is_empty() {
+        return Err(PartitionError::EmptySiteSet);
+    }
+    let (start, end) = if min_territories <= max_territories {
+        (min_territories, max_territories)
+    } else {
+        (max_territories, min_territories)
+    };
+    let mut results = Vec::new();
+    for target_territory_count in start..=end {
+        let territories = partition_sites(sites.iter().cloned(), target_territory_count)?;
+        let audit = audit_territories(
+            &territories,
+            max_demand_spread_ratio,
+            max_revenue_spread_ratio,
+        );
+        results.push(PartitionSweepResult {
+            target_territory_count,
+            actual_territory_count: territories.len(),
+            audit,
+        });
+    }
+    Ok(results)
+}
+
 pub fn sample_territories_csv() -> &'static str {
     "territory_id,territory_label,assignees,site_id,demand,revenue,latitude,longitude\n\
 north,North field team,Avery;Morgan;Sam,N-001,12,120000,47.62,-122.35\n\
@@ -1216,6 +1258,19 @@ mod tests {
         assert_eq!(moved.proposed_territory_id.as_deref(), Some("south"));
         assert_eq!(moved.movement_kind, "moved");
         near(moved.demand, 9.0);
+    }
+
+    #[test]
+    fn sweeps_partition_counts_deterministically() {
+        let sites = parse_sites_csv(sample_sites_csv()).expect("site sample parses");
+        let sweep = partition_count_sweep(&sites, 2, 3, 0.50, 0.50).expect("sweep works");
+
+        assert_eq!(sweep.len(), 2);
+        assert_eq!(sweep[0].target_territory_count, 2);
+        assert_eq!(sweep[0].actual_territory_count, 2);
+        assert!(sweep[0].audit.passes);
+        assert_eq!(sweep[1].target_territory_count, 3);
+        assert_eq!(sweep[1].actual_territory_count, 3);
     }
 
     #[test]

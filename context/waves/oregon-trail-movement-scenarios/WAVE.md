@@ -16,7 +16,7 @@ candidate splits are ready for human review.
 | Pulse | Title | Status | Outcome |
 |------:|-------|--------|---------|
 | 01 | Movement manifest | done | List site moves between baseline and proposed plans with stable IDs and before/after territories. |
-| 02 | Scenario count sweep | pending | Compare deterministic partitions across target territory counts. |
+| 02 | Scenario count sweep | done | Compare deterministic partitions across target territory counts. |
 | 03 | Exception packet | pending | Combine movement, balance, compactness, and diagnostics into a review packet. |
 | 04 | Field review export | pending | Emit a plain-language review artifact for field managers and dashboard builders. |
 

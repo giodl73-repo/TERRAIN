@@ -25,6 +25,7 @@ cargo run -p terrain-cli -- svg-csv sample-territories.csv > terrain-split.svg
 cargo run -p terrain-cli -- geojson-csv sample-territories.csv > terrain-split.geojson
 cargo run -p terrain-cli -- sample-sites-csv > sample-sites.csv
 cargo run -p terrain-cli -- partition-csv sample-sites.csv 2
+cargo run -p terrain-cli -- sweep-csv sample-sites.csv 2 3
 cargo run -p terrain-cli -- partition-svg-csv sample-sites.csv 2 > terrain-partition.svg
 cargo run -p terrain-cli -- partition-geojson-csv sample-sites.csv 2 > terrain-partition.geojson
 ```
@@ -61,6 +62,9 @@ dashboard handoff.
 The movement command starts the Oregon Trail phase by listing site-level moves
 between baseline and proposed plans with stable IDs, before/after territories,
 movement kind, demand, and revenue.
+
+The sweep command compares deterministic partitions across a target territory
+count range, producing audit rows that can be sorted or charted.
 
 ## Product thesis
 

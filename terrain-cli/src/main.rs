@@ -1,8 +1,9 @@
 use terrain_core::{
     TerritoryVisualOptions, audit_territories, compactness_exceptions, compare_territory_plans,
-    diagnose_territories_csv, parse_sites_csv, parse_territories_csv, partition_sites,
-    render_territory_geojson, render_territory_svg, sample_proposed_territories_csv,
-    sample_sites_csv, sample_territories, sample_territories_csv, site_movements,
+    diagnose_territories_csv, parse_sites_csv, parse_territories_csv, partition_count_sweep,
+    partition_sites, render_territory_geojson, render_territory_svg,
+    sample_proposed_territories_csv, sample_sites_csv, sample_territories, sample_territories_csv,
+    site_movements,
 };
 
 fn main() {
@@ -31,6 +32,7 @@ fn main() {
         "svg-csv" => run_csv_command(args.get(1), print_svg_for_csv),
         "geojson-csv" => run_csv_command(args.get(1), print_geojson_for_csv),
         "partition-csv" => run_partition_command(args.get(1), args.get(2), print_partition_audit),
+        "sweep-csv" => run_sweep_command(args.get(1), args.get(2), args.get(3)),
         "partition-svg-csv" => run_partition_command(args.get(1), args.get(2), print_partition_svg),
         "partition-geojson-csv" => {
             run_partition_command(args.get(1), args.get(2), print_partition_geojson)
@@ -62,6 +64,7 @@ fn print_help() {
     println!("  svg-csv PATH   Emit a data-bound SVG split from a CSV file");
     println!("  geojson-csv PATH Emit a data-bound GeoJSON split from a CSV file");
     println!("  partition-csv PATH COUNT Audit a deterministic partition from site rows");
+    println!("  sweep-csv PATH MIN MAX Compare deterministic partition counts");
     println!("  partition-svg-csv PATH COUNT Emit SVG for a deterministic partition");
     println!("  partition-geojson-csv PATH COUNT Emit GeoJSON for a deterministic partition");
 }
@@ -353,6 +356,55 @@ fn run_compactness_command(path: Option<&String>, threshold: Option<&String>) {
             exception.threshold_degrees,
         );
     }
+}
+
+fn run_sweep_command(
+    path: Option<&String>,
+    min_count: Option<&String>,
+    max_count: Option<&String>,
+) {
+    let min_count = parse_count_arg(min_count, "missing minimum territory count");
+    let max_count = parse_count_arg(max_count, "missing maximum territory count");
+    let csv = read_csv_file(path);
+    let sites = parse_sites_csv(&csv).unwrap_or_else(|error| {
+        eprintln!("{error}");
+        std::process::exit(1);
+    });
+    let sweep =
+        partition_count_sweep(&sites, min_count, max_count, 0.50, 0.50).unwrap_or_else(|error| {
+            eprintln!("{error}");
+            std::process::exit(1);
+        });
+    println!(
+        "status=pass scenario_count={} min_count={} max_count={}",
+        sweep.len(),
+        min_count.min(max_count),
+        min_count.max(max_count),
+    );
+    println!("target_count,actual_count,passes,demand_spread,revenue_spread,max_radius_degrees");
+    for result in sweep {
+        println!(
+            "{},{},{},{:.3},{:.3},{:.3}",
+            result.target_territory_count,
+            result.actual_territory_count,
+            result.audit.passes,
+            result.audit.demand_spread_ratio,
+            result.audit.revenue_spread_ratio,
+            result.audit.max_radius_degrees,
+        );
+    }
+}
+
+fn parse_count_arg(value: Option<&String>, missing_message: &str) -> usize {
+    let Some(value) = value else {
+        eprintln!("{missing_message}");
+        print_help();
+        std::process::exit(2);
+    };
+    value.parse::<usize>().unwrap_or_else(|_| {
+        eprintln!("territory count must be a positive integer");
+        std::process::exit(2);
+    })
 }
 
 fn run_packet_command(
