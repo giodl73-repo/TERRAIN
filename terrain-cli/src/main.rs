@@ -26,6 +26,7 @@ fn main() {
         "diagnose-csv" => run_csv_command(args.get(1), print_diagnostics_for_csv),
         "compare-csv" => run_compare_command(args.get(1), args.get(2)),
         "compactness-csv" => run_compactness_command(args.get(1), args.get(2)),
+        "packet-csv" => run_packet_command(args.get(1), args.get(2), args.get(3)),
         "svg-csv" => run_csv_command(args.get(1), print_svg_for_csv),
         "geojson-csv" => run_csv_command(args.get(1), print_geojson_for_csv),
         "partition-csv" => run_partition_command(args.get(1), args.get(2), print_partition_audit),
@@ -55,6 +56,7 @@ fn print_help() {
     println!("  diagnose-csv PATH Report territory CSV intake diagnostics");
     println!("  compare-csv BASELINE PROPOSED Compare two territory CSV plans");
     println!("  compactness-csv PATH THRESHOLD Report max-radius compactness exceptions");
+    println!("  packet-csv BASELINE PROPOSED OUT_DIR Write a scenario review packet");
     println!("  svg-csv PATH   Emit a data-bound SVG split from a CSV file");
     println!("  geojson-csv PATH Emit a data-bound GeoJSON split from a CSV file");
     println!("  partition-csv PATH COUNT Audit a deterministic partition from site rows");
@@ -310,4 +312,113 @@ fn run_compactness_command(path: Option<&String>, threshold: Option<&String>) {
             exception.threshold_degrees,
         );
     }
+}
+
+fn run_packet_command(
+    baseline_path: Option<&String>,
+    proposed_path: Option<&String>,
+    output_dir: Option<&String>,
+) {
+    let Some(proposed_path) = proposed_path else {
+        eprintln!("missing proposed CSV path");
+        print_help();
+        std::process::exit(2);
+    };
+    let Some(output_dir) = output_dir else {
+        eprintln!("missing output directory");
+        print_help();
+        std::process::exit(2);
+    };
+    let baseline_csv = read_csv_file(baseline_path);
+    let proposed_csv = read_csv_file(Some(proposed_path));
+    let baseline = parse_territories_csv(&baseline_csv).unwrap_or_else(|error| {
+        eprintln!("baseline {error}");
+        std::process::exit(1);
+    });
+    let proposed = parse_territories_csv(&proposed_csv).unwrap_or_else(|error| {
+        eprintln!("proposed {error}");
+        std::process::exit(1);
+    });
+    let comparison = compare_territory_plans(&baseline, &proposed, 0.05, 0.05);
+    let output_dir = std::path::Path::new(output_dir);
+    std::fs::create_dir_all(output_dir).unwrap_or_else(|error| {
+        eprintln!("failed to create {}: {error}", output_dir.display());
+        std::process::exit(1);
+    });
+    write_packet_file(
+        output_dir,
+        "scenario-summary.csv",
+        &scenario_summary_csv(&comparison),
+    );
+    write_packet_file(
+        output_dir,
+        "territory-deltas.csv",
+        &territory_deltas_csv(&comparison),
+    );
+    write_packet_file(
+        output_dir,
+        "proposed.svg",
+        &render_territory_svg(&proposed, &TerritoryVisualOptions::default()),
+    );
+    write_packet_file(
+        output_dir,
+        "proposed.geojson",
+        &render_territory_geojson(&proposed),
+    );
+    println!(
+        "wrote scenario packet to {} with 4 files",
+        output_dir.display()
+    );
+}
+
+fn write_packet_file(output_dir: &std::path::Path, file_name: &str, contents: &str) {
+    let path = output_dir.join(file_name);
+    std::fs::write(&path, contents).unwrap_or_else(|error| {
+        eprintln!("failed to write {}: {error}", path.display());
+        std::process::exit(1);
+    });
+}
+
+fn scenario_summary_csv(comparison: &terrain_core::ScenarioComparison) -> String {
+    format!(
+        "metric,baseline,proposed,delta\n\
+passes,{},{},{}\n\
+demand_spread_ratio,{:.6},{:.6},{:.6}\n\
+revenue_spread_ratio,{:.6},{:.6},{:.6}\n\
+max_radius_degrees,{:.6},{:.6},{:.6}\n",
+        comparison.baseline.passes,
+        comparison.proposed.passes,
+        comparison.proposed.passes as i32 - comparison.baseline.passes as i32,
+        comparison.baseline.demand_spread_ratio,
+        comparison.proposed.demand_spread_ratio,
+        comparison.proposed.demand_spread_ratio - comparison.baseline.demand_spread_ratio,
+        comparison.baseline.revenue_spread_ratio,
+        comparison.proposed.revenue_spread_ratio,
+        comparison.proposed.revenue_spread_ratio - comparison.baseline.revenue_spread_ratio,
+        comparison.baseline.max_radius_degrees,
+        comparison.proposed.max_radius_degrees,
+        comparison.proposed.max_radius_degrees - comparison.baseline.max_radius_degrees,
+    )
+}
+
+fn territory_deltas_csv(comparison: &terrain_core::ScenarioComparison) -> String {
+    let mut csv = String::from(
+        "territory,baseline_sites,proposed_sites,site_count_delta,baseline_demand,proposed_demand,demand_delta,baseline_revenue,proposed_revenue,revenue_delta\n",
+    );
+    for delta in &comparison.territory_deltas {
+        csv.push_str(&format!(
+            "{},{},{},{},{:.1},{:.1},{:.1},{:.0},{:.0},{:.0}\n",
+            delta.territory_id,
+            delta.baseline_site_count,
+            delta.proposed_site_count,
+            delta.site_count_delta,
+            delta.baseline_demand,
+            delta.proposed_demand,
+            delta.demand_delta,
+            delta.baseline_revenue,
+            delta.proposed_revenue,
+            delta.revenue_delta,
+        ));
+    }
+    csv
 }
