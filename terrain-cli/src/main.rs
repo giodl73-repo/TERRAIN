@@ -1,7 +1,7 @@
 use terrain_core::{
     TerritoryVisualOptions, audit_territories, parse_sites_csv, parse_territories_csv,
-    partition_sites, render_territory_svg, sample_sites_csv, sample_territories,
-    sample_territories_csv,
+    partition_sites, render_territory_geojson, render_territory_svg, sample_sites_csv,
+    sample_territories, sample_territories_csv,
 };
 
 fn main() {
@@ -17,12 +17,17 @@ fn main() {
     match args.first().map(String::as_str).unwrap_or("sample-audit") {
         "sample-audit" => print_sample_audit(),
         "sample-svg" => print_sample_svg(),
+        "sample-geojson" => print_sample_geojson(),
         "sample-csv" => print_sample_csv(),
         "sample-sites-csv" => print_sample_sites_csv(),
         "audit-csv" => run_csv_command(args.get(1), print_audit_for_csv),
         "svg-csv" => run_csv_command(args.get(1), print_svg_for_csv),
+        "geojson-csv" => run_csv_command(args.get(1), print_geojson_for_csv),
         "partition-csv" => run_partition_command(args.get(1), args.get(2), print_partition_audit),
         "partition-svg-csv" => run_partition_command(args.get(1), args.get(2), print_partition_svg),
+        "partition-geojson-csv" => {
+            run_partition_command(args.get(1), args.get(2), print_partition_geojson)
+        }
         other => {
             eprintln!("unknown command: {other}");
             print_help();
@@ -37,12 +42,15 @@ fn print_help() {
     println!("Commands:");
     println!("  sample-audit   Run the built-in territory balance audit fixture");
     println!("  sample-svg     Emit a data-bound SVG territory split fixture");
+    println!("  sample-geojson Emit a data-bound GeoJSON territory split fixture");
     println!("  sample-csv     Emit the built-in CSV intake fixture");
     println!("  sample-sites-csv Emit the built-in unassigned site CSV fixture");
     println!("  audit-csv PATH Audit a territory CSV file");
     println!("  svg-csv PATH   Emit a data-bound SVG split from a CSV file");
+    println!("  geojson-csv PATH Emit a data-bound GeoJSON split from a CSV file");
     println!("  partition-csv PATH COUNT Audit a deterministic partition from site rows");
     println!("  partition-svg-csv PATH COUNT Emit SVG for a deterministic partition");
+    println!("  partition-geojson-csv PATH COUNT Emit GeoJSON for a deterministic partition");
 }
 
 fn print_sample_audit() {
@@ -87,6 +95,11 @@ fn print_sample_svg() {
     println!("{svg}");
 }
 
+fn print_sample_geojson() {
+    let geojson = render_territory_geojson(&sample_territories());
+    println!("{geojson}");
+}
+
 fn print_sample_csv() {
     print!("{}", sample_territories_csv());
 }
@@ -104,6 +117,15 @@ fn print_svg_for_csv(csv: &str) {
     println!("{svg}");
 }
 
+fn print_geojson_for_csv(csv: &str) {
+    let territories = parse_territories_csv(csv).unwrap_or_else(|error| {
+        eprintln!("{error}");
+        std::process::exit(1);
+    });
+    let geojson = render_territory_geojson(&territories);
+    println!("{geojson}");
+}
+
 fn print_partition_audit(csv: &str, target_count: usize) {
     let territories = partition_csv(csv, target_count);
     print_audit(&territories);
@@ -113,6 +135,12 @@ fn print_partition_svg(csv: &str, target_count: usize) {
     let territories = partition_csv(csv, target_count);
     let svg = render_territory_svg(&territories, &TerritoryVisualOptions::default());
     println!("{svg}");
+}
+
+fn print_partition_geojson(csv: &str, target_count: usize) {
+    let territories = partition_csv(csv, target_count);
+    let geojson = render_territory_geojson(&territories);
+    println!("{geojson}");
 }
 
 fn partition_csv(csv: &str, target_count: usize) -> Vec<terrain_core::Territory> {

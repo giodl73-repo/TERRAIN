@@ -282,6 +282,52 @@ pub fn render_territory_svg(territories: &[Territory], options: &TerritoryVisual
     svg
 }
 
+pub fn render_territory_geojson(territories: &[Territory]) -> String {
+    let summaries = territories
+        .iter()
+        .map(summarize_territory)
+        .collect::<Vec<_>>();
+    let mut features = Vec::new();
+
+    for (territory, summary) in territories.iter().zip(summaries.iter()) {
+        features.push(format!(
+            "{{\"type\":\"Feature\",\"geometry\":{{\"type\":\"Point\",\"coordinates\":[{:.6},{:.6}]}},\"properties\":{{\"kind\":\"territory\",\"territory_id\":\"{}\",\"territory_label\":\"{}\",\"site_count\":{},\"demand\":{:.2},\"revenue\":{:.2},\"assignee_count\":{},\"assignees\":{},\"centroid_latitude\":{:.6},\"centroid_longitude\":{:.6},\"max_radius_degrees\":{:.6}}}}}",
+            summary.centroid_longitude,
+            summary.centroid_latitude,
+            escape_json(&territory.id),
+            escape_json(&territory.label),
+            summary.site_count,
+            summary.demand,
+            summary.revenue,
+            summary.assignee_count,
+            json_string_array(&summary.assignees),
+            summary.centroid_latitude,
+            summary.centroid_longitude,
+            summary.max_radius_degrees,
+        ));
+
+        for site in &territory.sites {
+            features.push(format!(
+                "{{\"type\":\"Feature\",\"geometry\":{{\"type\":\"Point\",\"coordinates\":[{:.6},{:.6}]}},\"properties\":{{\"kind\":\"site\",\"territory_id\":\"{}\",\"territory_label\":\"{}\",\"site_id\":\"{}\",\"demand\":{:.2},\"revenue\":{:.2},\"assignee_count\":{},\"assignees\":{}}}}}",
+                site.longitude,
+                site.latitude,
+                escape_json(&territory.id),
+                escape_json(&territory.label),
+                escape_json(&site.id),
+                site.demand,
+                site.revenue,
+                summary.assignee_count,
+                json_string_array(&summary.assignees),
+            ));
+        }
+    }
+
+    format!(
+        "{{\"type\":\"FeatureCollection\",\"name\":\"terrain-territory-split\",\"features\":[{}]}}",
+        features.join(",")
+    )
+}
+
 pub fn parse_territories_csv(input: &str) -> Result<Vec<Territory>, CsvIntakeError> {
     let mut lines = input.lines().enumerate();
     let Some((header_idx, header_line)) = lines.find(|(_, line)| !line.trim().is_empty()) else {
@@ -701,6 +747,33 @@ fn escape_attr(value: &str) -> String {
     escape_xml(value).replace('"', "&quot;")
 }
 
+fn escape_json(value: &str) -> String {
+    let mut escaped = String::new();
+    for ch in value.chars() {
+        match ch {
+            '"' => escaped.push_str("\\\""),
+            '\\' => escaped.push_str("\\\\"),
+            '\n' => escaped.push_str("\\n"),
+            '\r' => escaped.push_str("\\r"),
+            '\t' => escaped.push_str("\\t"),
+            ch if ch.is_control() => escaped.push_str(&format!("\\u{:04x}", ch as u32)),
+            ch => escaped.push(ch),
+        }
+    }
+    escaped
+}
+
+fn json_string_array(values: &[String]) -> String {
+    format!(
+        "[{}]",
+        values
+            .iter()
+            .map(|value| format!("\"{}\"", escape_json(value)))
+            .collect::<Vec<_>>()
+            .join(",")
+    )
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -748,6 +821,17 @@ mod tests {
         assert!(svg.contains("data-site-count=\"3\""));
         assert!(svg.contains("data-assignee-count=\"3\""));
         assert!(svg.contains("data-site-id=\"N-001\""));
+    }
+
+    #[test]
+    fn renders_data_bound_geojson_for_dashboards() {
+        let geojson = render_territory_geojson(&sample_territories());
+
+        assert!(geojson.contains("\"type\":\"FeatureCollection\""));
+        assert!(geojson.contains("\"kind\":\"territory\""));
+        assert!(geojson.contains("\"territory_id\":\"north\""));
+        assert!(geojson.contains("\"site_id\":\"N-001\""));
+        assert!(geojson.contains("\"assignees\":[\"Avery\",\"Morgan\",\"Sam\"]"));
     }
 
     #[test]

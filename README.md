@@ -12,18 +12,21 @@ territories, then explain balance, compactness, and workload gaps.
 ```powershell
 cargo run -p terrain-cli -- sample-audit
 cargo run -p terrain-cli -- sample-svg > terrain-split.svg
+cargo run -p terrain-cli -- sample-geojson > terrain-split.geojson
 cargo run -p terrain-cli -- sample-csv > sample-territories.csv
 cargo run -p terrain-cli -- audit-csv sample-territories.csv
 cargo run -p terrain-cli -- svg-csv sample-territories.csv > terrain-split.svg
+cargo run -p terrain-cli -- geojson-csv sample-territories.csv > terrain-split.geojson
 cargo run -p terrain-cli -- sample-sites-csv > sample-sites.csv
 cargo run -p terrain-cli -- partition-csv sample-sites.csv 2
 cargo run -p terrain-cli -- partition-svg-csv sample-sites.csv 2 > terrain-partition.svg
+cargo run -p terrain-cli -- partition-geojson-csv sample-sites.csv 2 > terrain-partition.geojson
 ```
 
 The scaffold command runs a built-in fixture and prints a small territory
 balance audit. The CSV commands prove the first intake contract:
 `territory_id`, `territory_label`, `assignees`, `site_id`, `demand`,
-`revenue`, `latitude`, and `longitude`. The SVG commands emit a
+`revenue`, `latitude`, and `longitude`. The SVG and GeoJSON commands emit a
 dashboard-ready visual split where each territory and site carries stable
 `data-*` bindings for territory ID, site ID, demand, revenue, assigned people,
 assignee counts, and dashboard joins.
@@ -31,7 +34,7 @@ assignee counts, and dashboard joins.
 The partition commands prove the first unassigned-site workflow: take site rows
 with `site_id`, `demand`, `revenue`, `latitude`, and `longitude`, create a
 deterministic initial split for the requested territory count, then audit or
-render the result with the same dashboard-ready bindings.
+render the result with the same dashboard-ready bindings in SVG or GeoJSON.
 
 ## Product thesis
 
