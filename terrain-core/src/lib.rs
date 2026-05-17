@@ -136,6 +136,25 @@ pub struct TerritoryEdgeFieldReview {
 }
 
 #[derive(Debug, Clone, PartialEq)]
+pub struct ManagerExceptionItem {
+    pub category: String,
+    pub severity: String,
+    pub territory_id: Option<String>,
+    pub site_id: Option<String>,
+    pub from_site_id: Option<String>,
+    pub to_site_id: Option<String>,
+    pub action: String,
+    pub message: String,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ManagerExceptionRegister {
+    pub status: String,
+    pub item_count: usize,
+    pub items: Vec<ManagerExceptionItem>,
+}
+
+#[derive(Debug, Clone, PartialEq)]
 pub struct AssigneeCapacity {
     pub assignee: String,
     pub team: String,
@@ -736,6 +755,140 @@ pub fn territory_edge_field_review(
         recommendation,
         summary,
         items,
+    }
+}
+
+pub fn manager_exception_register(
+    baseline: &[Territory],
+    proposed: &[Territory],
+    capacities: &[AssigneeCapacity],
+    edge_inputs: &[SiteGraphEdgeInput],
+) -> ManagerExceptionRegister {
+    let comparison = compare_territory_plans(baseline, proposed, 0.05, 0.05);
+    let mut items = Vec::new();
+
+    if !comparison.proposed.passes {
+        items.push(ManagerExceptionItem {
+            category: "balance".to_string(),
+            severity: "warning".to_string(),
+            territory_id: None,
+            site_id: None,
+            from_site_id: None,
+            to_site_id: None,
+            action: "review workload or revenue tradeoff".to_string(),
+            message: format!(
+                "Proposed plan is outside balance thresholds with demand spread {:.1}% and revenue spread {:.1}%.",
+                comparison.proposed.demand_spread_ratio * 100.0,
+                comparison.proposed.revenue_spread_ratio * 100.0,
+            ),
+        });
+    }
+
+    for movement in site_movements(baseline, proposed)
+        .into_iter()
+        .filter(|movement| movement.movement_kind != "unchanged")
+    {
+        items.push(ManagerExceptionItem {
+            category: "movement".to_string(),
+            severity: "info".to_string(),
+            territory_id: movement.proposed_territory_id.clone(),
+            site_id: Some(movement.site_id.clone()),
+            from_site_id: None,
+            to_site_id: None,
+            action: "confirm site reassignment".to_string(),
+            message: format!(
+                "Site {} moves from {} to {} with {:.1} demand and ${:.0} revenue.",
+                movement.site_id,
+                movement
+                    .baseline_territory_id
+                    .as_deref()
+                    .unwrap_or("unassigned"),
+                movement
+                    .proposed_territory_id
+                    .as_deref()
+                    .unwrap_or("unassigned"),
+                movement.demand,
+                movement.revenue,
+            ),
+        });
+    }
+
+    for exception in compactness_exceptions(proposed, 0.06) {
+        items.push(ManagerExceptionItem {
+            category: "compactness".to_string(),
+            severity: "warning".to_string(),
+            territory_id: Some(exception.territory_id.clone()),
+            site_id: None,
+            from_site_id: None,
+            to_site_id: None,
+            action: "review travel footprint".to_string(),
+            message: format!(
+                "Territory {} has max radius {:.3} degrees across {} sites.",
+                exception.territory_id, exception.max_radius_degrees, exception.site_count,
+            ),
+        });
+    }
+
+    for exception in capacity_exceptions(proposed, capacities) {
+        items.push(ManagerExceptionItem {
+            category: "capacity".to_string(),
+            severity: "warning".to_string(),
+            territory_id: Some(exception.territory_id.clone()),
+            site_id: None,
+            from_site_id: None,
+            to_site_id: None,
+            action: "rebalance workload or add capacity".to_string(),
+            message: format!(
+                "Territory {} has {:.1} demand against {:.1} capacity ({:.1} overload).",
+                exception.territory_id, exception.demand, exception.capacity, exception.overload,
+            ),
+        });
+    }
+
+    for item in territory_edge_field_review(proposed, edge_inputs).items {
+        items.push(ManagerExceptionItem {
+            category: "edge".to_string(),
+            severity: item.severity,
+            territory_id: item.territory_id,
+            site_id: None,
+            from_site_id: item.from_site_id,
+            to_site_id: item.to_site_id,
+            action: item.action,
+            message: item.message,
+        });
+    }
+
+    items.sort_by(|left, right| {
+        exception_severity_rank(&left.severity)
+            .cmp(&exception_severity_rank(&right.severity))
+            .then_with(|| left.category.cmp(&right.category))
+            .then_with(|| left.territory_id.cmp(&right.territory_id))
+            .then_with(|| left.site_id.cmp(&right.site_id))
+            .then_with(|| left.from_site_id.cmp(&right.from_site_id))
+            .then_with(|| left.to_site_id.cmp(&right.to_site_id))
+    });
+    let status = if items.iter().any(|item| item.severity == "error") {
+        "error"
+    } else if items.is_empty() {
+        "pass"
+    } else {
+        "review"
+    }
+    .to_string();
+
+    ManagerExceptionRegister {
+        status,
+        item_count: items.len(),
+        items,
+    }
+}
+
+fn exception_severity_rank(severity: &str) -> usize {
+    match severity {
+        "error" => 0,
+        "warning" => 1,
+        "info" => 2,
+        _ => 3,
     }
 }
 
@@ -3483,5 +3636,28 @@ south,,10,95000,47.46,-222.33\n",
 
         assert_eq!(review.recommendation, "fix edge inputs before field review");
         assert_eq!(review.items[0].action, "fix edge input site IDs");
+    }
+
+    #[test]
+    fn builds_manager_exception_register_across_review_surfaces() {
+        let baseline =
+            parse_territories_csv(sample_territories_csv()).expect("baseline territories parse");
+        let proposed = parse_territories_csv(sample_proposed_territories_csv())
+            .expect("proposed territories parse");
+        let capacities =
+            parse_assignee_capacity_csv(sample_assignee_capacity_csv()).expect("capacity parses");
+        let edges = parse_site_edges_csv(sample_site_edges_csv()).expect("edges parse");
+        let register = manager_exception_register(&baseline, &proposed, &capacities, &edges);
+        let categories = register
+            .items
+            .iter()
+            .map(|item| item.category.as_str())
+            .collect::<std::collections::BTreeSet<_>>();
+
+        assert_eq!(register.status, "review");
+        assert!(register.item_count > 0);
+        assert!(categories.contains("movement"));
+        assert!(categories.contains("capacity"));
+        assert!(categories.contains("edge"));
     }
 }

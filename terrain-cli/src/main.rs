@@ -2,11 +2,11 @@ use terrain_core::{
     TerritoryVisualOptions, audit_product_balance, audit_territories, capacity_exceptions,
     compactness_exceptions, compare_territory_plans, dashboard_schema_json,
     diagnose_territories_csv, graph_partition_report, integration_fixture_manifest_json,
-    metis_core_handoff, metis_core_handoff_with_edges, parse_assignee_capacity_csv,
-    parse_site_edges_csv, parse_sites_csv, parse_territories_csv, partition_count_sweep,
-    partition_sites, partition_sites_with_metis_core, partition_sites_with_metis_core_edges,
-    render_site_graph_geojson, render_site_graph_svg, render_territory_geojson,
-    render_territory_geojson_with_capacity, render_territory_svg,
+    manager_exception_register, metis_core_handoff, metis_core_handoff_with_edges,
+    parse_assignee_capacity_csv, parse_site_edges_csv, parse_sites_csv, parse_territories_csv,
+    partition_count_sweep, partition_sites, partition_sites_with_metis_core,
+    partition_sites_with_metis_core_edges, render_site_graph_geojson, render_site_graph_svg,
+    render_territory_geojson, render_territory_geojson_with_capacity, render_territory_svg,
     render_territory_svg_with_capacity, sample_assignee_capacity_csv,
     sample_proposed_territories_csv, sample_site_edges_csv, sample_sites_csv, sample_territories,
     sample_territories_csv, site_graph_diagnostic_report, site_graph_diagnostic_report_with_edges,
@@ -73,6 +73,19 @@ fn main() {
         "compactness-csv" => run_compactness_command(args.get(1), args.get(2)),
         "packet-csv" => run_packet_command(args.get(1), args.get(2), args.get(3)),
         "field-review-csv" => run_field_review_command(args.get(1), args.get(2)),
+        "manager-exception-register-csv" => run_manager_exception_register_command(
+            args.get(1),
+            args.get(2),
+            args.get(3),
+            args.get(4),
+        ),
+        "manager-exception-packet-csv" => run_manager_exception_packet_command(
+            args.get(1),
+            args.get(2),
+            args.get(3),
+            args.get(4),
+            args.get(5),
+        ),
         "fairness-packet-csv" => run_fairness_packet_command(args.get(1), args.get(2), args.get(3)),
         "svg-csv" => run_csv_command(args.get(1), print_svg_for_csv),
         "geojson-csv" => run_csv_command(args.get(1), print_geojson_for_csv),
@@ -143,6 +156,12 @@ fn print_help() {
     println!("  compactness-csv PATH THRESHOLD Report max-radius compactness exceptions");
     println!("  packet-csv BASELINE PROPOSED OUT_DIR Write a scenario review packet");
     println!("  field-review-csv BASELINE PROPOSED Emit a plain-language field review");
+    println!(
+        "  manager-exception-register-csv BASELINE PROPOSED CAPACITY EDGES Emit manager exception register"
+    );
+    println!(
+        "  manager-exception-packet-csv BASELINE PROPOSED CAPACITY EDGES OUT_DIR Write manager exception packet"
+    );
     println!("  fairness-packet-csv TERRITORIES CAPACITY OUT_DIR Write ownership packet");
     println!("  svg-csv PATH   Emit a data-bound SVG split from a CSV file");
     println!("  geojson-csv PATH Emit a data-bound GeoJSON split from a CSV file");
@@ -1377,6 +1396,135 @@ fn run_field_review_command(baseline_path: Option<&String>, proposed_path: Optio
     }
 }
 
+fn run_manager_exception_register_command(
+    baseline_path: Option<&String>,
+    proposed_path: Option<&String>,
+    capacity_path: Option<&String>,
+    edges_path: Option<&String>,
+) {
+    let (baseline, proposed, capacities, edges) =
+        read_manager_exception_inputs(baseline_path, proposed_path, capacity_path, edges_path);
+    let register = manager_exception_register(&baseline, &proposed, &capacities, &edges);
+    print_manager_exception_register(&register);
+}
+
+fn run_manager_exception_packet_command(
+    baseline_path: Option<&String>,
+    proposed_path: Option<&String>,
+    capacity_path: Option<&String>,
+    edges_path: Option<&String>,
+    output_dir: Option<&String>,
+) {
+    let Some(output_dir) = output_dir else {
+        eprintln!("missing output directory");
+        print_help();
+        std::process::exit(2);
+    };
+    let (baseline, proposed, capacities, edges) =
+        read_manager_exception_inputs(baseline_path, proposed_path, capacity_path, edges_path);
+    let register = manager_exception_register(&baseline, &proposed, &capacities, &edges);
+    let sites = proposed
+        .iter()
+        .flat_map(|territory| territory.sites.iter().cloned())
+        .collect::<Vec<_>>();
+    let output_dir = std::path::Path::new(output_dir);
+    std::fs::create_dir_all(output_dir).unwrap_or_else(|error| {
+        eprintln!("failed to create {}: {error}", output_dir.display());
+        std::process::exit(1);
+    });
+    write_packet_file(
+        output_dir,
+        "manager-exception-register.csv",
+        &manager_exception_register_csv(&register),
+    );
+    write_packet_file(
+        output_dir,
+        "manager-exception-summary.txt",
+        &manager_exception_summary_text(&register),
+    );
+    write_packet_file(
+        output_dir,
+        "proposed.svg",
+        &render_territory_svg(&proposed, &TerritoryVisualOptions::default()),
+    );
+    write_packet_file(
+        output_dir,
+        "edge-evidence.svg",
+        &render_site_graph_svg(
+            &sites,
+            &edges,
+            &TerritoryVisualOptions {
+                title: "TERRAIN manager exceptions".to_string(),
+                ..TerritoryVisualOptions::default()
+            },
+        ),
+    );
+    write_packet_file(
+        output_dir,
+        "proposed.geojson",
+        &render_territory_geojson(&proposed),
+    );
+    write_packet_file(
+        output_dir,
+        "edge-evidence.geojson",
+        &render_site_graph_geojson(&sites, &edges),
+    );
+    println!(
+        "wrote manager exception packet to {} with 6 files",
+        output_dir.display()
+    );
+}
+
+fn read_manager_exception_inputs(
+    baseline_path: Option<&String>,
+    proposed_path: Option<&String>,
+    capacity_path: Option<&String>,
+    edges_path: Option<&String>,
+) -> (
+    Vec<terrain_core::Territory>,
+    Vec<terrain_core::Territory>,
+    Vec<terrain_core::AssigneeCapacity>,
+    Vec<terrain_core::SiteGraphEdgeInput>,
+) {
+    let Some(proposed_path) = proposed_path else {
+        eprintln!("missing proposed CSV path");
+        print_help();
+        std::process::exit(2);
+    };
+    let Some(capacity_path) = capacity_path else {
+        eprintln!("missing capacity CSV path");
+        print_help();
+        std::process::exit(2);
+    };
+    let Some(edges_path) = edges_path else {
+        eprintln!("missing site edge CSV path");
+        print_help();
+        std::process::exit(2);
+    };
+    let baseline_csv = read_csv_file(baseline_path);
+    let proposed_csv = read_csv_file(Some(proposed_path));
+    let capacity_csv = read_csv_file(Some(capacity_path));
+    let edges_csv = read_csv_file(Some(edges_path));
+    let baseline = parse_territories_csv(&baseline_csv).unwrap_or_else(|error| {
+        eprintln!("baseline {error}");
+        std::process::exit(1);
+    });
+    let proposed = parse_territories_csv(&proposed_csv).unwrap_or_else(|error| {
+        eprintln!("proposed {error}");
+        std::process::exit(1);
+    });
+    let capacities = parse_assignee_capacity_csv(&capacity_csv).unwrap_or_else(|error| {
+        eprintln!("capacity {error}");
+        std::process::exit(1);
+    });
+    let edges = parse_site_edges_csv(&edges_csv).unwrap_or_else(|error| {
+        eprintln!("edges {error}");
+        std::process::exit(1);
+    });
+
+    (baseline, proposed, capacities, edges)
+}
+
 fn run_fairness_packet_command(
     territory_path: Option<&String>,
     capacity_path: Option<&String>,
@@ -1584,6 +1732,53 @@ fn territory_edge_field_actions_csv(review: &terrain_core::TerritoryEdgeFieldRev
         ));
     }
     csv
+}
+
+fn print_manager_exception_register(register: &terrain_core::ManagerExceptionRegister) {
+    println!(
+        "status={} exception_count={}",
+        register.status, register.item_count
+    );
+    print!("{}", manager_exception_register_csv(register));
+}
+
+fn manager_exception_register_csv(register: &terrain_core::ManagerExceptionRegister) -> String {
+    let mut csv = String::from(
+        "category,severity,territory_id,site_id,from_site_id,to_site_id,action,message\n",
+    );
+    for item in &register.items {
+        csv.push_str(&format!(
+            "{},{},{},{},{},{},{},{}\n",
+            item.category,
+            item.severity,
+            item.territory_id.as_deref().unwrap_or_default(),
+            item.site_id.as_deref().unwrap_or_default(),
+            item.from_site_id.as_deref().unwrap_or_default(),
+            item.to_site_id.as_deref().unwrap_or_default(),
+            item.action,
+            item.message.replace(',', ";"),
+        ));
+    }
+    csv
+}
+
+fn manager_exception_summary_text(register: &terrain_core::ManagerExceptionRegister) -> String {
+    let mut text = String::new();
+    text.push_str("TERRAIN manager exception register\n");
+    text.push_str(&format!("Status: {}\n", register.status));
+    text.push_str(&format!("Exception count: {}\n", register.item_count));
+    if register.items.is_empty() {
+        text.push_str("No exceptions require manager review.\n");
+    } else {
+        text.push_str("Actions:\n");
+        for item in &register.items {
+            text.push_str(&format!(
+                "- [{}:{}] {}: {}\n",
+                item.severity, item.category, item.action, item.message
+            ));
+        }
+    }
+    text
 }
 
 fn metis_handoff_vertices_csv(handoff: &terrain_core::MetisCoreHandoff) -> String {

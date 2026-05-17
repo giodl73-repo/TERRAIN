@@ -24,6 +24,7 @@ historical harms or politics of expansion.
 | 8 | National Road | Render edge evidence as reviewable SVG, GeoJSON, and packet artifacts. |
 | 9 | Cumberland Gap | Audit territory plans against explicit edge evidence and connectedness. |
 | 10 | Pony Express | Translate edge audit findings into field-manager actions and packets. |
+| 11 | Chisholm Trail | Combine review findings into a manager exception register. |
 
 ## Phase 1: Louisiana Purchase - Foundation
 
@@ -170,6 +171,19 @@ Planned capabilities:
   specific operating actions.
 - Package field-review text, action rows, audit rows, and edge visuals together.
 - Keep manager wording in TERRAIN while graph mechanics remain reusable.
+
+## Phase 11: Chisholm Trail - Manager exception register
+
+Goal: combine balance, movement, capacity, compactness, and edge findings into
+one manager-ready exception register.
+
+Planned capabilities:
+
+- Emit one CSV register for operating-meeting triage.
+- Keep stable territory and site IDs across balance, movement, capacity,
+  compactness, and edge exceptions.
+- Package the register with summary text and visual artifacts.
+- Preserve each source surface while giving managers one prioritized review list.
 
 ## Visual/dashboard contract
 

@@ -125,6 +125,23 @@ recommendations:
 audit CSV, SVG, and GeoJSON together so the same site IDs and territory IDs can
 be traced from a manager action back to the edge evidence.
 
+## Manager exception register
+
+`manager-exception-register-csv` combines existing review surfaces into one
+operating-meeting register:
+
+- balance warnings when the proposed plan exceeds demand or revenue spread
+  thresholds,
+- movement rows for sites that change territories,
+- compactness warnings for territories above the review radius,
+- capacity warnings for overloaded territories,
+- edge actions from the edge field-review surface.
+
+`manager-exception-packet-csv` writes the register CSV, summary text, proposed
+territory SVG/GeoJSON, and edge evidence SVG/GeoJSON. The register is product
+policy in TERRAIN; it does not replace source-specific graph, capacity, or
+movement commands.
+
 ## Boundary
 
 Reusable candidates for RLINE or METIS-CORE:

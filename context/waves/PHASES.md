@@ -19,10 +19,11 @@ historical harms or politics of expansion.
 | 8 | National Road | Edge evidence visual review and packet artifacts | done |
 | 9 | Cumberland Gap | Edge-aware territory audits and review packets | done |
 | 10 | Pony Express | Plain-language edge field review and action packets | done |
+| 11 | Chisholm Trail | Manager exception register across review surfaces | done |
 
 ## Active phase
 
-- No active phase. Pony Express is complete.
+- No active phase. Chisholm Trail is complete.
 
 ## Protocol
 

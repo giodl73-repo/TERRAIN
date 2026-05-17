@@ -49,6 +49,8 @@ cargo run -p terrain-cli -- territory-edge-audit-csv sample-territories.csv samp
 cargo run -p terrain-cli -- territory-edge-packet-csv sample-territories.csv sample-site-edges.csv terrain-territory-edge-packet
 cargo run -p terrain-cli -- territory-edge-field-review-csv sample-territories.csv sample-site-edges.csv
 cargo run -p terrain-cli -- territory-edge-field-packet-csv sample-territories.csv sample-site-edges.csv terrain-edge-field-packet
+cargo run -p terrain-cli -- manager-exception-register-csv sample-territories.csv sample-territories-proposed.csv sample-capacity.csv sample-site-edges.csv
+cargo run -p terrain-cli -- manager-exception-packet-csv sample-territories.csv sample-territories-proposed.csv sample-capacity.csv sample-site-edges.csv terrain-manager-exception-packet
 cargo run -p terrain-cli -- capacity-csv sample-capacity.csv
 cargo run -p terrain-cli -- capacity-audit-csv sample-territories.csv sample-capacity.csv
 cargo run -p terrain-cli -- ownership-svg-csv sample-territories.csv sample-capacity.csv > terrain-ownership.svg
@@ -113,6 +115,10 @@ The edge field review command turns those audit findings into manager-ready
 recommendations and actions, and the packet command bundles the field-review
 text, action rows, raw audit rows, SVG, and GeoJSON.
 
+The manager exception register command combines balance, movement, compactness,
+capacity, and edge findings into one triage CSV. Its packet command adds summary
+text plus territory and edge visual artifacts.
+
 The field review command emits a plain-language recommendation, balance summary,
 site movement list, and compactness exceptions for field manager review.
 
@@ -150,6 +156,7 @@ mnemonics:
 8. **National Road** - edge evidence SVG, GeoJSON, and packet review artifacts.
 9. **Cumberland Gap** - edge-aware territory audit and review packet outputs.
 10. **Pony Express** - plain-language edge field review and action packets.
+11. **Chisholm Trail** - manager exception register across review surfaces.
 
 ## Visual artifacts
 
