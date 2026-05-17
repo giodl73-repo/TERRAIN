@@ -2,8 +2,9 @@ use terrain_core::{
     TerritoryVisualOptions, audit_product_balance, audit_territories, capacity_exceptions,
     compactness_exceptions, compare_territory_plans, dashboard_schema_json,
     diagnose_territories_csv, graph_partition_report, integration_fixture_manifest_json,
-    metis_core_handoff, parse_assignee_capacity_csv, parse_site_edges_csv, parse_sites_csv,
-    parse_territories_csv, partition_count_sweep, partition_sites, partition_sites_with_metis_core,
+    metis_core_handoff, metis_core_handoff_with_edges, parse_assignee_capacity_csv,
+    parse_site_edges_csv, parse_sites_csv, parse_territories_csv, partition_count_sweep,
+    partition_sites, partition_sites_with_metis_core, partition_sites_with_metis_core_edges,
     render_territory_geojson, render_territory_geojson_with_capacity, render_territory_svg,
     render_territory_svg_with_capacity, sample_assignee_capacity_csv,
     sample_proposed_territories_csv, sample_site_edges_csv, sample_sites_csv, sample_territories,
@@ -44,7 +45,16 @@ fn main() {
         }
         "graph-partition-csv" => run_graph_partition_command(args.get(1), args.get(2)),
         "metis-handoff-csv" => run_metis_handoff_command(args.get(1)),
+        "metis-handoff-with-edges-csv" => {
+            run_metis_handoff_with_edges_command(args.get(1), args.get(2))
+        }
         "metis-partition-csv" => run_metis_partition_command(args.get(1), args.get(2)),
+        "metis-partition-with-edges-csv" => {
+            run_metis_partition_with_edges_command(args.get(1), args.get(2), args.get(3))
+        }
+        "edge-evidence-packet-csv" => {
+            run_edge_evidence_packet_command(args.get(1), args.get(2), args.get(3))
+        }
         "compare-csv" => run_compare_command(args.get(1), args.get(2)),
         "movement-csv" => run_movement_command(args.get(1), args.get(2)),
         "compactness-csv" => run_compactness_command(args.get(1), args.get(2)),
@@ -95,7 +105,12 @@ fn print_help() {
     );
     println!("  graph-partition-csv PATH COUNT Compare greedy and graph-backed partitions");
     println!("  metis-handoff-csv PATH Emit METIS-CORE CSR handoff rows");
+    println!("  metis-handoff-with-edges-csv SITES EDGES Emit edge-backed METIS-CORE CSR rows");
     println!("  metis-partition-csv PATH COUNT Audit a METIS-CORE partition");
+    println!(
+        "  metis-partition-with-edges-csv SITES EDGES COUNT Audit edge-backed METIS partition"
+    );
+    println!("  edge-evidence-packet-csv SITES EDGES OUT_DIR Write edge evidence review packet");
     println!("  compare-csv BASELINE PROPOSED Compare two territory CSV plans");
     println!("  movement-csv BASELINE PROPOSED List stable site movement between plans");
     println!("  compactness-csv PATH THRESHOLD Report max-radius compactness exceptions");
@@ -411,6 +426,19 @@ fn run_metis_handoff_command(path: Option<&String>) {
         eprintln!("{error}");
         std::process::exit(1);
     });
+    print_metis_handoff(&handoff);
+}
+
+fn run_metis_handoff_with_edges_command(sites_path: Option<&String>, edges_path: Option<&String>) {
+    let (sites, edges) = read_sites_and_edges(sites_path, edges_path);
+    let handoff = metis_core_handoff_with_edges(&sites, &edges).unwrap_or_else(|error| {
+        eprintln!("{error}");
+        std::process::exit(1);
+    });
+    print_metis_handoff(&handoff);
+}
+
+fn print_metis_handoff(handoff: &terrain_core::MetisCoreHandoff) {
     println!(
         "status=pass vertex_count={} adjacency_entry_count={} edge_weight_scale={:.0}",
         handoff.vertex_site_ids.len(),
@@ -457,6 +485,46 @@ fn run_metis_partition_command(path: Option<&String>, target_count: Option<&Stri
             std::process::exit(1);
         });
     print_audit(&territories);
+}
+
+fn run_metis_partition_with_edges_command(
+    sites_path: Option<&String>,
+    edges_path: Option<&String>,
+    target_count: Option<&String>,
+) {
+    let target_count = parse_count_arg(target_count, "missing target territory count");
+    let (sites, edges) = read_sites_and_edges(sites_path, edges_path);
+    let territories = partition_sites_with_metis_core_edges(&sites, &edges, target_count, 7)
+        .unwrap_or_else(|error| {
+            eprintln!("{error}");
+            std::process::exit(1);
+        });
+    print_audit(&territories);
+}
+
+fn read_sites_and_edges(
+    sites_path: Option<&String>,
+    edges_path: Option<&String>,
+) -> (
+    Vec<terrain_core::Site>,
+    Vec<terrain_core::SiteGraphEdgeInput>,
+) {
+    let Some(edges_path) = edges_path else {
+        eprintln!("missing site edge CSV path");
+        print_help();
+        std::process::exit(2);
+    };
+    let sites_csv = read_csv_file(sites_path);
+    let edges_csv = read_csv_file(Some(edges_path));
+    let sites = parse_sites_csv(&sites_csv).unwrap_or_else(|error| {
+        eprintln!("sites {error}");
+        std::process::exit(1);
+    });
+    let edges = parse_site_edges_csv(&edges_csv).unwrap_or_else(|error| {
+        eprintln!("edges {error}");
+        std::process::exit(1);
+    });
+    (sites, edges)
 }
 
 fn print_sample_svg() {
@@ -925,6 +993,53 @@ fn run_packet_command(
     );
 }
 
+fn run_edge_evidence_packet_command(
+    sites_path: Option<&String>,
+    edges_path: Option<&String>,
+    output_dir: Option<&String>,
+) {
+    let Some(output_dir) = output_dir else {
+        eprintln!("missing output directory");
+        print_help();
+        std::process::exit(2);
+    };
+    let (sites, edges) = read_sites_and_edges(sites_path, edges_path);
+    let report = site_graph_diagnostic_report_with_edges(&sites, &edges, 0.10);
+    let handoff = metis_core_handoff_with_edges(&sites, &edges).unwrap_or_else(|error| {
+        eprintln!("{error}");
+        std::process::exit(1);
+    });
+    let output_dir = std::path::Path::new(output_dir);
+    std::fs::create_dir_all(output_dir).unwrap_or_else(|error| {
+        eprintln!("failed to create {}: {error}", output_dir.display());
+        std::process::exit(1);
+    });
+    write_packet_file(
+        output_dir,
+        "edge-evidence.csv",
+        &site_edge_evidence_csv(&edges),
+    );
+    write_packet_file(
+        output_dir,
+        "edge-diagnostics.csv",
+        &site_graph_diagnostics_csv(&report),
+    );
+    write_packet_file(
+        output_dir,
+        "metis-handoff-vertices.csv",
+        &metis_handoff_vertices_csv(&handoff),
+    );
+    write_packet_file(
+        output_dir,
+        "metis-handoff-adjacency.csv",
+        &metis_handoff_adjacency_csv(&handoff),
+    );
+    println!(
+        "wrote edge evidence packet to {} with 4 files",
+        output_dir.display()
+    );
+}
+
 fn run_field_review_command(baseline_path: Option<&String>, proposed_path: Option<&String>) {
     let Some(proposed_path) = proposed_path else {
         eprintln!("missing proposed CSV path");
@@ -1130,6 +1245,64 @@ fn diagnostics_csv(csv_input: &str) -> String {
             diagnostic.field,
             diagnostic.message.replace(',', ";"),
         ));
+    }
+    csv
+}
+
+fn site_edge_evidence_csv(edges: &[terrain_core::SiteGraphEdgeInput]) -> String {
+    let mut csv = String::from("from_site_id,to_site_id,weight,evidence\n");
+    for edge in edges {
+        csv.push_str(&format!(
+            "{},{},{:.6},{}\n",
+            edge.from_site_id, edge.to_site_id, edge.weight, edge.evidence,
+        ));
+    }
+    csv
+}
+
+fn site_graph_diagnostics_csv(report: &terrain_core::SiteGraphDiagnosticReport) -> String {
+    let mut csv = String::from("severity,code,site_ids,message\n");
+    for diagnostic in &report.diagnostics {
+        csv.push_str(&format!(
+            "{},{},{},{}\n",
+            diagnostic.severity,
+            diagnostic.code,
+            diagnostic.site_ids.join(";"),
+            diagnostic.message.replace(',', ";"),
+        ));
+    }
+    csv
+}
+
+fn metis_handoff_vertices_csv(handoff: &terrain_core::MetisCoreHandoff) -> String {
+    let mut csv = String::from("vertex_index,site_id,vertex_weight,xadj_start,xadj_end\n");
+    for (idx, site_id) in handoff.vertex_site_ids.iter().enumerate() {
+        csv.push_str(&format!(
+            "{},{},{},{},{}\n",
+            idx,
+            site_id,
+            handoff.vwgt[idx],
+            handoff.xadj[idx],
+            handoff.xadj[idx + 1],
+        ));
+    }
+    csv
+}
+
+fn metis_handoff_adjacency_csv(handoff: &terrain_core::MetisCoreHandoff) -> String {
+    let mut csv = String::from("adjacency_index,from_vertex,to_vertex,edge_weight\n");
+    for from_idx in 0..handoff.vertex_site_ids.len() {
+        let start = handoff.xadj[from_idx] as usize;
+        let end = handoff.xadj[from_idx + 1] as usize;
+        for adjacency_idx in start..end {
+            csv.push_str(&format!(
+                "{},{},{},{}\n",
+                adjacency_idx,
+                from_idx,
+                handoff.adjncy[adjacency_idx],
+                handoff.adjwgt[adjacency_idx],
+            ));
+        }
     }
     csv
 }

@@ -35,7 +35,10 @@ cargo run -p terrain-cli -- graph-diagnostics-csv sample-sites.csv
 cargo run -p terrain-cli -- graph-diagnostics-with-edges-csv sample-sites.csv sample-site-edges.csv
 cargo run -p terrain-cli -- graph-partition-csv sample-sites.csv 2
 cargo run -p terrain-cli -- metis-handoff-csv sample-sites.csv
+cargo run -p terrain-cli -- metis-handoff-with-edges-csv sample-sites.csv sample-site-edges.csv
 cargo run -p terrain-cli -- metis-partition-csv sample-sites.csv 2
+cargo run -p terrain-cli -- metis-partition-with-edges-csv sample-sites.csv sample-site-edges.csv 2
+cargo run -p terrain-cli -- edge-evidence-packet-csv sample-sites.csv sample-site-edges.csv terrain-edge-packet
 cargo run -p terrain-cli -- capacity-csv sample-capacity.csv
 cargo run -p terrain-cli -- capacity-audit-csv sample-territories.csv sample-capacity.csv
 cargo run -p terrain-cli -- ownership-svg-csv sample-territories.csv sample-capacity.csv > terrain-ownership.svg

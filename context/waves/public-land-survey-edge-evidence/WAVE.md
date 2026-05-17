@@ -17,8 +17,8 @@ review-worthy before partitioning and dashboard handoff.
 | Pulse | Title | Status | Outcome |
 |------:|-------|--------|---------|
 | 01 | Site edge evidence CSV | done | Parsed explicit site-to-site edge rows and ran graph diagnostics from edge evidence. |
-| 02 | Evidence-backed METIS handoff | planned | Build CSR handoff from explicit edge evidence instead of coordinate-complete graphs. |
-| 03 | Edge evidence packet outputs | planned | Include graph evidence and diagnostics in review packets. |
+| 02 | Evidence-backed METIS handoff | done | Built CSR handoff and METIS partitioning from explicit edge evidence instead of coordinate-complete graphs. |
+| 03 | Edge evidence packet outputs | done | Included graph evidence, diagnostics, and METIS CSR tables in review packets. |
 
 ## Success criteria
 
@@ -34,3 +34,10 @@ review-worthy before partitioning and dashboard handoff.
 - TERRAIN does not become a routing engine.
 - TERRAIN does not own public geography acquisition.
 - TERRAIN does not require GIS files before CSV edge evidence is useful.
+
+## Completion
+
+Public Land Survey is complete. TERRAIN can parse explicit edge evidence, run
+edge-backed graph diagnostics, hand edge-backed CSR inputs to METIS-CORE, audit
+edge-backed METIS partitions, and write edge evidence packet outputs while
+keeping territory policy local.

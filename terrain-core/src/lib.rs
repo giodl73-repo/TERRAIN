@@ -1494,7 +1494,41 @@ pub fn partition_sites_with_metis_core(
         return Err(PartitionError::EmptySiteSet);
     }
 
-    let handoff = metis_core_handoff(sites)?;
+    metis_core_partition_from_handoff(
+        sites,
+        &metis_core_handoff(sites)?,
+        target_territory_count,
+        seed,
+    )
+}
+
+pub fn partition_sites_with_metis_core_edges(
+    sites: &[Site],
+    edge_inputs: &[SiteGraphEdgeInput],
+    target_territory_count: usize,
+    seed: u64,
+) -> Result<Vec<Territory>, PartitionError> {
+    if target_territory_count == 0 {
+        return Err(PartitionError::ZeroTerritories);
+    }
+    if sites.is_empty() {
+        return Err(PartitionError::EmptySiteSet);
+    }
+
+    metis_core_partition_from_handoff(
+        sites,
+        &metis_core_handoff_with_edges(sites, edge_inputs)?,
+        target_territory_count,
+        seed,
+    )
+}
+
+fn metis_core_partition_from_handoff(
+    sites: &[Site],
+    handoff: &MetisCoreHandoff,
+    target_territory_count: usize,
+    seed: u64,
+) -> Result<Vec<Territory>, PartitionError> {
     let territory_count = target_territory_count.min(handoff.vertex_site_ids.len());
     let graph = metis_core::CsrGraph::from_csr(
         &handoff.xadj,
@@ -1544,7 +1578,21 @@ pub fn metis_core_handoff(sites: &[Site]) -> Result<MetisCoreHandoff, PartitionE
         return Err(PartitionError::EmptySiteSet);
     }
 
-    let graph = build_site_graph(sites);
+    metis_core_handoff_from_graph(&build_site_graph(sites))
+}
+
+pub fn metis_core_handoff_with_edges(
+    sites: &[Site],
+    edge_inputs: &[SiteGraphEdgeInput],
+) -> Result<MetisCoreHandoff, PartitionError> {
+    if sites.is_empty() {
+        return Err(PartitionError::EmptySiteSet);
+    }
+
+    metis_core_handoff_from_graph(&build_site_graph_with_edges(sites, edge_inputs))
+}
+
+fn metis_core_handoff_from_graph(graph: &SiteGraph) -> Result<MetisCoreHandoff, PartitionError> {
     let vertex_site_ids = graph
         .nodes
         .iter()
@@ -2890,5 +2938,33 @@ south,,10,95000,47.46,-222.33\n",
         assert!(codes.contains(&"disconnected-component"));
         assert!(codes.contains(&"isolated-site"));
         assert!(codes.contains(&"long-edge"));
+    }
+
+    #[test]
+    fn emits_metis_core_handoff_from_edge_evidence() {
+        let sites = parse_sites_csv(sample_sites_csv()).expect("site sample parses");
+        let edges = parse_site_edges_csv(sample_site_edges_csv()).expect("edge sample parses");
+        let handoff = metis_core_handoff_with_edges(&sites, &edges).expect("handoff builds");
+
+        assert_eq!(handoff.vertex_site_ids.len(), 6);
+        assert_eq!(handoff.xadj, [0, 2, 3, 5, 7, 9, 10]);
+        assert_eq!(handoff.adjncy.len(), 10);
+        assert_eq!(handoff.adjwgt.len(), 10);
+        assert!(handoff.adjwgt.iter().all(|weight| *weight > 0));
+    }
+
+    #[test]
+    fn partitions_sites_with_metis_core_edge_evidence() {
+        let sites = parse_sites_csv(sample_sites_csv()).expect("site sample parses");
+        let edges = parse_site_edges_csv(sample_site_edges_csv()).expect("edge sample parses");
+        let territories =
+            partition_sites_with_metis_core_edges(&sites, &edges, 2, 7).expect("partition works");
+        let assigned_site_count = territories
+            .iter()
+            .map(|territory| territory.sites.len())
+            .sum::<usize>();
+
+        assert_eq!(territories.len(), 2);
+        assert_eq!(assigned_site_count, sites.len());
     }
 }

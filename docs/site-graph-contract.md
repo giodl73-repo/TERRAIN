@@ -45,7 +45,10 @@ cargo run -p terrain-cli -- graph-diagnostics-csv sample-sites.csv
 cargo run -p terrain-cli -- graph-diagnostics-with-edges-csv sample-sites.csv sample-site-edges.csv
 cargo run -p terrain-cli -- graph-partition-csv sample-sites.csv 2
 cargo run -p terrain-cli -- metis-handoff-csv sample-sites.csv
+cargo run -p terrain-cli -- metis-handoff-with-edges-csv sample-sites.csv sample-site-edges.csv
 cargo run -p terrain-cli -- metis-partition-csv sample-sites.csv 2
+cargo run -p terrain-cli -- metis-partition-with-edges-csv sample-sites.csv sample-site-edges.csv 2
+cargo run -p terrain-cli -- edge-evidence-packet-csv sample-sites.csv sample-site-edges.csv terrain-edge-packet
 ```
 
 The diagnostics command emits a summary line and stable diagnostic rows:
@@ -85,6 +88,10 @@ audits the resulting territories through TERRAIN's existing balance report. This
 keeps customer territory scoring, capacity, fairness, field-review language, and
 dashboard bindings in TERRAIN while giving METIS-CORE a strict, product-neutral
 input artifact for benchmark comparison.
+
+The `*-with-edges-csv` METIS commands use explicit edge evidence instead of the
+coordinate-complete graph. `edge-evidence-packet-csv` writes the supplied edge
+evidence, graph diagnostics, and METIS CSR handoff tables into a review folder.
 
 ## Boundary
 
