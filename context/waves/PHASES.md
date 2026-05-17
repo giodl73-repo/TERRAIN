@@ -16,10 +16,11 @@ historical harms or politics of expansion.
 | 5 | Transcontinental Railroad | Shared kernels, dashboards, and integrations | done |
 | 6 | Continental Divide | Graph construction and METIS-CORE partition readiness | done |
 | 7 | Public Land Survey | Explicit edge evidence and geography-adjacency inputs | done |
+| 8 | National Road | Edge evidence visual review and packet artifacts | done |
 
 ## Active phase
 
-- No active phase. Public Land Survey is complete.
+- No active phase. National Road is complete.
 
 ## Protocol
 

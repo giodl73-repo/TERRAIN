@@ -38,6 +38,8 @@ cargo run -p terrain-cli -- metis-handoff-csv sample-sites.csv
 cargo run -p terrain-cli -- metis-handoff-with-edges-csv sample-sites.csv sample-site-edges.csv
 cargo run -p terrain-cli -- metis-partition-csv sample-sites.csv 2
 cargo run -p terrain-cli -- metis-partition-with-edges-csv sample-sites.csv sample-site-edges.csv 2
+cargo run -p terrain-cli -- edge-evidence-svg-csv sample-sites.csv sample-site-edges.csv > edge-evidence.svg
+cargo run -p terrain-cli -- edge-evidence-geojson-csv sample-sites.csv sample-site-edges.csv > edge-evidence.geojson
 cargo run -p terrain-cli -- edge-evidence-packet-csv sample-sites.csv sample-site-edges.csv terrain-edge-packet
 cargo run -p terrain-cli -- capacity-csv sample-capacity.csv
 cargo run -p terrain-cli -- capacity-audit-csv sample-territories.csv sample-capacity.csv
@@ -129,6 +131,7 @@ mnemonics:
    readiness.
 7. **Public Land Survey** - explicit edge evidence, adjacency inputs, and
    geography-ready graph controls.
+8. **National Road** - edge evidence SVG, GeoJSON, and packet review artifacts.
 
 ## Visual artifacts
 

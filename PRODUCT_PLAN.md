@@ -21,6 +21,7 @@ historical harms or politics of expansion.
 | 5 | Transcontinental Railroad | Connect optimization kernels, dashboards, exports, and reusable integrations. |
 | 6 | Continental Divide | Build explicit site graphs and prepare METIS-CORE-backed partitioning. |
 | 7 | Public Land Survey | Add explicit edge evidence, adjacency inputs, and geography-ready graph controls. |
+| 8 | National Road | Render edge evidence as reviewable SVG, GeoJSON, and packet artifacts. |
 
 ## Phase 1: Louisiana Purchase - Foundation
 
@@ -129,6 +130,19 @@ Planned capabilities:
 - Feed explicit edge evidence into METIS-CORE handoff and review packets.
 - Keep edge evidence meaning in TERRAIN while reusable graph mechanics stay in
   METIS-CORE.
+
+## Phase 8: National Road - Edge visuals
+
+Goal: make explicit graph evidence reviewable in the same dashboard and packet
+surfaces as territory splits.
+
+Planned capabilities:
+
+- Render site-edge evidence as SVG line overlays with stable data bindings.
+- Emit GeoJSON LineString features for edge evidence and point features for
+  sites.
+- Include edge visual artifacts in edge evidence packets.
+- Keep edge visuals as review overlays, not turn-by-turn routes.
 
 ## Visual/dashboard contract
 

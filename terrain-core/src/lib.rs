@@ -706,6 +706,88 @@ pub fn render_territory_svg(territories: &[Territory], options: &TerritoryVisual
     svg
 }
 
+pub fn render_site_graph_svg(
+    sites: &[Site],
+    edge_inputs: &[SiteGraphEdgeInput],
+    options: &TerritoryVisualOptions,
+) -> String {
+    let graph = build_site_graph_with_edges(sites, edge_inputs);
+    let site_by_id = sites
+        .iter()
+        .map(|site| (site.id.clone(), site))
+        .collect::<std::collections::BTreeMap<_, _>>();
+    let bounds_source = vec![Territory::new("edge-evidence", sites.to_vec())];
+    let bounds = bounds(&bounds_source);
+    let mut svg = String::new();
+    svg.push_str(&format!(
+        r#"<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {} {}" role="img" aria-labelledby="terrain-title terrain-desc">"#,
+        options.width, options.height
+    ));
+    svg.push_str(&format!(
+        "<title id=\"terrain-title\">{}</title>",
+        escape_xml(&options.title)
+    ));
+    svg.push_str("<desc id=\"terrain-desc\">Data-bound site graph edge evidence with stable site IDs, evidence labels, and weights.</desc>");
+    svg.push_str(r##"<rect width="100%" height="100%" fill="#f8fafc"/>"##);
+    svg.push_str(r#"<g transform="translate(28 64)">"#);
+    svg.push_str(r##"<text x="0" y="-28" font-family="Inter,Segoe UI,sans-serif" font-size="28" font-weight="700" fill="#0f172a">TERRAIN edge evidence</text>"##);
+    svg.push_str(r##"<text x="0" y="-6" font-family="Inter,Segoe UI,sans-serif" font-size="13" fill="#475569">Lines carry data bindings for source site, target site, evidence, and weight.</text>"##);
+
+    for edge in &graph.edges {
+        let Some(from_site) = site_by_id.get(&edge.from_site_id) else {
+            continue;
+        };
+        let Some(to_site) = site_by_id.get(&edge.to_site_id) else {
+            continue;
+        };
+        let (x1, y1) = project(
+            from_site.latitude,
+            from_site.longitude,
+            &bounds,
+            options.width,
+            options.height,
+        );
+        let (x2, y2) = project(
+            to_site.latitude,
+            to_site.longitude,
+            &bounds,
+            options.width,
+            options.height,
+        );
+        svg.push_str(&format!(
+            r##"<line class="site-edge" data-from-site-id="{}" data-to-site-id="{}" data-evidence="{}" data-weight="{:.6}" x1="{x1:.1}" y1="{y1:.1}" x2="{x2:.1}" y2="{y2:.1}" stroke="#0f766e" stroke-width="3" stroke-opacity="0.58" stroke-linecap="round"/>"##,
+            escape_attr(&edge.from_site_id),
+            escape_attr(&edge.to_site_id),
+            escape_attr(&edge.evidence),
+            edge.weight,
+        ));
+    }
+
+    for site in sites {
+        let (x, y) = project(
+            site.latitude,
+            site.longitude,
+            &bounds,
+            options.width,
+            options.height,
+        );
+        svg.push_str(&format!(
+            r##"<circle class="site" data-site-id="{}" data-demand="{:.2}" data-revenue="{:.2}" cx="{x:.1}" cy="{y:.1}" r="9" fill="#2563eb" fill-opacity="0.88" stroke="#ffffff" stroke-width="2"/>"##,
+            escape_attr(&site.id),
+            site.demand,
+            site.revenue,
+        ));
+        svg.push_str(&format!(
+            r##"<text x="{:.1}" y="{:.1}" font-family="Inter,Segoe UI,sans-serif" font-size="11" fill="#0f172a">{}</text>"##,
+            x + 12.0,
+            y + 4.0,
+            escape_xml(&site.id),
+        ));
+    }
+    svg.push_str("</g></svg>");
+    svg
+}
+
 pub fn render_territory_geojson(territories: &[Territory]) -> String {
     let summaries = territories
         .iter()
@@ -748,6 +830,51 @@ pub fn render_territory_geojson(territories: &[Territory]) -> String {
 
     format!(
         "{{\"type\":\"FeatureCollection\",\"name\":\"terrain-territory-split\",\"features\":[{}]}}",
+        features.join(",")
+    )
+}
+
+pub fn render_site_graph_geojson(sites: &[Site], edge_inputs: &[SiteGraphEdgeInput]) -> String {
+    let graph = build_site_graph_with_edges(sites, edge_inputs);
+    let site_by_id = sites
+        .iter()
+        .map(|site| (site.id.clone(), site))
+        .collect::<std::collections::BTreeMap<_, _>>();
+    let mut features = Vec::new();
+
+    for edge in &graph.edges {
+        let Some(from_site) = site_by_id.get(&edge.from_site_id) else {
+            continue;
+        };
+        let Some(to_site) = site_by_id.get(&edge.to_site_id) else {
+            continue;
+        };
+        features.push(format!(
+            "{{\"type\":\"Feature\",\"geometry\":{{\"type\":\"LineString\",\"coordinates\":[[{:.6},{:.6}],[{:.6},{:.6}]]}},\"properties\":{{\"kind\":\"site_edge\",\"from_site_id\":\"{}\",\"to_site_id\":\"{}\",\"evidence\":\"{}\",\"weight\":{:.6}}}}}",
+            from_site.longitude,
+            from_site.latitude,
+            to_site.longitude,
+            to_site.latitude,
+            escape_json(&edge.from_site_id),
+            escape_json(&edge.to_site_id),
+            escape_json(&edge.evidence),
+            edge.weight,
+        ));
+    }
+
+    for site in sites {
+        features.push(format!(
+            "{{\"type\":\"Feature\",\"geometry\":{{\"type\":\"Point\",\"coordinates\":[{:.6},{:.6}]}},\"properties\":{{\"kind\":\"site\",\"site_id\":\"{}\",\"demand\":{:.2},\"revenue\":{:.2}}}}}",
+            site.longitude,
+            site.latitude,
+            escape_json(&site.id),
+            site.demand,
+            site.revenue,
+        ));
+    }
+
+    format!(
+        "{{\"type\":\"FeatureCollection\",\"name\":\"terrain-edge-evidence\",\"features\":[{}]}}",
         features.join(",")
     )
 }
@@ -2966,5 +3093,31 @@ south,,10,95000,47.46,-222.33\n",
 
         assert_eq!(territories.len(), 2);
         assert_eq!(assigned_site_count, sites.len());
+    }
+
+    #[test]
+    fn renders_site_graph_svg_with_edge_bindings() {
+        let sites = parse_sites_csv(sample_sites_csv()).expect("site sample parses");
+        let edges = parse_site_edges_csv(sample_site_edges_csv()).expect("edge sample parses");
+        let svg = render_site_graph_svg(&sites, &edges, &TerritoryVisualOptions::default());
+
+        assert!(svg.contains("class=\"site-edge\""));
+        assert!(svg.contains("data-from-site-id=\"N-001\""));
+        assert!(svg.contains("data-to-site-id=\"N-002\""));
+        assert!(svg.contains("data-evidence=\"field-adjacency\""));
+        assert!(svg.contains("data-site-id=\"S-003\""));
+    }
+
+    #[test]
+    fn renders_site_graph_geojson_with_edge_features() {
+        let sites = parse_sites_csv(sample_sites_csv()).expect("site sample parses");
+        let edges = parse_site_edges_csv(sample_site_edges_csv()).expect("edge sample parses");
+        let geojson = render_site_graph_geojson(&sites, &edges);
+
+        assert!(geojson.contains("\"name\":\"terrain-edge-evidence\""));
+        assert!(geojson.contains("\"kind\":\"site_edge\""));
+        assert!(geojson.contains("\"from_site_id\":\"N-001\""));
+        assert!(geojson.contains("\"to_site_id\":\"N-002\""));
+        assert!(geojson.contains("\"kind\":\"site\""));
     }
 }

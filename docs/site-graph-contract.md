@@ -48,6 +48,8 @@ cargo run -p terrain-cli -- metis-handoff-csv sample-sites.csv
 cargo run -p terrain-cli -- metis-handoff-with-edges-csv sample-sites.csv sample-site-edges.csv
 cargo run -p terrain-cli -- metis-partition-csv sample-sites.csv 2
 cargo run -p terrain-cli -- metis-partition-with-edges-csv sample-sites.csv sample-site-edges.csv 2
+cargo run -p terrain-cli -- edge-evidence-svg-csv sample-sites.csv sample-site-edges.csv > edge-evidence.svg
+cargo run -p terrain-cli -- edge-evidence-geojson-csv sample-sites.csv sample-site-edges.csv > edge-evidence.geojson
 cargo run -p terrain-cli -- edge-evidence-packet-csv sample-sites.csv sample-site-edges.csv terrain-edge-packet
 ```
 
@@ -90,8 +92,11 @@ dashboard bindings in TERRAIN while giving METIS-CORE a strict, product-neutral
 input artifact for benchmark comparison.
 
 The `*-with-edges-csv` METIS commands use explicit edge evidence instead of the
-coordinate-complete graph. `edge-evidence-packet-csv` writes the supplied edge
-evidence, graph diagnostics, and METIS CSR handoff tables into a review folder.
+coordinate-complete graph. `edge-evidence-svg-csv` and
+`edge-evidence-geojson-csv` render site-edge evidence with stable site, evidence,
+and weight bindings. `edge-evidence-packet-csv` writes the supplied edge
+evidence, graph diagnostics, METIS CSR handoff tables, SVG, and GeoJSON into a
+review folder.
 
 ## Boundary
 

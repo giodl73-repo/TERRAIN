@@ -5,7 +5,8 @@ use terrain_core::{
     metis_core_handoff, metis_core_handoff_with_edges, parse_assignee_capacity_csv,
     parse_site_edges_csv, parse_sites_csv, parse_territories_csv, partition_count_sweep,
     partition_sites, partition_sites_with_metis_core, partition_sites_with_metis_core_edges,
-    render_territory_geojson, render_territory_geojson_with_capacity, render_territory_svg,
+    render_site_graph_geojson, render_site_graph_svg, render_territory_geojson,
+    render_territory_geojson_with_capacity, render_territory_svg,
     render_territory_svg_with_capacity, sample_assignee_capacity_csv,
     sample_proposed_territories_csv, sample_site_edges_csv, sample_sites_csv, sample_territories,
     sample_territories_csv, site_graph_diagnostic_report, site_graph_diagnostic_report_with_edges,
@@ -55,6 +56,8 @@ fn main() {
         "edge-evidence-packet-csv" => {
             run_edge_evidence_packet_command(args.get(1), args.get(2), args.get(3))
         }
+        "edge-evidence-svg-csv" => run_edge_evidence_svg_command(args.get(1), args.get(2)),
+        "edge-evidence-geojson-csv" => run_edge_evidence_geojson_command(args.get(1), args.get(2)),
         "compare-csv" => run_compare_command(args.get(1), args.get(2)),
         "movement-csv" => run_movement_command(args.get(1), args.get(2)),
         "compactness-csv" => run_compactness_command(args.get(1), args.get(2)),
@@ -111,6 +114,8 @@ fn print_help() {
         "  metis-partition-with-edges-csv SITES EDGES COUNT Audit edge-backed METIS partition"
     );
     println!("  edge-evidence-packet-csv SITES EDGES OUT_DIR Write edge evidence review packet");
+    println!("  edge-evidence-svg-csv SITES EDGES Emit edge evidence SVG");
+    println!("  edge-evidence-geojson-csv SITES EDGES Emit edge evidence GeoJSON");
     println!("  compare-csv BASELINE PROPOSED Compare two territory CSV plans");
     println!("  movement-csv BASELINE PROPOSED List stable site movement between plans");
     println!("  compactness-csv PATH THRESHOLD Report max-radius compactness exceptions");
@@ -500,6 +505,26 @@ fn run_metis_partition_with_edges_command(
             std::process::exit(1);
         });
     print_audit(&territories);
+}
+
+fn run_edge_evidence_svg_command(sites_path: Option<&String>, edges_path: Option<&String>) {
+    let (sites, edges) = read_sites_and_edges(sites_path, edges_path);
+    println!(
+        "{}",
+        render_site_graph_svg(
+            &sites,
+            &edges,
+            &TerritoryVisualOptions {
+                title: "TERRAIN edge evidence".to_string(),
+                ..TerritoryVisualOptions::default()
+            },
+        )
+    );
+}
+
+fn run_edge_evidence_geojson_command(sites_path: Option<&String>, edges_path: Option<&String>) {
+    let (sites, edges) = read_sites_and_edges(sites_path, edges_path);
+    println!("{}", render_site_graph_geojson(&sites, &edges));
 }
 
 fn read_sites_and_edges(
@@ -1034,8 +1059,25 @@ fn run_edge_evidence_packet_command(
         "metis-handoff-adjacency.csv",
         &metis_handoff_adjacency_csv(&handoff),
     );
+    write_packet_file(
+        output_dir,
+        "edge-evidence.svg",
+        &render_site_graph_svg(
+            &sites,
+            &edges,
+            &TerritoryVisualOptions {
+                title: "TERRAIN edge evidence".to_string(),
+                ..TerritoryVisualOptions::default()
+            },
+        ),
+    );
+    write_packet_file(
+        output_dir,
+        "edge-evidence.geojson",
+        &render_site_graph_geojson(&sites, &edges),
+    );
     println!(
-        "wrote edge evidence packet to {} with 4 files",
+        "wrote edge evidence packet to {} with 6 files",
         output_dir.display()
     );
 }
