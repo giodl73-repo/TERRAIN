@@ -2,7 +2,7 @@
 
 Project: TERRAIN balanced territory planner.
 
-Working directory: `C:\src\TERRAIN`.
+Working directory: `C:\src\TRACKER\repos\customer-systems\terrain`.
 
 ## Rules
 
