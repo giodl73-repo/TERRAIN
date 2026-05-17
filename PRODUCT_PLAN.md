@@ -20,6 +20,7 @@ historical harms or politics of expansion.
 | 4 | Homestead Act | Assign people, capacity, and ownership to stable territories. |
 | 5 | Transcontinental Railroad | Connect optimization kernels, dashboards, exports, and reusable integrations. |
 | 6 | Continental Divide | Build explicit site graphs and prepare METIS-CORE-backed partitioning. |
+| 7 | Public Land Survey | Add explicit edge evidence, adjacency inputs, and geography-ready graph controls. |
 
 ## Phase 1: Louisiana Purchase - Foundation
 
@@ -113,6 +114,21 @@ Planned capabilities:
   explicit and testable.
 - Compare greedy and graph-backed partition outputs with the existing balance,
   movement, compactness, capacity, SVG, and GeoJSON surfaces.
+
+## Phase 7: Public Land Survey - Edge evidence
+
+Goal: let operators provide explicit edge evidence before geography imports or
+road networks are available.
+
+Planned capabilities:
+
+- Parse site-to-site edge evidence with stable site IDs, weights, and evidence
+  labels.
+- Diagnose unknown site references, duplicate edge rows, disconnected
+  components, isolated sites, and long edges.
+- Feed explicit edge evidence into METIS-CORE handoff and review packets.
+- Keep edge evidence meaning in TERRAIN while reusable graph mechanics stay in
+  METIS-CORE.
 
 ## Visual/dashboard contract
 

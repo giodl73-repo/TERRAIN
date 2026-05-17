@@ -42,6 +42,7 @@ diagnostics.
 
 ```powershell
 cargo run -p terrain-cli -- graph-diagnostics-csv sample-sites.csv
+cargo run -p terrain-cli -- graph-diagnostics-with-edges-csv sample-sites.csv sample-site-edges.csv
 cargo run -p terrain-cli -- graph-partition-csv sample-sites.csv 2
 cargo run -p terrain-cli -- metis-handoff-csv sample-sites.csv
 cargo run -p terrain-cli -- metis-partition-csv sample-sites.csv 2
@@ -53,6 +54,12 @@ The diagnostics command emits a summary line and stable diagnostic rows:
 status=review node_count=6 edge_count=15 component_count=1 diagnostic_count=...
 severity,code,site_ids,message
 ```
+
+`graph-diagnostics-with-edges-csv` uses explicit edge evidence rows with
+`from_site_id`, `to_site_id`, `weight`, and `evidence`. It preserves the same
+diagnostic report shape while surfacing unknown site references, self edges,
+duplicate edges, disconnected components, isolated sites, and long edges from
+operator-provided adjacency evidence.
 
 The partition command keeps `partition_sites` as the greedy baseline, builds the
 site graph, creates a coordinate-graph-seeded partition, and emits comparison

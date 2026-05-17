@@ -164,6 +164,14 @@ pub struct SiteGraphEdge {
 }
 
 #[derive(Debug, Clone, PartialEq)]
+pub struct SiteGraphEdgeInput {
+    pub from_site_id: String,
+    pub to_site_id: String,
+    pub weight: f64,
+    pub evidence: String,
+}
+
+#[derive(Debug, Clone, PartialEq)]
 pub struct SiteGraphDiagnostic {
     pub severity: String,
     pub code: String,
@@ -1130,6 +1138,89 @@ pub fn parse_sites_csv(input: &str) -> Result<Vec<Site>, CsvIntakeError> {
     Ok(sites)
 }
 
+pub fn parse_site_edges_csv(input: &str) -> Result<Vec<SiteGraphEdgeInput>, CsvIntakeError> {
+    let mut lines = input.lines().enumerate();
+    let Some((header_idx, header_line)) = lines.find(|(_, line)| !line.trim().is_empty()) else {
+        return Err(CsvIntakeError {
+            line: 1,
+            message: "missing header row".to_string(),
+        });
+    };
+    let headers = parse_csv_line(header_line).map_err(|message| CsvIntakeError {
+        line: header_idx + 1,
+        message,
+    })?;
+    let header_map = headers
+        .iter()
+        .enumerate()
+        .map(|(idx, header)| (header.trim().to_ascii_lowercase(), idx))
+        .collect::<std::collections::BTreeMap<_, _>>();
+    for header in ["from_site_id", "to_site_id", "weight", "evidence"] {
+        if !header_map.contains_key(header) {
+            return Err(CsvIntakeError {
+                line: header_idx + 1,
+                message: format!("missing required header '{header}'"),
+            });
+        }
+    }
+
+    let mut edges = Vec::new();
+    for (line_idx, line) in lines {
+        if line.trim().is_empty() {
+            continue;
+        }
+        let fields = parse_csv_line(line).map_err(|message| CsvIntakeError {
+            line: line_idx + 1,
+            message,
+        })?;
+        let from_site_id = csv_field(&fields, &header_map, "from_site_id")
+            .trim()
+            .to_string();
+        let to_site_id = csv_field(&fields, &header_map, "to_site_id")
+            .trim()
+            .to_string();
+        let evidence = csv_field(&fields, &header_map, "evidence")
+            .trim()
+            .to_string();
+        if from_site_id.is_empty() {
+            return Err(CsvIntakeError {
+                line: line_idx + 1,
+                message: "from_site_id cannot be empty".to_string(),
+            });
+        }
+        if to_site_id.is_empty() {
+            return Err(CsvIntakeError {
+                line: line_idx + 1,
+                message: "to_site_id cannot be empty".to_string(),
+            });
+        }
+        if evidence.is_empty() {
+            return Err(CsvIntakeError {
+                line: line_idx + 1,
+                message: "evidence cannot be empty".to_string(),
+            });
+        }
+        let weight = parse_f64(
+            csv_field(&fields, &header_map, "weight"),
+            line_idx + 1,
+            "weight",
+        )?;
+        if weight <= 0.0 {
+            return Err(CsvIntakeError {
+                line: line_idx + 1,
+                message: "weight must be greater than zero".to_string(),
+            });
+        }
+        edges.push(SiteGraphEdgeInput {
+            from_site_id,
+            to_site_id,
+            weight,
+            evidence,
+        });
+    }
+    Ok(edges)
+}
+
 pub fn parse_assignee_capacity_csv(input: &str) -> Result<Vec<AssigneeCapacity>, CsvIntakeError> {
     let mut lines = input.lines().enumerate();
     let Some((header_idx, header_line)) = lines.find(|(_, line)| !line.trim().is_empty()) else {
@@ -1540,11 +1631,71 @@ pub fn build_site_graph(sites: &[Site]) -> SiteGraph {
     }
 }
 
+pub fn build_site_graph_with_edges(
+    sites: &[Site],
+    edge_inputs: &[SiteGraphEdgeInput],
+) -> SiteGraph {
+    let mut nodes = sites
+        .iter()
+        .map(|site| SiteGraphNode {
+            site_id: site.id.clone(),
+            demand: site.demand,
+            revenue: site.revenue,
+            latitude: site.latitude,
+            longitude: site.longitude,
+        })
+        .collect::<Vec<_>>();
+    nodes.sort_by(|left, right| left.site_id.cmp(&right.site_id));
+
+    let mut diagnostics = site_graph_input_diagnostics(&nodes);
+    let (edges, edge_diagnostics) = explicit_evidence_edges(&nodes, edge_inputs);
+    diagnostics.extend(edge_diagnostics);
+    diagnostics.extend(site_graph_connectivity_diagnostics(&nodes, &edges));
+
+    SiteGraph {
+        nodes,
+        edges,
+        diagnostics,
+    }
+}
+
 pub fn site_graph_diagnostic_report(
     sites: &[Site],
     long_edge_threshold_degrees: f64,
 ) -> SiteGraphDiagnosticReport {
     let graph = build_site_graph(sites);
+    let component_count = site_graph_component_count(&graph.nodes, &graph.edges);
+    let mut diagnostics = graph.diagnostics.clone();
+    diagnostics.extend(site_graph_isolated_site_diagnostics(
+        &graph.nodes,
+        &graph.edges,
+    ));
+    diagnostics.extend(site_graph_long_edge_diagnostics(
+        &graph.edges,
+        long_edge_threshold_degrees,
+    ));
+    diagnostics.sort_by(|left, right| {
+        left.severity
+            .cmp(&right.severity)
+            .then_with(|| left.code.cmp(&right.code))
+            .then_with(|| left.site_ids.cmp(&right.site_ids))
+            .then_with(|| left.message.cmp(&right.message))
+    });
+
+    SiteGraphDiagnosticReport {
+        node_count: graph.nodes.len(),
+        edge_count: graph.edges.len(),
+        component_count,
+        diagnostics,
+    }
+}
+
+pub fn site_graph_diagnostic_report_with_edges(
+    sites: &[Site],
+    edge_inputs: &[SiteGraphEdgeInput],
+    long_edge_threshold_degrees: f64,
+) -> SiteGraphDiagnosticReport {
+    let graph = build_site_graph_with_edges(sites, edge_inputs);
     let component_count = site_graph_component_count(&graph.nodes, &graph.edges);
     let mut diagnostics = graph.diagnostics.clone();
     diagnostics.extend(site_graph_isolated_site_diagnostics(
@@ -1771,6 +1922,89 @@ fn coordinate_distance_edges(nodes: &[SiteGraphNode]) -> Vec<SiteGraphEdge> {
     edges
 }
 
+fn explicit_evidence_edges(
+    nodes: &[SiteGraphNode],
+    edge_inputs: &[SiteGraphEdgeInput],
+) -> (Vec<SiteGraphEdge>, Vec<SiteGraphDiagnostic>) {
+    let node_ids = nodes
+        .iter()
+        .map(|node| node.site_id.clone())
+        .collect::<std::collections::BTreeSet<_>>();
+    let mut edges = Vec::new();
+    let mut diagnostics = Vec::new();
+    let mut seen_pairs = std::collections::BTreeMap::<(String, String), Vec<String>>::new();
+
+    for input in edge_inputs {
+        let mut site_ids = vec![input.from_site_id.clone(), input.to_site_id.clone()];
+        site_ids.sort();
+        if !node_ids.contains(&input.from_site_id) || !node_ids.contains(&input.to_site_id) {
+            diagnostics.push(SiteGraphDiagnostic {
+                severity: "error".to_string(),
+                code: "unknown-edge-site".to_string(),
+                site_ids,
+                message: format!(
+                    "edge references unknown site '{}' or '{}'",
+                    input.from_site_id, input.to_site_id
+                ),
+            });
+            continue;
+        }
+        if input.from_site_id == input.to_site_id {
+            diagnostics.push(SiteGraphDiagnostic {
+                severity: "error".to_string(),
+                code: "self-edge".to_string(),
+                site_ids,
+                message: format!(
+                    "edge cannot connect site '{}' to itself",
+                    input.from_site_id
+                ),
+            });
+            continue;
+        }
+
+        let (from_site_id, to_site_id) = if input.from_site_id <= input.to_site_id {
+            (input.from_site_id.clone(), input.to_site_id.clone())
+        } else {
+            (input.to_site_id.clone(), input.from_site_id.clone())
+        };
+        seen_pairs
+            .entry((from_site_id.clone(), to_site_id.clone()))
+            .or_default()
+            .push(input.evidence.clone());
+        edges.push(SiteGraphEdge {
+            from_site_id,
+            to_site_id,
+            weight: input.weight,
+            evidence: input.evidence.clone(),
+        });
+    }
+
+    for ((from_site_id, to_site_id), evidence_rows) in seen_pairs {
+        if evidence_rows.len() > 1 {
+            diagnostics.push(SiteGraphDiagnostic {
+                severity: "warning".to_string(),
+                code: "duplicate-edge".to_string(),
+                site_ids: vec![from_site_id.clone(), to_site_id.clone()],
+                message: format!(
+                    "edge '{}' to '{}' appears {} times",
+                    from_site_id,
+                    to_site_id,
+                    evidence_rows.len()
+                ),
+            });
+        }
+    }
+
+    edges.sort_by(|left, right| {
+        left.from_site_id
+            .cmp(&right.from_site_id)
+            .then_with(|| left.to_site_id.cmp(&right.to_site_id))
+            .then_with(|| left.evidence.cmp(&right.evidence))
+            .then_with(|| left.weight.total_cmp(&right.weight))
+    });
+    (edges, diagnostics)
+}
+
 fn graph_partition_seeds(graph: &SiteGraph, seed_count: usize) -> Vec<String> {
     let Some(first_seed) = graph.nodes.iter().max_by(|left, right| {
         left.demand
@@ -1856,6 +2090,15 @@ N-003,9,80000,47.58,-122.29\n\
 S-001,11,105000,47.50,-122.27\n\
 S-002,10,95000,47.46,-122.33\n\
 S-003,10,92000,47.53,-122.38\n"
+}
+
+pub fn sample_site_edges_csv() -> &'static str {
+    "from_site_id,to_site_id,weight,evidence\n\
+N-001,N-002,0.064031,field-adjacency\n\
+N-001,N-003,0.072111,field-adjacency\n\
+N-003,S-001,0.082462,manager-review\n\
+S-001,S-002,0.072111,field-adjacency\n\
+S-002,S-003,0.086023,field-adjacency\n"
 }
 
 pub fn sample_assignee_capacity_csv() -> &'static str {
@@ -2584,5 +2827,68 @@ south,,10,95000,47.46,-222.33\n",
         assert_eq!(diagnostics.len(), 1);
         assert_eq!(diagnostics[0].code, "isolated-site");
         assert_eq!(diagnostics[0].site_ids, ["solo"]);
+    }
+
+    #[test]
+    fn parses_site_edge_evidence_csv() {
+        let edges = parse_site_edges_csv(sample_site_edges_csv()).expect("edge sample parses");
+
+        assert_eq!(edges.len(), 5);
+        assert_eq!(edges[0].from_site_id, "N-001");
+        assert_eq!(edges[0].to_site_id, "N-002");
+        near(edges[0].weight, 0.064031);
+        assert_eq!(edges[0].evidence, "field-adjacency");
+    }
+
+    #[test]
+    fn builds_site_graph_from_explicit_edge_evidence() {
+        let sites = parse_sites_csv(sample_sites_csv()).expect("site sample parses");
+        let edges = parse_site_edges_csv(sample_site_edges_csv()).expect("edge sample parses");
+        let graph = build_site_graph_with_edges(&sites, &edges);
+
+        assert_eq!(graph.nodes.len(), 6);
+        assert_eq!(graph.edges.len(), 5);
+        assert!(graph.diagnostics.is_empty());
+        assert_eq!(graph.edges[0].from_site_id, "N-001");
+        assert_eq!(graph.edges[0].to_site_id, "N-002");
+        assert_eq!(graph.edges[0].evidence, "field-adjacency");
+    }
+
+    #[test]
+    fn diagnoses_invalid_edge_evidence() {
+        let sites = parse_sites_csv(sample_sites_csv()).expect("site sample parses");
+        let edges = vec![
+            SiteGraphEdgeInput {
+                from_site_id: "N-001".to_string(),
+                to_site_id: "N-002".to_string(),
+                weight: 0.1,
+                evidence: "fixture".to_string(),
+            },
+            SiteGraphEdgeInput {
+                from_site_id: "N-002".to_string(),
+                to_site_id: "N-001".to_string(),
+                weight: 0.1,
+                evidence: "duplicate".to_string(),
+            },
+            SiteGraphEdgeInput {
+                from_site_id: "N-003".to_string(),
+                to_site_id: "missing".to_string(),
+                weight: 0.1,
+                evidence: "bad-ref".to_string(),
+            },
+        ];
+        let report = site_graph_diagnostic_report_with_edges(&sites, &edges, 0.05);
+        let codes = report
+            .diagnostics
+            .iter()
+            .map(|diagnostic| diagnostic.code.as_str())
+            .collect::<Vec<_>>();
+
+        assert_eq!(report.edge_count, 2);
+        assert!(codes.contains(&"duplicate-edge"));
+        assert!(codes.contains(&"unknown-edge-site"));
+        assert!(codes.contains(&"disconnected-component"));
+        assert!(codes.contains(&"isolated-site"));
+        assert!(codes.contains(&"long-edge"));
     }
 }

@@ -2,12 +2,13 @@ use terrain_core::{
     TerritoryVisualOptions, audit_product_balance, audit_territories, capacity_exceptions,
     compactness_exceptions, compare_territory_plans, dashboard_schema_json,
     diagnose_territories_csv, graph_partition_report, integration_fixture_manifest_json,
-    metis_core_handoff, parse_assignee_capacity_csv, parse_sites_csv, parse_territories_csv,
-    partition_count_sweep, partition_sites, partition_sites_with_metis_core,
+    metis_core_handoff, parse_assignee_capacity_csv, parse_site_edges_csv, parse_sites_csv,
+    parse_territories_csv, partition_count_sweep, partition_sites, partition_sites_with_metis_core,
     render_territory_geojson, render_territory_geojson_with_capacity, render_territory_svg,
     render_territory_svg_with_capacity, sample_assignee_capacity_csv,
-    sample_proposed_territories_csv, sample_sites_csv, sample_territories, sample_territories_csv,
-    site_graph_diagnostic_report, site_movements, summarize_territory,
+    sample_proposed_territories_csv, sample_site_edges_csv, sample_sites_csv, sample_territories,
+    sample_territories_csv, site_graph_diagnostic_report, site_graph_diagnostic_report_with_edges,
+    site_movements, summarize_territory,
 };
 
 fn main() {
@@ -30,6 +31,7 @@ fn main() {
         "sample-csv" => print_sample_csv(),
         "sample-proposed-csv" => print_sample_proposed_csv(),
         "sample-sites-csv" => print_sample_sites_csv(),
+        "sample-site-edges-csv" => print_sample_site_edges_csv(),
         "sample-capacity-csv" => print_sample_capacity_csv(),
         "audit-csv" => run_csv_command(args.get(1), print_audit_for_csv),
         "product-balance-csv" => run_csv_command(args.get(1), print_product_balance_for_csv),
@@ -37,6 +39,9 @@ fn main() {
         "capacity-audit-csv" => run_capacity_audit_command(args.get(1), args.get(2)),
         "diagnose-csv" => run_csv_command(args.get(1), print_diagnostics_for_csv),
         "graph-diagnostics-csv" => run_graph_diagnostics_command(args.get(1), args.get(2)),
+        "graph-diagnostics-with-edges-csv" => {
+            run_graph_diagnostics_with_edges_command(args.get(1), args.get(2), args.get(3))
+        }
         "graph-partition-csv" => run_graph_partition_command(args.get(1), args.get(2)),
         "metis-handoff-csv" => run_metis_handoff_command(args.get(1)),
         "metis-partition-csv" => run_metis_partition_command(args.get(1), args.get(2)),
@@ -77,6 +82,7 @@ fn print_help() {
     println!("  sample-csv     Emit the built-in CSV intake fixture");
     println!("  sample-proposed-csv Emit a proposed-plan CSV fixture for comparison");
     println!("  sample-sites-csv Emit the built-in unassigned site CSV fixture");
+    println!("  sample-site-edges-csv Emit the built-in site edge evidence fixture");
     println!("  sample-capacity-csv Emit the built-in assignee capacity fixture");
     println!("  audit-csv PATH Audit a territory CSV file");
     println!("  product-balance-csv PATH Audit per-product demand balance");
@@ -84,6 +90,9 @@ fn print_help() {
     println!("  capacity-audit-csv TERRITORIES CAPACITY Report capacity overloads");
     println!("  diagnose-csv PATH Report territory CSV intake diagnostics");
     println!("  graph-diagnostics-csv PATH [LONG_EDGE_THRESHOLD] Report site graph diagnostics");
+    println!(
+        "  graph-diagnostics-with-edges-csv SITES EDGES [LONG_EDGE_THRESHOLD] Report edge-backed graph diagnostics"
+    );
     println!("  graph-partition-csv PATH COUNT Compare greedy and graph-backed partitions");
     println!("  metis-handoff-csv PATH Emit METIS-CORE CSR handoff rows");
     println!("  metis-partition-csv PATH COUNT Audit a METIS-CORE partition");
@@ -234,6 +243,61 @@ fn run_graph_diagnostics_command(path: Option<&String>, threshold: Option<&Strin
         std::process::exit(1);
     });
     let report = site_graph_diagnostic_report(&sites, threshold);
+    println!(
+        "status={} node_count={} edge_count={} component_count={} diagnostic_count={}",
+        if report.diagnostics.iter().any(|d| d.severity == "error") {
+            "error"
+        } else if report.diagnostics.is_empty() {
+            "pass"
+        } else {
+            "review"
+        },
+        report.node_count,
+        report.edge_count,
+        report.component_count,
+        report.diagnostics.len()
+    );
+    println!("severity,code,site_ids,message");
+    for diagnostic in report.diagnostics {
+        println!(
+            "{},{},{},{}",
+            diagnostic.severity,
+            diagnostic.code,
+            diagnostic.site_ids.join(";"),
+            diagnostic.message.replace(',', ";"),
+        );
+    }
+}
+
+fn run_graph_diagnostics_with_edges_command(
+    sites_path: Option<&String>,
+    edges_path: Option<&String>,
+    threshold: Option<&String>,
+) {
+    let Some(edges_path) = edges_path else {
+        eprintln!("missing site edge CSV path");
+        print_help();
+        std::process::exit(2);
+    };
+    let threshold = threshold
+        .map(|value| {
+            value.parse::<f64>().unwrap_or_else(|_| {
+                eprintln!("long edge threshold must be a number");
+                std::process::exit(2);
+            })
+        })
+        .unwrap_or(0.10);
+    let sites_csv = read_csv_file(sites_path);
+    let edges_csv = read_csv_file(Some(edges_path));
+    let sites = parse_sites_csv(&sites_csv).unwrap_or_else(|error| {
+        eprintln!("sites {error}");
+        std::process::exit(1);
+    });
+    let edges = parse_site_edges_csv(&edges_csv).unwrap_or_else(|error| {
+        eprintln!("edges {error}");
+        std::process::exit(1);
+    });
+    let report = site_graph_diagnostic_report_with_edges(&sites, &edges, threshold);
     println!(
         "status={} node_count={} edge_count={} component_count={} diagnostic_count={}",
         if report.diagnostics.iter().any(|d| d.severity == "error") {
@@ -415,6 +479,10 @@ fn print_sample_proposed_csv() {
 
 fn print_sample_sites_csv() {
     print!("{}", sample_sites_csv());
+}
+
+fn print_sample_site_edges_csv() {
+    print!("{}", sample_site_edges_csv());
 }
 
 fn print_sample_capacity_csv() {

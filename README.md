@@ -29,8 +29,10 @@ cargo run -p terrain-cli -- field-review-csv sample-territories.csv sample-terri
 cargo run -p terrain-cli -- svg-csv sample-territories.csv > terrain-split.svg
 cargo run -p terrain-cli -- geojson-csv sample-territories.csv > terrain-split.geojson
 cargo run -p terrain-cli -- sample-sites-csv > sample-sites.csv
+cargo run -p terrain-cli -- sample-site-edges-csv > sample-site-edges.csv
 cargo run -p terrain-cli -- sample-capacity-csv > sample-capacity.csv
 cargo run -p terrain-cli -- graph-diagnostics-csv sample-sites.csv
+cargo run -p terrain-cli -- graph-diagnostics-with-edges-csv sample-sites.csv sample-site-edges.csv
 cargo run -p terrain-cli -- graph-partition-csv sample-sites.csv 2
 cargo run -p terrain-cli -- metis-handoff-csv sample-sites.csv
 cargo run -p terrain-cli -- metis-partition-csv sample-sites.csv 2
@@ -122,6 +124,8 @@ mnemonics:
 5. **Transcontinental Railroad** - shared kernels, dashboards, and integrations.
 6. **Continental Divide** - explicit site graphs and graph-backed partition
    readiness.
+7. **Public Land Survey** - explicit edge evidence, adjacency inputs, and
+   geography-ready graph controls.
 
 ## Visual artifacts
 

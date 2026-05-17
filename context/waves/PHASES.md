@@ -15,10 +15,11 @@ historical harms or politics of expansion.
 | 4 | Homestead Act | People, capacity, ownership, and fairness | done |
 | 5 | Transcontinental Railroad | Shared kernels, dashboards, and integrations | done |
 | 6 | Continental Divide | Graph construction and METIS-CORE partition readiness | done |
+| 7 | Public Land Survey | Explicit edge evidence and geography-adjacency inputs | planned |
 
 ## Active phase
 
-- No active phase. Continental Divide is complete.
+- `public-land-survey-edge-evidence`
 
 ## Protocol
 
