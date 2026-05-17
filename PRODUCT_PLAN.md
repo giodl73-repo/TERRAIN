@@ -19,6 +19,7 @@ historical harms or politics of expansion.
 | 3 | Oregon Trail | Produce usable route/territory movement scenarios and visual handoffs. |
 | 4 | Homestead Act | Assign people, capacity, and ownership to stable territories. |
 | 5 | Transcontinental Railroad | Connect optimization kernels, dashboards, exports, and reusable integrations. |
+| 6 | Continental Divide | Build explicit site graphs and prepare METIS-CORE-backed partitioning. |
 
 ## Phase 1: Louisiana Purchase - Foundation
 
@@ -95,6 +96,23 @@ Planned integrations:
 - METIS-CORE for partition/refinement once the product contract is clear.
 - CROP/PEBBLE/FLETCH later for context packs, import bundles, and cached public
   geography or benchmark fixtures.
+
+## Phase 6: Continental Divide - Graph construction
+
+Goal: move from coordinate-only territory heuristics to explicit site graph
+construction while keeping customer policy in TERRAIN.
+
+Planned capabilities:
+
+- Build a product-neutral site graph contract from site IDs, coordinates, demand,
+  revenue, and optional boundary/road adjacency inputs.
+- Emit graph diagnostics before partitioning: isolated sites, duplicate
+  coordinates, disconnected components, and suspect long edges.
+- Keep deterministic greedy partitioning as the baseline comparator.
+- Add a METIS-CORE adoption adapter only after the graph input contract is
+  explicit and testable.
+- Compare greedy and graph-backed partition outputs with the existing balance,
+  movement, compactness, capacity, SVG, and GeoJSON surfaces.
 
 ## Visual/dashboard contract
 

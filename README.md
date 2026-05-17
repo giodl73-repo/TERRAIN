@@ -107,6 +107,8 @@ mnemonics:
 3. **Oregon Trail** - first movement/territory scenarios.
 4. **Homestead Act** - people assignment, capacity, and ownership.
 5. **Transcontinental Railroad** - shared kernels, dashboards, and integrations.
+6. **Continental Divide** - explicit site graphs and graph-backed partition
+   readiness.
 
 ## Visual artifacts
 
