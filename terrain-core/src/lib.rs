@@ -99,6 +99,26 @@ pub struct SiteMovement {
 }
 
 #[derive(Debug, Clone, PartialEq)]
+pub struct TerritoryEdgeAuditDiagnostic {
+    pub severity: String,
+    pub code: String,
+    pub territory_id: Option<String>,
+    pub from_site_id: Option<String>,
+    pub to_site_id: Option<String>,
+    pub message: String,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct TerritoryEdgeAuditReport {
+    pub territory_count: usize,
+    pub site_count: usize,
+    pub edge_count: usize,
+    pub cut_edge_count: usize,
+    pub disconnected_territory_count: usize,
+    pub diagnostics: Vec<TerritoryEdgeAuditDiagnostic>,
+}
+
+#[derive(Debug, Clone, PartialEq)]
 pub struct AssigneeCapacity {
     pub assignee: String,
     pub team: String,
@@ -554,6 +574,107 @@ pub fn site_movements(baseline: &[Territory], proposed: &[Territory]) -> Vec<Sit
             }
         })
         .collect()
+}
+
+pub fn territory_edge_audit(
+    territories: &[Territory],
+    edge_inputs: &[SiteGraphEdgeInput],
+) -> TerritoryEdgeAuditReport {
+    let site_index = territory_site_index(territories);
+    let mut diagnostics = Vec::new();
+    let mut cut_edge_count = 0usize;
+    let mut internal_edges_by_territory =
+        std::collections::BTreeMap::<String, Vec<(String, String)>>::new();
+
+    for edge in edge_inputs {
+        let from = site_index.get(&edge.from_site_id);
+        let to = site_index.get(&edge.to_site_id);
+        match (from, to) {
+            (Some((from_territory, _)), Some((to_territory, _)))
+                if from_territory == to_territory =>
+            {
+                let (left, right) = ordered_site_pair(&edge.from_site_id, &edge.to_site_id);
+                internal_edges_by_territory
+                    .entry(from_territory.clone())
+                    .or_default()
+                    .push((left, right));
+            }
+            (Some((from_territory, _)), Some((to_territory, _))) => {
+                cut_edge_count += 1;
+                diagnostics.push(TerritoryEdgeAuditDiagnostic {
+                    severity: "warning".to_string(),
+                    code: "cut-edge".to_string(),
+                    territory_id: None,
+                    from_site_id: Some(edge.from_site_id.clone()),
+                    to_site_id: Some(edge.to_site_id.clone()),
+                    message: format!(
+                        "edge connects territory '{}' to '{}'",
+                        from_territory, to_territory
+                    ),
+                });
+            }
+            _ => {
+                diagnostics.push(TerritoryEdgeAuditDiagnostic {
+                    severity: "error".to_string(),
+                    code: "unknown-edge-site".to_string(),
+                    territory_id: None,
+                    from_site_id: Some(edge.from_site_id.clone()),
+                    to_site_id: Some(edge.to_site_id.clone()),
+                    message: format!(
+                        "edge references site '{}' or '{}' outside the territory plan",
+                        edge.from_site_id, edge.to_site_id
+                    ),
+                });
+            }
+        }
+    }
+
+    let mut disconnected_territory_count = 0usize;
+    for territory in territories {
+        if territory.sites.len() <= 1 {
+            continue;
+        }
+        let components = territory_edge_components(
+            &territory.sites,
+            internal_edges_by_territory
+                .get(&territory.id)
+                .map(Vec::as_slice)
+                .unwrap_or(&[]),
+        );
+        if components.len() > 1 {
+            disconnected_territory_count += 1;
+            diagnostics.push(TerritoryEdgeAuditDiagnostic {
+                severity: "warning".to_string(),
+                code: "disconnected-territory".to_string(),
+                territory_id: Some(territory.id.clone()),
+                from_site_id: None,
+                to_site_id: None,
+                message: format!(
+                    "territory '{}' has {} edge-evidence component(s)",
+                    territory.id,
+                    components.len()
+                ),
+            });
+        }
+    }
+
+    diagnostics.sort_by(|left, right| {
+        left.severity
+            .cmp(&right.severity)
+            .then_with(|| left.code.cmp(&right.code))
+            .then_with(|| left.territory_id.cmp(&right.territory_id))
+            .then_with(|| left.from_site_id.cmp(&right.from_site_id))
+            .then_with(|| left.to_site_id.cmp(&right.to_site_id))
+    });
+
+    TerritoryEdgeAuditReport {
+        territory_count: territories.len(),
+        site_count: site_index.len(),
+        edge_count: edge_inputs.len(),
+        cut_edge_count,
+        disconnected_territory_count,
+        diagnostics,
+    }
 }
 
 pub fn capacity_exceptions(
@@ -2388,6 +2509,63 @@ fn territory_site_index(
     index
 }
 
+fn ordered_site_pair(left: &str, right: &str) -> (String, String) {
+    if left <= right {
+        (left.to_string(), right.to_string())
+    } else {
+        (right.to_string(), left.to_string())
+    }
+}
+
+fn territory_edge_components(sites: &[Site], edges: &[(String, String)]) -> Vec<Vec<String>> {
+    let site_ids = sites
+        .iter()
+        .map(|site| site.id.clone())
+        .collect::<std::collections::BTreeSet<_>>();
+    let mut adjacency = site_ids
+        .iter()
+        .map(|site_id| (site_id.clone(), std::collections::BTreeSet::new()))
+        .collect::<std::collections::BTreeMap<_, _>>();
+    for (left, right) in edges {
+        if site_ids.contains(left) && site_ids.contains(right) {
+            adjacency
+                .entry(left.clone())
+                .or_default()
+                .insert(right.clone());
+            adjacency
+                .entry(right.clone())
+                .or_default()
+                .insert(left.clone());
+        }
+    }
+
+    let mut seen = std::collections::BTreeSet::new();
+    let mut components = Vec::new();
+    for site_id in &site_ids {
+        if seen.contains(site_id) {
+            continue;
+        }
+        let mut stack = vec![site_id.clone()];
+        let mut component = Vec::new();
+        while let Some(current) = stack.pop() {
+            if !seen.insert(current.clone()) {
+                continue;
+            }
+            component.push(current.clone());
+            if let Some(neighbors) = adjacency.get(&current) {
+                for neighbor in neighbors.iter().rev() {
+                    if !seen.contains(neighbor) {
+                        stack.push(neighbor.clone());
+                    }
+                }
+            }
+        }
+        component.sort();
+        components.push(component);
+    }
+    components
+}
+
 fn csv_field<'a>(
     fields: &'a [String],
     header_map: &std::collections::BTreeMap<String, usize>,
@@ -3123,5 +3301,62 @@ south,,10,95000,47.46,-222.33\n",
         assert!(geojson.contains("\"from_site_id\":\"N-001\""));
         assert!(geojson.contains("\"to_site_id\":\"N-002\""));
         assert!(geojson.contains("\"kind\":\"site\""));
+    }
+
+    #[test]
+    fn audits_territory_edges_for_cut_edges_and_disconnected_components() {
+        let territories =
+            parse_territories_csv(sample_territories_csv()).expect("territories parse");
+        let edges = parse_site_edges_csv(sample_site_edges_csv()).expect("edges parse");
+        let report = territory_edge_audit(&territories, &edges);
+        let codes = report
+            .diagnostics
+            .iter()
+            .map(|diagnostic| diagnostic.code.as_str())
+            .collect::<Vec<_>>();
+
+        assert_eq!(report.territory_count, 2);
+        assert_eq!(report.site_count, 6);
+        assert_eq!(report.edge_count, 5);
+        assert_eq!(report.cut_edge_count, 1);
+        assert_eq!(report.disconnected_territory_count, 0);
+        assert!(codes.contains(&"cut-edge"));
+    }
+
+    #[test]
+    fn audits_territory_edges_for_unknown_sites() {
+        let territories =
+            parse_territories_csv(sample_territories_csv()).expect("territories parse");
+        let edges = vec![SiteGraphEdgeInput {
+            from_site_id: "N-001".to_string(),
+            to_site_id: "missing".to_string(),
+            weight: 1.0,
+            evidence: "fixture".to_string(),
+        }];
+        let report = territory_edge_audit(&territories, &edges);
+
+        assert_eq!(report.diagnostics[0].severity, "error");
+        assert_eq!(report.diagnostics[0].code, "unknown-edge-site");
+    }
+
+    #[test]
+    fn audits_territory_edges_for_disconnected_territories() {
+        let territories =
+            parse_territories_csv(sample_territories_csv()).expect("territories parse");
+        let edges = vec![SiteGraphEdgeInput {
+            from_site_id: "N-001".to_string(),
+            to_site_id: "N-002".to_string(),
+            weight: 1.0,
+            evidence: "fixture".to_string(),
+        }];
+        let report = territory_edge_audit(&territories, &edges);
+        let disconnected = report
+            .diagnostics
+            .iter()
+            .find(|diagnostic| diagnostic.code == "disconnected-territory")
+            .expect("disconnected territory diagnostic exists");
+
+        assert_eq!(report.disconnected_territory_count, 2);
+        assert_eq!(disconnected.severity, "warning");
     }
 }

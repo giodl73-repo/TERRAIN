@@ -51,6 +51,8 @@ cargo run -p terrain-cli -- metis-partition-with-edges-csv sample-sites.csv samp
 cargo run -p terrain-cli -- edge-evidence-svg-csv sample-sites.csv sample-site-edges.csv > edge-evidence.svg
 cargo run -p terrain-cli -- edge-evidence-geojson-csv sample-sites.csv sample-site-edges.csv > edge-evidence.geojson
 cargo run -p terrain-cli -- edge-evidence-packet-csv sample-sites.csv sample-site-edges.csv terrain-edge-packet
+cargo run -p terrain-cli -- territory-edge-audit-csv sample-territories.csv sample-site-edges.csv
+cargo run -p terrain-cli -- territory-edge-packet-csv sample-territories.csv sample-site-edges.csv terrain-territory-edge-packet
 ```
 
 The diagnostics command emits a summary line and stable diagnostic rows:
@@ -97,6 +99,19 @@ coordinate-complete graph. `edge-evidence-svg-csv` and
 and weight bindings. `edge-evidence-packet-csv` writes the supplied edge
 evidence, graph diagnostics, METIS CSR handoff tables, SVG, and GeoJSON into a
 review folder.
+
+## Territory edge audit
+
+`territory-edge-audit-csv` checks a territory plan against explicit edge
+evidence. It reports:
+
+- `cut-edge` when an edge connects sites assigned to different territories,
+- `unknown-edge-site` when evidence references a site outside the plan,
+- `disconnected-territory` when a multi-site territory has more than one
+  connected component under the supplied edge evidence.
+
+Cut edges are review signals, not automatic failures. A cut can be intentional
+when capacity, ownership, or customer policy outweighs adjacency.
 
 ## Boundary
 

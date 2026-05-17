@@ -22,6 +22,7 @@ historical harms or politics of expansion.
 | 6 | Continental Divide | Build explicit site graphs and prepare METIS-CORE-backed partitioning. |
 | 7 | Public Land Survey | Add explicit edge evidence, adjacency inputs, and geography-ready graph controls. |
 | 8 | National Road | Render edge evidence as reviewable SVG, GeoJSON, and packet artifacts. |
+| 9 | Cumberland Gap | Audit territory plans against explicit edge evidence and connectedness. |
 
 ## Phase 1: Louisiana Purchase - Foundation
 
@@ -143,6 +144,18 @@ Planned capabilities:
   sites.
 - Include edge visual artifacts in edge evidence packets.
 - Keep edge visuals as review overlays, not turn-by-turn routes.
+
+## Phase 9: Cumberland Gap - Edge audits
+
+Goal: use explicit edge evidence to audit whether assigned territories preserve
+important adjacency and connectedness.
+
+Planned capabilities:
+
+- Report site-edge evidence that crosses territory boundaries.
+- Report territories that are internally disconnected by supplied edge evidence.
+- Package edge audit rows with edge visuals for operations review.
+- Keep cut-edge findings as review signals, not automatic rejection rules.
 
 ## Visual/dashboard contract
 

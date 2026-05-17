@@ -10,7 +10,7 @@ use terrain_core::{
     render_territory_svg_with_capacity, sample_assignee_capacity_csv,
     sample_proposed_territories_csv, sample_site_edges_csv, sample_sites_csv, sample_territories,
     sample_territories_csv, site_graph_diagnostic_report, site_graph_diagnostic_report_with_edges,
-    site_movements, summarize_territory,
+    site_movements, summarize_territory, territory_edge_audit,
 };
 
 fn main() {
@@ -58,6 +58,10 @@ fn main() {
         }
         "edge-evidence-svg-csv" => run_edge_evidence_svg_command(args.get(1), args.get(2)),
         "edge-evidence-geojson-csv" => run_edge_evidence_geojson_command(args.get(1), args.get(2)),
+        "territory-edge-audit-csv" => run_territory_edge_audit_command(args.get(1), args.get(2)),
+        "territory-edge-packet-csv" => {
+            run_territory_edge_packet_command(args.get(1), args.get(2), args.get(3))
+        }
         "compare-csv" => run_compare_command(args.get(1), args.get(2)),
         "movement-csv" => run_movement_command(args.get(1), args.get(2)),
         "compactness-csv" => run_compactness_command(args.get(1), args.get(2)),
@@ -116,6 +120,12 @@ fn print_help() {
     println!("  edge-evidence-packet-csv SITES EDGES OUT_DIR Write edge evidence review packet");
     println!("  edge-evidence-svg-csv SITES EDGES Emit edge evidence SVG");
     println!("  edge-evidence-geojson-csv SITES EDGES Emit edge evidence GeoJSON");
+    println!(
+        "  territory-edge-audit-csv TERRITORIES EDGES Audit a territory plan against edge evidence"
+    );
+    println!(
+        "  territory-edge-packet-csv TERRITORIES EDGES OUT_DIR Write territory edge audit packet"
+    );
     println!("  compare-csv BASELINE PROPOSED Compare two territory CSV plans");
     println!("  movement-csv BASELINE PROPOSED List stable site movement between plans");
     println!("  compactness-csv PATH THRESHOLD Report max-radius compactness exceptions");
@@ -527,6 +537,101 @@ fn run_edge_evidence_geojson_command(sites_path: Option<&String>, edges_path: Op
     println!("{}", render_site_graph_geojson(&sites, &edges));
 }
 
+fn run_territory_edge_audit_command(territory_path: Option<&String>, edges_path: Option<&String>) {
+    let (territories, edges) = read_territories_and_edges(territory_path, edges_path);
+    let report = territory_edge_audit(&territories, &edges);
+    print_territory_edge_audit(&report);
+}
+
+fn run_territory_edge_packet_command(
+    territory_path: Option<&String>,
+    edges_path: Option<&String>,
+    output_dir: Option<&String>,
+) {
+    let Some(output_dir) = output_dir else {
+        eprintln!("missing output directory");
+        print_help();
+        std::process::exit(2);
+    };
+    let (territories, edges) = read_territories_and_edges(territory_path, edges_path);
+    let report = territory_edge_audit(&territories, &edges);
+    let sites = territories
+        .iter()
+        .flat_map(|territory| territory.sites.iter().cloned())
+        .collect::<Vec<_>>();
+    let output_dir = std::path::Path::new(output_dir);
+    std::fs::create_dir_all(output_dir).unwrap_or_else(|error| {
+        eprintln!("failed to create {}: {error}", output_dir.display());
+        std::process::exit(1);
+    });
+    write_packet_file(
+        output_dir,
+        "territory-edge-audit.csv",
+        &territory_edge_audit_csv(&report),
+    );
+    write_packet_file(
+        output_dir,
+        "edge-evidence.csv",
+        &site_edge_evidence_csv(&edges),
+    );
+    write_packet_file(
+        output_dir,
+        "edge-evidence.svg",
+        &render_site_graph_svg(
+            &sites,
+            &edges,
+            &TerritoryVisualOptions {
+                title: "TERRAIN territory edge audit".to_string(),
+                ..TerritoryVisualOptions::default()
+            },
+        ),
+    );
+    write_packet_file(
+        output_dir,
+        "edge-evidence.geojson",
+        &render_site_graph_geojson(&sites, &edges),
+    );
+    println!(
+        "wrote territory edge packet to {} with 4 files",
+        output_dir.display()
+    );
+}
+
+fn print_territory_edge_audit(report: &terrain_core::TerritoryEdgeAuditReport) {
+    println!(
+        "status={} territory_count={} site_count={} edge_count={} cut_edge_count={} disconnected_territory_count={} diagnostic_count={}",
+        if report
+            .diagnostics
+            .iter()
+            .any(|diagnostic| diagnostic.severity == "error")
+        {
+            "error"
+        } else if report.diagnostics.is_empty() {
+            "pass"
+        } else {
+            "review"
+        },
+        report.territory_count,
+        report.site_count,
+        report.edge_count,
+        report.cut_edge_count,
+        report.disconnected_territory_count,
+        report.diagnostics.len(),
+    );
+    println!("severity,code,territory_id,from_site_id,to_site_id,message");
+    for diagnostic in &report.diagnostics {
+        println!(
+            "{},{},{},{},{},{}",
+            diagnostic.severity,
+            diagnostic.code,
+            diagnostic.territory_id.as_deref().unwrap_or_default(),
+            diagnostic.from_site_id.as_deref().unwrap_or_default(),
+            diagnostic.to_site_id.as_deref().unwrap_or_default(),
+            diagnostic.message.replace(',', ";"),
+        );
+    }
+}
+
 fn read_sites_and_edges(
     sites_path: Option<&String>,
     edges_path: Option<&String>,
@@ -550,6 +655,31 @@ fn read_sites_and_edges(
         std::process::exit(1);
     });
     (sites, edges)
+}
+
+fn read_territories_and_edges(
+    territory_path: Option<&String>,
+    edges_path: Option<&String>,
+) -> (
+    Vec<terrain_core::Territory>,
+    Vec<terrain_core::SiteGraphEdgeInput>,
+) {
+    let Some(edges_path) = edges_path else {
+        eprintln!("missing site edge CSV path");
+        print_help();
+        std::process::exit(2);
+    };
+    let territory_csv = read_csv_file(territory_path);
+    let edge_csv = read_csv_file(Some(edges_path));
+    let territories = parse_territories_csv(&territory_csv).unwrap_or_else(|error| {
+        eprintln!("territories {error}");
+        std::process::exit(1);
+    });
+    let edges = parse_site_edges_csv(&edge_csv).unwrap_or_else(|error| {
+        eprintln!("edges {error}");
+        std::process::exit(1);
+    });
+    (territories, edges)
 }
 
 fn print_sample_svg() {
@@ -1318,6 +1448,22 @@ fn site_graph_diagnostics_csv(report: &terrain_core::SiteGraphDiagnosticReport) 
             diagnostic.severity,
             diagnostic.code,
             diagnostic.site_ids.join(";"),
+            diagnostic.message.replace(',', ";"),
+        ));
+    }
+    csv
+}
+
+fn territory_edge_audit_csv(report: &terrain_core::TerritoryEdgeAuditReport) -> String {
+    let mut csv = String::from("severity,code,territory_id,from_site_id,to_site_id,message\n");
+    for diagnostic in &report.diagnostics {
+        csv.push_str(&format!(
+            "{},{},{},{},{},{}\n",
+            diagnostic.severity,
+            diagnostic.code,
+            diagnostic.territory_id.as_deref().unwrap_or_default(),
+            diagnostic.from_site_id.as_deref().unwrap_or_default(),
+            diagnostic.to_site_id.as_deref().unwrap_or_default(),
             diagnostic.message.replace(',', ";"),
         ));
     }

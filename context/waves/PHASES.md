@@ -17,10 +17,11 @@ historical harms or politics of expansion.
 | 6 | Continental Divide | Graph construction and METIS-CORE partition readiness | done |
 | 7 | Public Land Survey | Explicit edge evidence and geography-adjacency inputs | done |
 | 8 | National Road | Edge evidence visual review and packet artifacts | done |
+| 9 | Cumberland Gap | Edge-aware territory audits and review packets | done |
 
 ## Active phase
 
-- No active phase. National Road is complete.
+- No active phase. Cumberland Gap is complete.
 
 ## Protocol
 

@@ -45,6 +45,8 @@ cargo run -p terrain-cli -- metis-partition-with-edges-csv sample-sites.csv samp
 cargo run -p terrain-cli -- edge-evidence-svg-csv sample-sites.csv sample-site-edges.csv > edge-evidence.svg
 cargo run -p terrain-cli -- edge-evidence-geojson-csv sample-sites.csv sample-site-edges.csv > edge-evidence.geojson
 cargo run -p terrain-cli -- edge-evidence-packet-csv sample-sites.csv sample-site-edges.csv terrain-edge-packet
+cargo run -p terrain-cli -- territory-edge-audit-csv sample-territories.csv sample-site-edges.csv
+cargo run -p terrain-cli -- territory-edge-packet-csv sample-territories.csv sample-site-edges.csv terrain-territory-edge-packet
 cargo run -p terrain-cli -- capacity-csv sample-capacity.csv
 cargo run -p terrain-cli -- capacity-audit-csv sample-territories.csv sample-capacity.csv
 cargo run -p terrain-cli -- ownership-svg-csv sample-territories.csv sample-capacity.csv > terrain-ownership.svg
@@ -101,6 +103,10 @@ METIS-CORE through its GitHub repository, emits CSR-ready handoff rows for
 benchmarking, and can audit a METIS-backed partition without moving territory
 policy out of TERRAIN.
 
+The territory edge audit command uses explicit edge evidence to flag site links
+that cross territory boundaries, unknown edge references, and territories that
+are disconnected by the supplied evidence.
+
 The field review command emits a plain-language recommendation, balance summary,
 site movement list, and compactness exceptions for field manager review.
 
@@ -136,6 +142,7 @@ mnemonics:
 7. **Public Land Survey** - explicit edge evidence, adjacency inputs, and
    geography-ready graph controls.
 8. **National Road** - edge evidence SVG, GeoJSON, and packet review artifacts.
+9. **Cumberland Gap** - edge-aware territory audit and review packet outputs.
 
 ## Visual artifacts
 
