@@ -119,6 +119,23 @@ pub struct TerritoryEdgeAuditReport {
 }
 
 #[derive(Debug, Clone, PartialEq)]
+pub struct TerritoryEdgeFieldReviewItem {
+    pub severity: String,
+    pub action: String,
+    pub territory_id: Option<String>,
+    pub from_site_id: Option<String>,
+    pub to_site_id: Option<String>,
+    pub message: String,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct TerritoryEdgeFieldReview {
+    pub recommendation: String,
+    pub summary: String,
+    pub items: Vec<TerritoryEdgeFieldReviewItem>,
+}
+
+#[derive(Debug, Clone, PartialEq)]
 pub struct AssigneeCapacity {
     pub assignee: String,
     pub team: String,
@@ -674,6 +691,80 @@ pub fn territory_edge_audit(
         cut_edge_count,
         disconnected_territory_count,
         diagnostics,
+    }
+}
+
+pub fn territory_edge_field_review(
+    territories: &[Territory],
+    edge_inputs: &[SiteGraphEdgeInput],
+) -> TerritoryEdgeFieldReview {
+    let report = territory_edge_audit(territories, edge_inputs);
+    let has_error = report
+        .diagnostics
+        .iter()
+        .any(|diagnostic| diagnostic.severity == "error");
+    let recommendation = if has_error {
+        "fix edge inputs before field review"
+    } else if report.diagnostics.is_empty() {
+        "ready for field review"
+    } else {
+        "review adjacency exceptions with field managers"
+    }
+    .to_string();
+    let summary = format!(
+        "{} territories, {} sites, {} edge evidence rows, {} cut edges, {} disconnected territories",
+        report.territory_count,
+        report.site_count,
+        report.edge_count,
+        report.cut_edge_count,
+        report.disconnected_territory_count,
+    );
+    let items = report
+        .diagnostics
+        .iter()
+        .map(|diagnostic| TerritoryEdgeFieldReviewItem {
+            severity: diagnostic.severity.clone(),
+            action: edge_field_action(diagnostic),
+            territory_id: diagnostic.territory_id.clone(),
+            from_site_id: diagnostic.from_site_id.clone(),
+            to_site_id: diagnostic.to_site_id.clone(),
+            message: edge_field_message(diagnostic),
+        })
+        .collect();
+
+    TerritoryEdgeFieldReview {
+        recommendation,
+        summary,
+        items,
+    }
+}
+
+fn edge_field_action(diagnostic: &TerritoryEdgeAuditDiagnostic) -> String {
+    match diagnostic.code.as_str() {
+        "cut-edge" => "confirm split or reassign one side".to_string(),
+        "disconnected-territory" => "verify coverage or add missing edge evidence".to_string(),
+        "unknown-edge-site" => "fix edge input site IDs".to_string(),
+        _ => "review exception".to_string(),
+    }
+}
+
+fn edge_field_message(diagnostic: &TerritoryEdgeAuditDiagnostic) -> String {
+    match diagnostic.code.as_str() {
+        "cut-edge" => format!(
+            "Sites {} and {} are linked by edge evidence but assigned to different territories; confirm the split is intentional or move one side.",
+            diagnostic.from_site_id.as_deref().unwrap_or("unknown"),
+            diagnostic.to_site_id.as_deref().unwrap_or("unknown"),
+        ),
+        "disconnected-territory" => format!(
+            "Territory {} has sites that are not connected by supplied edge evidence; confirm coverage works in the field or add the missing adjacency evidence.",
+            diagnostic.territory_id.as_deref().unwrap_or("unknown"),
+        ),
+        "unknown-edge-site" => format!(
+            "Edge evidence references {} and {}; one or both sites are missing from the territory plan.",
+            diagnostic.from_site_id.as_deref().unwrap_or("unknown"),
+            diagnostic.to_site_id.as_deref().unwrap_or("unknown"),
+        ),
+        _ => diagnostic.message.clone(),
     }
 }
 
@@ -3358,5 +3449,39 @@ south,,10,95000,47.46,-222.33\n",
 
         assert_eq!(report.disconnected_territory_count, 2);
         assert_eq!(disconnected.severity, "warning");
+    }
+
+    #[test]
+    fn translates_edge_audit_to_field_review_actions() {
+        let territories =
+            parse_territories_csv(sample_territories_csv()).expect("territories parse");
+        let edges = parse_site_edges_csv(sample_site_edges_csv()).expect("edges parse");
+        let review = territory_edge_field_review(&territories, &edges);
+
+        assert_eq!(
+            review.recommendation,
+            "review adjacency exceptions with field managers"
+        );
+        assert!(review.summary.contains("1 cut edges"));
+        assert!(review.items.iter().any(|item| {
+            item.action == "confirm split or reassign one side"
+                && item.message.contains("assigned to different territories")
+        }));
+    }
+
+    #[test]
+    fn blocks_field_review_when_edge_inputs_reference_unknown_sites() {
+        let territories =
+            parse_territories_csv(sample_territories_csv()).expect("territories parse");
+        let edges = vec![SiteGraphEdgeInput {
+            from_site_id: "N-001".to_string(),
+            to_site_id: "missing".to_string(),
+            weight: 1.0,
+            evidence: "fixture".to_string(),
+        }];
+        let review = territory_edge_field_review(&territories, &edges);
+
+        assert_eq!(review.recommendation, "fix edge inputs before field review");
+        assert_eq!(review.items[0].action, "fix edge input site IDs");
     }
 }

@@ -47,6 +47,8 @@ cargo run -p terrain-cli -- edge-evidence-geojson-csv sample-sites.csv sample-si
 cargo run -p terrain-cli -- edge-evidence-packet-csv sample-sites.csv sample-site-edges.csv terrain-edge-packet
 cargo run -p terrain-cli -- territory-edge-audit-csv sample-territories.csv sample-site-edges.csv
 cargo run -p terrain-cli -- territory-edge-packet-csv sample-territories.csv sample-site-edges.csv terrain-territory-edge-packet
+cargo run -p terrain-cli -- territory-edge-field-review-csv sample-territories.csv sample-site-edges.csv
+cargo run -p terrain-cli -- territory-edge-field-packet-csv sample-territories.csv sample-site-edges.csv terrain-edge-field-packet
 cargo run -p terrain-cli -- capacity-csv sample-capacity.csv
 cargo run -p terrain-cli -- capacity-audit-csv sample-territories.csv sample-capacity.csv
 cargo run -p terrain-cli -- ownership-svg-csv sample-territories.csv sample-capacity.csv > terrain-ownership.svg
@@ -107,6 +109,10 @@ The territory edge audit command uses explicit edge evidence to flag site links
 that cross territory boundaries, unknown edge references, and territories that
 are disconnected by the supplied evidence.
 
+The edge field review command turns those audit findings into manager-ready
+recommendations and actions, and the packet command bundles the field-review
+text, action rows, raw audit rows, SVG, and GeoJSON.
+
 The field review command emits a plain-language recommendation, balance summary,
 site movement list, and compactness exceptions for field manager review.
 
@@ -143,6 +149,7 @@ mnemonics:
    geography-ready graph controls.
 8. **National Road** - edge evidence SVG, GeoJSON, and packet review artifacts.
 9. **Cumberland Gap** - edge-aware territory audit and review packet outputs.
+10. **Pony Express** - plain-language edge field review and action packets.
 
 ## Visual artifacts
 

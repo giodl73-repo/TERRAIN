@@ -23,6 +23,7 @@ historical harms or politics of expansion.
 | 7 | Public Land Survey | Add explicit edge evidence, adjacency inputs, and geography-ready graph controls. |
 | 8 | National Road | Render edge evidence as reviewable SVG, GeoJSON, and packet artifacts. |
 | 9 | Cumberland Gap | Audit territory plans against explicit edge evidence and connectedness. |
+| 10 | Pony Express | Translate edge audit findings into field-manager actions and packets. |
 
 ## Phase 1: Louisiana Purchase - Foundation
 
@@ -156,6 +157,19 @@ Planned capabilities:
 - Report territories that are internally disconnected by supplied edge evidence.
 - Package edge audit rows with edge visuals for operations review.
 - Keep cut-edge findings as review signals, not automatic rejection rules.
+
+## Phase 10: Pony Express - Edge field review
+
+Goal: turn edge audit findings into plain-language field-manager actions.
+
+Planned capabilities:
+
+- Recommend whether edge findings are ready for review, need manager review, or
+  require input fixes.
+- Translate cut edges, disconnected territories, and unknown edge sites into
+  specific operating actions.
+- Package field-review text, action rows, audit rows, and edge visuals together.
+- Keep manager wording in TERRAIN while graph mechanics remain reusable.
 
 ## Visual/dashboard contract
 

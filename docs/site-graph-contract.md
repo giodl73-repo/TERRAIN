@@ -113,6 +113,18 @@ evidence. It reports:
 Cut edges are review signals, not automatic failures. A cut can be intentional
 when capacity, ownership, or customer policy outweighs adjacency.
 
+`territory-edge-field-review-csv` translates the audit into manager-ready
+recommendations:
+
+- `ready for field review` when no edge exceptions are present,
+- `review adjacency exceptions with field managers` when cut edges or
+  disconnected territories need a decision,
+- `fix edge inputs before field review` when evidence references unknown sites.
+
+`territory-edge-field-packet-csv` writes the field-review text, action CSV, raw
+audit CSV, SVG, and GeoJSON together so the same site IDs and territory IDs can
+be traced from a manager action back to the edge evidence.
+
 ## Boundary
 
 Reusable candidates for RLINE or METIS-CORE:

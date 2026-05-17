@@ -10,7 +10,7 @@ use terrain_core::{
     render_territory_svg_with_capacity, sample_assignee_capacity_csv,
     sample_proposed_territories_csv, sample_site_edges_csv, sample_sites_csv, sample_territories,
     sample_territories_csv, site_graph_diagnostic_report, site_graph_diagnostic_report_with_edges,
-    site_movements, summarize_territory, territory_edge_audit,
+    site_movements, summarize_territory, territory_edge_audit, territory_edge_field_review,
 };
 
 fn main() {
@@ -61,6 +61,12 @@ fn main() {
         "territory-edge-audit-csv" => run_territory_edge_audit_command(args.get(1), args.get(2)),
         "territory-edge-packet-csv" => {
             run_territory_edge_packet_command(args.get(1), args.get(2), args.get(3))
+        }
+        "territory-edge-field-review-csv" => {
+            run_territory_edge_field_review_command(args.get(1), args.get(2))
+        }
+        "territory-edge-field-packet-csv" => {
+            run_territory_edge_field_packet_command(args.get(1), args.get(2), args.get(3))
         }
         "compare-csv" => run_compare_command(args.get(1), args.get(2)),
         "movement-csv" => run_movement_command(args.get(1), args.get(2)),
@@ -125,6 +131,12 @@ fn print_help() {
     );
     println!(
         "  territory-edge-packet-csv TERRITORIES EDGES OUT_DIR Write territory edge audit packet"
+    );
+    println!(
+        "  territory-edge-field-review-csv TERRITORIES EDGES Emit plain-language edge field review"
+    );
+    println!(
+        "  territory-edge-field-packet-csv TERRITORIES EDGES OUT_DIR Write edge field review packet"
     );
     println!("  compare-csv BASELINE PROPOSED Compare two territory CSV plans");
     println!("  movement-csv BASELINE PROPOSED List stable site movement between plans");
@@ -593,6 +605,75 @@ fn run_territory_edge_packet_command(
     );
     println!(
         "wrote territory edge packet to {} with 4 files",
+        output_dir.display()
+    );
+}
+
+fn run_territory_edge_field_review_command(
+    territory_path: Option<&String>,
+    edges_path: Option<&String>,
+) {
+    let (territories, edges) = read_territories_and_edges(territory_path, edges_path);
+    let review = territory_edge_field_review(&territories, &edges);
+    print!("{}", territory_edge_field_review_text(&review));
+}
+
+fn run_territory_edge_field_packet_command(
+    territory_path: Option<&String>,
+    edges_path: Option<&String>,
+    output_dir: Option<&String>,
+) {
+    let Some(output_dir) = output_dir else {
+        eprintln!("missing output directory");
+        print_help();
+        std::process::exit(2);
+    };
+    let (territories, edges) = read_territories_and_edges(territory_path, edges_path);
+    let audit = territory_edge_audit(&territories, &edges);
+    let review = territory_edge_field_review(&territories, &edges);
+    let sites = territories
+        .iter()
+        .flat_map(|territory| territory.sites.iter().cloned())
+        .collect::<Vec<_>>();
+    let output_dir = std::path::Path::new(output_dir);
+    std::fs::create_dir_all(output_dir).unwrap_or_else(|error| {
+        eprintln!("failed to create {}: {error}", output_dir.display());
+        std::process::exit(1);
+    });
+    write_packet_file(
+        output_dir,
+        "territory-edge-field-review.txt",
+        &territory_edge_field_review_text(&review),
+    );
+    write_packet_file(
+        output_dir,
+        "territory-edge-field-actions.csv",
+        &territory_edge_field_actions_csv(&review),
+    );
+    write_packet_file(
+        output_dir,
+        "territory-edge-audit.csv",
+        &territory_edge_audit_csv(&audit),
+    );
+    write_packet_file(
+        output_dir,
+        "edge-evidence.svg",
+        &render_site_graph_svg(
+            &sites,
+            &edges,
+            &TerritoryVisualOptions {
+                title: "TERRAIN edge field review".to_string(),
+                ..TerritoryVisualOptions::default()
+            },
+        ),
+    );
+    write_packet_file(
+        output_dir,
+        "edge-evidence.geojson",
+        &render_site_graph_geojson(&sites, &edges),
+    );
+    println!(
+        "wrote territory edge field packet to {} with 5 files",
         output_dir.display()
     );
 }
@@ -1465,6 +1546,41 @@ fn territory_edge_audit_csv(report: &terrain_core::TerritoryEdgeAuditReport) -> 
             diagnostic.from_site_id.as_deref().unwrap_or_default(),
             diagnostic.to_site_id.as_deref().unwrap_or_default(),
             diagnostic.message.replace(',', ";"),
+        ));
+    }
+    csv
+}
+
+fn territory_edge_field_review_text(review: &terrain_core::TerritoryEdgeFieldReview) -> String {
+    let mut text = String::new();
+    text.push_str("TERRAIN edge field review\n");
+    text.push_str(&format!("Recommendation: {}\n", review.recommendation));
+    text.push_str(&format!("Summary: {}\n", review.summary));
+    if review.items.is_empty() {
+        text.push_str("No edge exceptions need field-manager review.\n");
+    } else {
+        text.push_str("Actions:\n");
+        for item in &review.items {
+            text.push_str(&format!(
+                "- [{}] {}: {}\n",
+                item.severity, item.action, item.message
+            ));
+        }
+    }
+    text
+}
+
+fn territory_edge_field_actions_csv(review: &terrain_core::TerritoryEdgeFieldReview) -> String {
+    let mut csv = String::from("severity,action,territory_id,from_site_id,to_site_id,message\n");
+    for item in &review.items {
+        csv.push_str(&format!(
+            "{},{},{},{},{},{}\n",
+            item.severity,
+            item.action,
+            item.territory_id.as_deref().unwrap_or_default(),
+            item.from_site_id.as_deref().unwrap_or_default(),
+            item.to_site_id.as_deref().unwrap_or_default(),
+            item.message.replace(',', ";"),
         ));
     }
     csv
