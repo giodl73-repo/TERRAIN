@@ -24,8 +24,8 @@ diagnostics.
 |---|---|
 | `from_site_id` | Stable source site ID. |
 | `to_site_id` | Stable target site ID. |
-| `weight` | Product-neutral edge cost. The first implementation uses coordinate distance in degrees. |
-| `evidence` | Why the edge exists, e.g. `coordinate-distance-degrees` today and future adjacency or road evidence later. |
+| `weight` | Product-neutral edge cost. Coordinate-derived defaults use latitude-adjusted distance in degrees; explicit evidence rows may provide their own positive weights. |
+| `evidence` | Why the edge exists, e.g. `latitude-adjusted-coordinate-distance-degrees`, `field-adjacency`, or future boundary/road evidence. |
 
 ## Diagnostics
 

@@ -9,6 +9,10 @@ territories, then explain balance, compactness, and workload gaps.
 
 ## First command
 
+Generate sample files first, then run the audit, graph, visual, and packet
+commands against those files. Commands that read a CSV path also accept `-` for
+stdin when piping from another tool.
+
 ```powershell
 cargo run -p terrain-cli -- sample-audit
 cargo run -p terrain-cli -- schema
@@ -18,6 +22,9 @@ cargo run -p terrain-cli -- sample-svg > terrain-split.svg
 cargo run -p terrain-cli -- sample-geojson > terrain-split.geojson
 cargo run -p terrain-cli -- sample-csv > sample-territories.csv
 cargo run -p terrain-cli -- sample-proposed-csv > sample-territories-proposed.csv
+cargo run -p terrain-cli -- sample-sites-csv > sample-sites.csv
+cargo run -p terrain-cli -- sample-site-edges-csv > sample-site-edges.csv
+cargo run -p terrain-cli -- sample-capacity-csv > sample-capacity.csv
 cargo run -p terrain-cli -- audit-csv sample-territories.csv
 cargo run -p terrain-cli -- product-balance-csv sample-territories.csv
 cargo run -p terrain-cli -- diagnose-csv sample-territories.csv
@@ -28,9 +35,6 @@ cargo run -p terrain-cli -- packet-csv sample-territories.csv sample-territories
 cargo run -p terrain-cli -- field-review-csv sample-territories.csv sample-territories-proposed.csv
 cargo run -p terrain-cli -- svg-csv sample-territories.csv > terrain-split.svg
 cargo run -p terrain-cli -- geojson-csv sample-territories.csv > terrain-split.geojson
-cargo run -p terrain-cli -- sample-sites-csv > sample-sites.csv
-cargo run -p terrain-cli -- sample-site-edges-csv > sample-site-edges.csv
-cargo run -p terrain-cli -- sample-capacity-csv > sample-capacity.csv
 cargo run -p terrain-cli -- graph-diagnostics-csv sample-sites.csv
 cargo run -p terrain-cli -- graph-diagnostics-with-edges-csv sample-sites.csv sample-site-edges.csv
 cargo run -p terrain-cli -- graph-partition-csv sample-sites.csv 2

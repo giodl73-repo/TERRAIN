@@ -2085,12 +2085,13 @@ fn coordinate_distance_edges(nodes: &[SiteGraphNode]) -> Vec<SiteGraphEdge> {
             let left = &nodes[left_idx];
             let right = &nodes[right_idx];
             let d_lat = left.latitude - right.latitude;
-            let d_lon = left.longitude - right.longitude;
+            let avg_latitude_radians = ((left.latitude + right.latitude) / 2.0).to_radians();
+            let d_lon = (left.longitude - right.longitude) * avg_latitude_radians.cos();
             edges.push(SiteGraphEdge {
                 from_site_id: left.site_id.clone(),
                 to_site_id: right.site_id.clone(),
                 weight: (d_lat * d_lat + d_lon * d_lon).sqrt(),
-                evidence: "coordinate-distance-degrees".to_string(),
+                evidence: "latitude-adjusted-coordinate-distance-degrees".to_string(),
             });
         }
     }
@@ -2909,7 +2910,10 @@ south,,10,95000,47.46,-222.33\n",
         assert_eq!(graph.nodes[0].site_id, "N-001");
         assert_eq!(graph.edges[0].from_site_id, "N-001");
         assert_eq!(graph.edges[0].to_site_id, "N-002");
-        assert_eq!(graph.edges[0].evidence, "coordinate-distance-degrees");
+        assert_eq!(
+            graph.edges[0].evidence,
+            "latitude-adjusted-coordinate-distance-degrees"
+        );
         assert!(graph.edges[0].weight > 0.0);
     }
 

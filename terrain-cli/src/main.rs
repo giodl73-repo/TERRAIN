@@ -742,6 +742,14 @@ fn read_csv_file(path: Option<&String>) -> String {
         print_help();
         std::process::exit(2);
     };
+    if path == "-" {
+        let mut input = String::new();
+        std::io::Read::read_to_string(&mut std::io::stdin(), &mut input).unwrap_or_else(|error| {
+            eprintln!("failed to read stdin: {error}");
+            std::process::exit(1);
+        });
+        return input;
+    }
     std::fs::read_to_string(path).unwrap_or_else(|error| {
         eprintln!("failed to read {path}: {error}");
         std::process::exit(1);

@@ -10,8 +10,8 @@ Define the first explicit graph contract for TERRAIN site data.
 
 - Added graph node, edge, graph, and diagnostic structs in `terrain-core`.
 - Preserved stable site IDs as graph node IDs.
-- Defined first edge weights as coordinate distance in degrees with
-  `coordinate-distance-degrees` evidence.
+- Defined first edge weights as latitude-adjusted coordinate distance in degrees
+  with `latitude-adjusted-coordinate-distance-degrees` evidence.
 - Added graph diagnostics for empty inputs, duplicate IDs, duplicate
   coordinates, and disconnected components.
 - Documented the `terrain.site-graph.v1` boundary in
