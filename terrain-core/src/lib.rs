@@ -127,6 +127,38 @@ pub struct PartitionSweepResult {
 }
 
 #[derive(Debug, Clone, PartialEq)]
+pub struct SiteGraphNode {
+    pub site_id: String,
+    pub demand: f64,
+    pub revenue: f64,
+    pub latitude: f64,
+    pub longitude: f64,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct SiteGraphEdge {
+    pub from_site_id: String,
+    pub to_site_id: String,
+    pub weight: f64,
+    pub evidence: String,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct SiteGraphDiagnostic {
+    pub severity: String,
+    pub code: String,
+    pub site_ids: Vec<String>,
+    pub message: String,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct SiteGraph {
+    pub nodes: Vec<SiteGraphNode>,
+    pub edges: Vec<SiteGraphEdge>,
+    pub diagnostics: Vec<SiteGraphDiagnostic>,
+}
+
+#[derive(Debug, Clone, PartialEq)]
 pub struct TerritoryVisualOptions {
     pub width: u32,
     pub height: u32,
@@ -1235,6 +1267,178 @@ pub fn partition_count_sweep(
     Ok(results)
 }
 
+pub fn build_site_graph(sites: &[Site]) -> SiteGraph {
+    let mut nodes = sites
+        .iter()
+        .map(|site| SiteGraphNode {
+            site_id: site.id.clone(),
+            demand: site.demand,
+            revenue: site.revenue,
+            latitude: site.latitude,
+            longitude: site.longitude,
+        })
+        .collect::<Vec<_>>();
+    nodes.sort_by(|left, right| left.site_id.cmp(&right.site_id));
+
+    let mut diagnostics = site_graph_input_diagnostics(&nodes);
+    let edges = coordinate_distance_edges(&nodes);
+    diagnostics.extend(site_graph_connectivity_diagnostics(&nodes, &edges));
+
+    SiteGraph {
+        nodes,
+        edges,
+        diagnostics,
+    }
+}
+
+pub fn site_graph_connectivity_diagnostics(
+    nodes: &[SiteGraphNode],
+    edges: &[SiteGraphEdge],
+) -> Vec<SiteGraphDiagnostic> {
+    if nodes.is_empty() {
+        return vec![SiteGraphDiagnostic {
+            severity: "error".to_string(),
+            code: "empty-site-graph".to_string(),
+            site_ids: Vec::new(),
+            message: "site graph requires at least one site".to_string(),
+        }];
+    }
+
+    let node_ids = nodes
+        .iter()
+        .map(|node| node.site_id.clone())
+        .collect::<std::collections::BTreeSet<_>>();
+    let mut adjacency = node_ids
+        .iter()
+        .map(|site_id| (site_id.clone(), std::collections::BTreeSet::new()))
+        .collect::<std::collections::BTreeMap<_, _>>();
+
+    for edge in edges {
+        if node_ids.contains(&edge.from_site_id) && node_ids.contains(&edge.to_site_id) {
+            adjacency
+                .entry(edge.from_site_id.clone())
+                .or_default()
+                .insert(edge.to_site_id.clone());
+            adjacency
+                .entry(edge.to_site_id.clone())
+                .or_default()
+                .insert(edge.from_site_id.clone());
+        }
+    }
+
+    let mut seen = std::collections::BTreeSet::new();
+    let mut components = Vec::new();
+    for site_id in &node_ids {
+        if seen.contains(site_id) {
+            continue;
+        }
+        let mut stack = vec![site_id.clone()];
+        let mut component = Vec::new();
+        while let Some(current) = stack.pop() {
+            if !seen.insert(current.clone()) {
+                continue;
+            }
+            component.push(current.clone());
+            if let Some(neighbors) = adjacency.get(&current) {
+                for neighbor in neighbors.iter().rev() {
+                    if !seen.contains(neighbor) {
+                        stack.push(neighbor.clone());
+                    }
+                }
+            }
+        }
+        component.sort();
+        components.push(component);
+    }
+
+    if components.len() <= 1 {
+        return Vec::new();
+    }
+
+    components
+        .into_iter()
+        .map(|site_ids| SiteGraphDiagnostic {
+            severity: "warning".to_string(),
+            code: "disconnected-component".to_string(),
+            message: format!(
+                "site graph component has {} site(s): {}",
+                site_ids.len(),
+                site_ids.join(";")
+            ),
+            site_ids,
+        })
+        .collect()
+}
+
+fn site_graph_input_diagnostics(nodes: &[SiteGraphNode]) -> Vec<SiteGraphDiagnostic> {
+    let mut diagnostics = Vec::new();
+    if nodes.is_empty() {
+        diagnostics.push(SiteGraphDiagnostic {
+            severity: "error".to_string(),
+            code: "empty-site-set".to_string(),
+            site_ids: Vec::new(),
+            message: "cannot build a site graph without sites".to_string(),
+        });
+        return diagnostics;
+    }
+
+    let mut ids = std::collections::BTreeMap::<String, Vec<String>>::new();
+    let mut coordinates = std::collections::BTreeMap::<String, Vec<String>>::new();
+    for node in nodes {
+        ids.entry(node.site_id.clone())
+            .or_default()
+            .push(node.site_id.clone());
+        coordinates
+            .entry(format!("{:.6},{:.6}", node.latitude, node.longitude))
+            .or_default()
+            .push(node.site_id.clone());
+    }
+
+    for (site_id, duplicates) in ids {
+        if duplicates.len() > 1 {
+            diagnostics.push(SiteGraphDiagnostic {
+                severity: "error".to_string(),
+                code: "duplicate-site-id".to_string(),
+                site_ids: duplicates,
+                message: format!("site ID '{site_id}' appears more than once"),
+            });
+        }
+    }
+
+    for (coordinate, mut site_ids) in coordinates {
+        if site_ids.len() > 1 {
+            site_ids.sort();
+            diagnostics.push(SiteGraphDiagnostic {
+                severity: "warning".to_string(),
+                code: "duplicate-coordinate".to_string(),
+                site_ids,
+                message: format!("multiple sites share coordinate {coordinate}"),
+            });
+        }
+    }
+
+    diagnostics
+}
+
+fn coordinate_distance_edges(nodes: &[SiteGraphNode]) -> Vec<SiteGraphEdge> {
+    let mut edges = Vec::new();
+    for left_idx in 0..nodes.len() {
+        for right_idx in (left_idx + 1)..nodes.len() {
+            let left = &nodes[left_idx];
+            let right = &nodes[right_idx];
+            let d_lat = left.latitude - right.latitude;
+            let d_lon = left.longitude - right.longitude;
+            edges.push(SiteGraphEdge {
+                from_site_id: left.site_id.clone(),
+                to_site_id: right.site_id.clone(),
+                weight: (d_lat * d_lat + d_lon * d_lon).sqrt(),
+                evidence: "coordinate-distance-degrees".to_string(),
+            });
+        }
+    }
+    edges
+}
+
 pub fn sample_territories_csv() -> &'static str {
     "territory_id,territory_label,assignees,site_id,demand,revenue,latitude,longitude\n\
 north,North field team,Avery;Morgan;Sam,N-001,12,120000,47.62,-122.35\n\
@@ -1816,5 +2020,79 @@ south,,10,95000,47.46,-222.33\n",
         near(audit.summaries[0].demand, 31.0);
         near(audit.summaries[1].demand, 31.0);
         assert!(audit.passes);
+    }
+
+    #[test]
+    fn builds_deterministic_site_graph_contract() {
+        let sites = parse_sites_csv(sample_sites_csv()).expect("site sample parses");
+        let graph = build_site_graph(&sites);
+
+        assert_eq!(graph.nodes.len(), 6);
+        assert_eq!(graph.edges.len(), 15);
+        assert!(graph.diagnostics.is_empty());
+        assert_eq!(graph.nodes[0].site_id, "N-001");
+        assert_eq!(graph.edges[0].from_site_id, "N-001");
+        assert_eq!(graph.edges[0].to_site_id, "N-002");
+        assert_eq!(graph.edges[0].evidence, "coordinate-distance-degrees");
+        assert!(graph.edges[0].weight > 0.0);
+    }
+
+    #[test]
+    fn reports_site_graph_input_diagnostics() {
+        let sites = vec![
+            Site::new("A", 1.0, 10.0, 47.0, -122.0),
+            Site::new("A", 2.0, 20.0, 47.0, -122.1),
+            Site::new("B", 3.0, 30.0, 47.0, -122.0),
+        ];
+        let graph = build_site_graph(&sites);
+        let codes = graph
+            .diagnostics
+            .iter()
+            .map(|diagnostic| diagnostic.code.as_str())
+            .collect::<Vec<_>>();
+
+        assert!(codes.contains(&"duplicate-site-id"));
+        assert!(codes.contains(&"duplicate-coordinate"));
+    }
+
+    #[test]
+    fn reports_disconnected_site_graph_components() {
+        let nodes = vec![
+            SiteGraphNode {
+                site_id: "A".to_string(),
+                demand: 1.0,
+                revenue: 10.0,
+                latitude: 0.0,
+                longitude: 0.0,
+            },
+            SiteGraphNode {
+                site_id: "B".to_string(),
+                demand: 1.0,
+                revenue: 10.0,
+                latitude: 1.0,
+                longitude: 1.0,
+            },
+            SiteGraphNode {
+                site_id: "C".to_string(),
+                demand: 1.0,
+                revenue: 10.0,
+                latitude: 2.0,
+                longitude: 2.0,
+            },
+        ];
+        let diagnostics = site_graph_connectivity_diagnostics(
+            &nodes,
+            &[SiteGraphEdge {
+                from_site_id: "A".to_string(),
+                to_site_id: "B".to_string(),
+                weight: 1.0,
+                evidence: "fixture".to_string(),
+            }],
+        );
+
+        assert_eq!(diagnostics.len(), 2);
+        assert_eq!(diagnostics[0].code, "disconnected-component");
+        assert_eq!(diagnostics[0].site_ids, ["A", "B"]);
+        assert_eq!(diagnostics[1].site_ids, ["C"]);
     }
 }

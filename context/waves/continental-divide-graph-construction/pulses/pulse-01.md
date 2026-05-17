@@ -1,6 +1,6 @@
 # Pulse 01: Site Graph Contract
 
-Status: planned
+Status: done
 
 ## Goal
 
@@ -8,13 +8,14 @@ Define the first explicit graph contract for TERRAIN site data.
 
 ## Scope
 
-- Add graph node and edge structs in `terrain-core`.
-- Preserve stable site IDs as graph node IDs.
-- Define edge weights in product-neutral terms such as coordinate distance or
-  supplied adjacency cost.
-- Add graph diagnostics for empty inputs, duplicate IDs, duplicate coordinates,
-  and disconnected components.
-- Document which fields are TERRAIN policy versus reusable graph shape.
+- Added graph node, edge, graph, and diagnostic structs in `terrain-core`.
+- Preserved stable site IDs as graph node IDs.
+- Defined first edge weights as coordinate distance in degrees with
+  `coordinate-distance-degrees` evidence.
+- Added graph diagnostics for empty inputs, duplicate IDs, duplicate
+  coordinates, and disconnected components.
+- Documented the `terrain.site-graph.v1` boundary in
+  `docs/site-graph-contract.md`.
 
 ## Validation
 
