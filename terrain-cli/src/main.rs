@@ -1,12 +1,12 @@
 use terrain_core::{
     TerritoryVisualOptions, audit_product_balance, audit_territories, capacity_exceptions,
     compactness_exceptions, compare_territory_plans, dashboard_schema_json,
-    diagnose_territories_csv, integration_fixture_manifest_json, parse_assignee_capacity_csv,
-    parse_sites_csv, parse_territories_csv, partition_count_sweep, partition_sites,
-    render_territory_geojson, render_territory_geojson_with_capacity, render_territory_svg,
-    render_territory_svg_with_capacity, sample_assignee_capacity_csv,
+    diagnose_territories_csv, graph_partition_report, integration_fixture_manifest_json,
+    parse_assignee_capacity_csv, parse_sites_csv, parse_territories_csv, partition_count_sweep,
+    partition_sites, render_territory_geojson, render_territory_geojson_with_capacity,
+    render_territory_svg, render_territory_svg_with_capacity, sample_assignee_capacity_csv,
     sample_proposed_territories_csv, sample_sites_csv, sample_territories, sample_territories_csv,
-    site_graph_diagnostic_report, site_movements,
+    site_graph_diagnostic_report, site_movements, summarize_territory,
 };
 
 fn main() {
@@ -36,6 +36,7 @@ fn main() {
         "capacity-audit-csv" => run_capacity_audit_command(args.get(1), args.get(2)),
         "diagnose-csv" => run_csv_command(args.get(1), print_diagnostics_for_csv),
         "graph-diagnostics-csv" => run_graph_diagnostics_command(args.get(1), args.get(2)),
+        "graph-partition-csv" => run_graph_partition_command(args.get(1), args.get(2)),
         "compare-csv" => run_compare_command(args.get(1), args.get(2)),
         "movement-csv" => run_movement_command(args.get(1), args.get(2)),
         "compactness-csv" => run_compactness_command(args.get(1), args.get(2)),
@@ -80,6 +81,7 @@ fn print_help() {
     println!("  capacity-audit-csv TERRITORIES CAPACITY Report capacity overloads");
     println!("  diagnose-csv PATH Report territory CSV intake diagnostics");
     println!("  graph-diagnostics-csv PATH [LONG_EDGE_THRESHOLD] Report site graph diagnostics");
+    println!("  graph-partition-csv PATH COUNT Compare greedy and graph-backed partitions");
     println!("  compare-csv BASELINE PROPOSED Compare two territory CSV plans");
     println!("  movement-csv BASELINE PROPOSED List stable site movement between plans");
     println!("  compactness-csv PATH THRESHOLD Report max-radius compactness exceptions");
@@ -243,6 +245,83 @@ fn run_graph_diagnostics_command(path: Option<&String>, threshold: Option<&Strin
     );
     println!("severity,code,site_ids,message");
     for diagnostic in report.diagnostics {
+        println!(
+            "{},{},{},{}",
+            diagnostic.severity,
+            diagnostic.code,
+            diagnostic.site_ids.join(";"),
+            diagnostic.message.replace(',', ";"),
+        );
+    }
+}
+
+fn run_graph_partition_command(path: Option<&String>, target_count: Option<&String>) {
+    let target_count = parse_count_arg(target_count, "missing target territory count");
+    let csv = read_csv_file(path);
+    let sites = parse_sites_csv(&csv).unwrap_or_else(|error| {
+        eprintln!("{error}");
+        std::process::exit(1);
+    });
+    let report = graph_partition_report(&sites, target_count, 0.10, 0.06).unwrap_or_else(|error| {
+        eprintln!("{error}");
+        std::process::exit(1);
+    });
+    let moved_count = report
+        .movements
+        .iter()
+        .filter(|movement| movement.movement_kind != "unchanged")
+        .count();
+    println!("TERRAIN graph partition comparison");
+    println!(
+        "baseline_status={} graph_status={} movement_count={} compactness_exception_count={} component_count={} graph_diagnostic_count={}",
+        if report.comparison.baseline.passes {
+            "pass"
+        } else {
+            "review"
+        },
+        if report.comparison.proposed.passes {
+            "pass"
+        } else {
+            "review"
+        },
+        moved_count,
+        report.compactness_exceptions.len(),
+        report.graph_diagnostics.component_count,
+        report.graph_diagnostics.diagnostics.len(),
+    );
+    println!(
+        "territory,site_count_delta,demand_delta,revenue_delta,baseline_demand,graph_demand,graph_max_radius_degrees"
+    );
+    for delta in &report.comparison.territory_deltas {
+        let graph_radius = report
+            .graph_partition
+            .iter()
+            .find(|territory| territory.id == delta.territory_id)
+            .map(summarize_territory)
+            .map_or(0.0, |summary| summary.max_radius_degrees);
+        println!(
+            "{},{},{:.1},{:.0},{:.1},{:.1},{:.6}",
+            delta.territory_id,
+            delta.site_count_delta,
+            delta.demand_delta,
+            delta.revenue_delta,
+            delta.baseline_demand,
+            delta.proposed_demand,
+            graph_radius,
+        );
+    }
+    println!("movement_site_id,baseline_territory,graph_territory,movement_kind");
+    for movement in report.movements {
+        println!(
+            "{},{},{},{}",
+            movement.site_id,
+            movement.baseline_territory_id.unwrap_or_default(),
+            movement.proposed_territory_id.unwrap_or_default(),
+            movement.movement_kind,
+        );
+    }
+    println!("graph_diagnostic_severity,code,site_ids,message");
+    for diagnostic in report.graph_diagnostics.diagnostics {
         println!(
             "{},{},{},{}",
             diagnostic.severity,

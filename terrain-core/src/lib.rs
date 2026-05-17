@@ -127,6 +127,16 @@ pub struct PartitionSweepResult {
 }
 
 #[derive(Debug, Clone, PartialEq)]
+pub struct GraphPartitionReport {
+    pub baseline: Vec<Territory>,
+    pub graph_partition: Vec<Territory>,
+    pub comparison: ScenarioComparison,
+    pub movements: Vec<SiteMovement>,
+    pub compactness_exceptions: Vec<CompactnessException>,
+    pub graph_diagnostics: SiteGraphDiagnosticReport,
+}
+
+#[derive(Debug, Clone, PartialEq)]
 pub struct SiteGraphNode {
     pub site_id: String,
     pub demand: f64,
@@ -1275,6 +1285,100 @@ pub fn partition_count_sweep(
     Ok(results)
 }
 
+pub fn partition_sites_by_graph(
+    sites: &[Site],
+    target_territory_count: usize,
+) -> Result<Vec<Territory>, PartitionError> {
+    if target_territory_count == 0 {
+        return Err(PartitionError::ZeroTerritories);
+    }
+    if sites.is_empty() {
+        return Err(PartitionError::EmptySiteSet);
+    }
+
+    let graph = build_site_graph(sites);
+    let site_by_id = sites
+        .iter()
+        .map(|site| (site.id.clone(), site.clone()))
+        .collect::<std::collections::BTreeMap<_, _>>();
+    let territory_count = target_territory_count.min(site_by_id.len());
+    let seeds = graph_partition_seeds(&graph, territory_count);
+    let mut territories = (0..territory_count)
+        .map(|idx| {
+            let id = format!("territory-{}", idx + 1);
+            Territory::new(&id, Vec::new()).with_label(format!("Graph territory {}", idx + 1))
+        })
+        .collect::<Vec<_>>();
+    let mut assigned = std::collections::BTreeSet::new();
+    let mut demand_totals = vec![0.0_f64; territory_count];
+    let mut site_counts = vec![0usize; territory_count];
+
+    for (idx, seed_id) in seeds.iter().enumerate() {
+        if let Some(site) = site_by_id.get(seed_id) {
+            demand_totals[idx] += site.demand;
+            site_counts[idx] += 1;
+            territories[idx].sites.push(site.clone());
+            assigned.insert(seed_id.clone());
+        }
+    }
+
+    for site_id in site_by_id
+        .keys()
+        .filter(|site_id| !assigned.contains(*site_id))
+    {
+        let target_idx = seeds
+            .iter()
+            .enumerate()
+            .min_by(|(left_idx, left_seed), (right_idx, right_seed)| {
+                graph_edge_weight(&graph, site_id, left_seed)
+                    .total_cmp(&graph_edge_weight(&graph, site_id, right_seed))
+                    .then_with(|| demand_totals[*left_idx].total_cmp(&demand_totals[*right_idx]))
+                    .then_with(|| site_counts[*left_idx].cmp(&site_counts[*right_idx]))
+                    .then_with(|| left_idx.cmp(right_idx))
+            })
+            .map(|(idx, _)| idx)
+            .expect("territory_count is greater than zero");
+        let site = site_by_id
+            .get(site_id)
+            .expect("site id came from site index")
+            .clone();
+        demand_totals[target_idx] += site.demand;
+        site_counts[target_idx] += 1;
+        territories[target_idx].sites.push(site);
+    }
+
+    for territory in &mut territories {
+        territory
+            .sites
+            .sort_by(|left, right| left.id.cmp(&right.id));
+    }
+    Ok(territories)
+}
+
+pub fn graph_partition_report(
+    sites: &[Site],
+    target_territory_count: usize,
+    long_edge_threshold_degrees: f64,
+    compactness_threshold_degrees: f64,
+) -> Result<GraphPartitionReport, PartitionError> {
+    let baseline = partition_sites(sites.iter().cloned(), target_territory_count)?;
+    let graph_partition = partition_sites_by_graph(sites, target_territory_count)?;
+    let comparison = compare_territory_plans(&baseline, &graph_partition, 0.50, 0.50);
+    let movements = site_movements(&baseline, &graph_partition);
+    let compactness_exceptions =
+        compactness_exceptions(&graph_partition, compactness_threshold_degrees);
+    let graph_diagnostics = site_graph_diagnostic_report(sites, long_edge_threshold_degrees);
+
+    Ok(GraphPartitionReport {
+        baseline,
+        graph_partition,
+        comparison,
+        movements,
+        compactness_exceptions,
+        graph_diagnostics,
+    })
+}
+
 pub fn build_site_graph(sites: &[Site]) -> SiteGraph {
     let mut nodes = sites
         .iter()
@@ -1528,6 +1632,59 @@ fn coordinate_distance_edges(nodes: &[SiteGraphNode]) -> Vec<SiteGraphEdge> {
         }
     }
     edges
+}
+
+fn graph_partition_seeds(graph: &SiteGraph, seed_count: usize) -> Vec<String> {
+    let Some(first_seed) = graph.nodes.iter().max_by(|left, right| {
+        left.demand
+            .total_cmp(&right.demand)
+            .then_with(|| right.site_id.cmp(&left.site_id))
+    }) else {
+        return Vec::new();
+    };
+    let mut seeds = vec![first_seed.site_id.clone()];
+
+    while seeds.len() < seed_count {
+        let Some(next_seed) = graph
+            .nodes
+            .iter()
+            .filter(|node| !seeds.contains(&node.site_id))
+            .max_by(|left, right| {
+                nearest_seed_weight(graph, &left.site_id, &seeds)
+                    .total_cmp(&nearest_seed_weight(graph, &right.site_id, &seeds))
+                    .then_with(|| left.demand.total_cmp(&right.demand))
+                    .then_with(|| right.site_id.cmp(&left.site_id))
+            })
+        else {
+            break;
+        };
+        seeds.push(next_seed.site_id.clone());
+    }
+
+    seeds
+}
+
+fn nearest_seed_weight(graph: &SiteGraph, site_id: &str, seeds: &[String]) -> f64 {
+    seeds
+        .iter()
+        .map(|seed_id| graph_edge_weight(graph, site_id, seed_id))
+        .fold(f64::INFINITY, f64::min)
+}
+
+fn graph_edge_weight(graph: &SiteGraph, left_site_id: &str, right_site_id: &str) -> f64 {
+    if left_site_id == right_site_id {
+        return 0.0;
+    }
+
+    graph
+        .edges
+        .iter()
+        .find(|edge| {
+            (edge.from_site_id == left_site_id && edge.to_site_id == right_site_id)
+                || (edge.from_site_id == right_site_id && edge.to_site_id == left_site_id)
+        })
+        .map(|edge| edge.weight)
+        .unwrap_or(f64::INFINITY)
 }
 
 pub fn sample_territories_csv() -> &'static str {
@@ -1976,6 +2133,36 @@ south,S-001,10,100,2,2,2,8\n",
         assert!(sweep[0].audit.passes);
         assert_eq!(sweep[1].target_territory_count, 3);
         assert_eq!(sweep[1].actual_territory_count, 3);
+    }
+
+    #[test]
+    fn partitions_sites_with_graph_seed_baseline() {
+        let sites = parse_sites_csv(sample_sites_csv()).expect("site sample parses");
+        let territories = partition_sites_by_graph(&sites, 2).expect("graph partition works");
+        let site_ids = territories
+            .iter()
+            .flat_map(|territory| &territory.sites)
+            .map(|site| site.id.as_str())
+            .collect::<Vec<_>>();
+
+        assert_eq!(territories.len(), 2);
+        assert_eq!(territories[0].id, "territory-1");
+        assert_eq!(territories[1].id, "territory-2");
+        assert_eq!(site_ids.len(), 6);
+        assert!(site_ids.contains(&"N-001"));
+        assert!(site_ids.contains(&"S-003"));
+    }
+
+    #[test]
+    fn compares_graph_partition_to_greedy_baseline() {
+        let sites = parse_sites_csv(sample_sites_csv()).expect("site sample parses");
+        let report = graph_partition_report(&sites, 2, 0.10, 0.06).expect("report builds");
+
+        assert_eq!(report.baseline.len(), 2);
+        assert_eq!(report.graph_partition.len(), 2);
+        assert_eq!(report.movements.len(), 6);
+        assert_eq!(report.graph_diagnostics.component_count, 1);
+        assert!(!report.graph_diagnostics.diagnostics.is_empty());
     }
 
     #[test]

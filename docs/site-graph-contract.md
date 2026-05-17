@@ -42,14 +42,21 @@ diagnostics.
 
 ```powershell
 cargo run -p terrain-cli -- graph-diagnostics-csv sample-sites.csv
+cargo run -p terrain-cli -- graph-partition-csv sample-sites.csv 2
 ```
 
-The command emits a summary line and stable diagnostic rows:
+The diagnostics command emits a summary line and stable diagnostic rows:
 
 ```text
 status=review node_count=6 edge_count=15 component_count=1 diagnostic_count=...
 severity,code,site_ids,message
 ```
+
+The partition command keeps `partition_sites` as the greedy baseline, builds the
+site graph, creates a coordinate-graph-seeded partition, and emits comparison
+rows for balance deltas, site movement, compactness exceptions, and graph
+diagnostics. This is still an internal baseline; METIS-CORE adoption remains a
+separate adapter decision after graph inputs stabilize.
 
 ## Boundary
 

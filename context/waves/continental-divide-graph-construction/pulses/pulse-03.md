@@ -1,6 +1,6 @@
 # Pulse 03: Graph-backed Partition Baseline
 
-Status: planned
+Status: done
 
 ## Goal
 
@@ -22,4 +22,12 @@ deterministic greedy partition.
 - `cargo run -p terrain-cli -- partition-csv sample-sites.csv 2`
 - `cargo run -p terrain-cli -- graph-partition-csv sample-sites.csv 2`
 - `git diff --check`
+
+## Outcome
+
+- Added an internal graph-seeded partition path while keeping `partition_sites`
+  as the stable greedy baseline.
+- Added a graph partition comparison report with balance deltas, movement rows,
+  compactness exceptions, and graph diagnostics.
+- Exposed the report through `graph-partition-csv`.
 

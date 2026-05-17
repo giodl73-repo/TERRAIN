@@ -20,7 +20,7 @@ worth adopting.
 |------:|-------|--------|---------|
 | 01 | Site graph contract | done | Defined product-neutral graph nodes, edges, coordinate-distance weights, and diagnostics while preserving TERRAIN-owned territory policy. |
 | 02 | Graph diagnostics CLI | done | Emits isolated-site, duplicate-coordinate, long-edge, and component diagnostics from site CSVs. |
-| 03 | Graph-backed partition baseline | planned | Add an internal graph partition path and compare it to the existing greedy partition output. |
+| 03 | Graph-backed partition baseline | done | Added an internal graph-seeded partition report that compares against the existing greedy partition output. |
 | 04 | METIS-CORE adoption adapter | planned | Wire a narrow optional adapter or handoff contract after graph input tests are stable. |
 
 ## Success criteria

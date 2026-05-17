@@ -31,6 +31,7 @@ cargo run -p terrain-cli -- geojson-csv sample-territories.csv > terrain-split.g
 cargo run -p terrain-cli -- sample-sites-csv > sample-sites.csv
 cargo run -p terrain-cli -- sample-capacity-csv > sample-capacity.csv
 cargo run -p terrain-cli -- graph-diagnostics-csv sample-sites.csv
+cargo run -p terrain-cli -- graph-partition-csv sample-sites.csv 2
 cargo run -p terrain-cli -- capacity-csv sample-capacity.csv
 cargo run -p terrain-cli -- capacity-audit-csv sample-territories.csv sample-capacity.csv
 cargo run -p terrain-cli -- ownership-svg-csv sample-territories.csv sample-capacity.csv > terrain-ownership.svg
@@ -77,6 +78,10 @@ movement kind, demand, and revenue.
 
 The sweep command compares deterministic partitions across a target territory
 count range, producing audit rows that can be sorted or charted.
+
+The graph partition command compares the existing greedy partition baseline to a
+coordinate-graph-seeded partition and reports balance deltas, site movement,
+compactness exceptions, and graph diagnostics.
 
 The field review command emits a plain-language recommendation, balance summary,
 site movement list, and compactness exceptions for field manager review.
