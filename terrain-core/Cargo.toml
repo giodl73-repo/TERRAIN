@@ -6,3 +6,4 @@ license.workspace = true
 repository.workspace = true
 
 [dependencies]
+metis-core = { git = "https://github.com/giodl73-repo/METIS-CORE.git" }

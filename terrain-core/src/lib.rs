@@ -137,6 +137,16 @@ pub struct GraphPartitionReport {
 }
 
 #[derive(Debug, Clone, PartialEq)]
+pub struct MetisCoreHandoff {
+    pub vertex_site_ids: Vec<String>,
+    pub xadj: Vec<u32>,
+    pub adjncy: Vec<u32>,
+    pub vwgt: Vec<i32>,
+    pub adjwgt: Vec<i32>,
+    pub edge_weight_scale: f64,
+}
+
+#[derive(Debug, Clone, PartialEq)]
 pub struct SiteGraphNode {
     pub site_id: String,
     pub demand: f64,
@@ -201,6 +211,7 @@ pub struct CsvDiagnostic {
 pub enum PartitionError {
     EmptySiteSet,
     ZeroTerritories,
+    MetisCore(String),
 }
 
 impl std::fmt::Display for CsvIntakeError {
@@ -220,6 +231,7 @@ impl std::fmt::Display for PartitionError {
         match self {
             Self::EmptySiteSet => write!(f, "cannot partition an empty site set"),
             Self::ZeroTerritories => write!(f, "target territory count must be greater than zero"),
+            Self::MetisCore(message) => write!(f, "METIS-CORE partition error: {message}"),
         }
     }
 }
@@ -1379,6 +1391,131 @@ pub fn graph_partition_report(
     })
 }
 
+pub fn partition_sites_with_metis_core(
+    sites: &[Site],
+    target_territory_count: usize,
+    seed: u64,
+) -> Result<Vec<Territory>, PartitionError> {
+    if target_territory_count == 0 {
+        return Err(PartitionError::ZeroTerritories);
+    }
+    if sites.is_empty() {
+        return Err(PartitionError::EmptySiteSet);
+    }
+
+    let handoff = metis_core_handoff(sites)?;
+    let territory_count = target_territory_count.min(handoff.vertex_site_ids.len());
+    let graph = metis_core::CsrGraph::from_csr(
+        &handoff.xadj,
+        &handoff.adjncy,
+        &handoff.vwgt,
+        &handoff.adjwgt,
+    )
+    .map_err(|error| PartitionError::MetisCore(error.to_string()))?;
+    let params = metis_core::MetisParams::kway().with_seed(seed);
+    let partitioner = metis_core::MetisPartitioner::from_params(params);
+    let partition =
+        metis_core::Partitioner::split(&partitioner, &graph, territory_count as u32, Some(seed))
+            .map_err(|error| PartitionError::MetisCore(error.to_string()))?;
+    partition
+        .validate_for_graph(&graph)
+        .map_err(|error| PartitionError::MetisCore(error.to_string()))?;
+
+    let site_by_id = sites
+        .iter()
+        .map(|site| (site.id.clone(), site.clone()))
+        .collect::<std::collections::BTreeMap<_, _>>();
+    let mut territories = (0..territory_count)
+        .map(|idx| {
+            let id = format!("territory-{}", idx + 1);
+            Territory::new(&id, Vec::new()).with_label(format!("METIS territory {}", idx + 1))
+        })
+        .collect::<Vec<_>>();
+
+    for (vertex_idx, part) in partition.assignment().iter().enumerate() {
+        let site_id = &handoff.vertex_site_ids[vertex_idx];
+        if let Some(site) = site_by_id.get(site_id) {
+            territories[*part as usize].sites.push(site.clone());
+        }
+    }
+
+    for territory in &mut territories {
+        territory
+            .sites
+            .sort_by(|left, right| left.id.cmp(&right.id));
+    }
+
+    Ok(territories)
+}
+
+pub fn metis_core_handoff(sites: &[Site]) -> Result<MetisCoreHandoff, PartitionError> {
+    if sites.is_empty() {
+        return Err(PartitionError::EmptySiteSet);
+    }
+
+    let graph = build_site_graph(sites);
+    let vertex_site_ids = graph
+        .nodes
+        .iter()
+        .map(|node| node.site_id.clone())
+        .collect::<Vec<_>>();
+    let vertex_by_site_id = vertex_site_ids
+        .iter()
+        .enumerate()
+        .map(|(idx, site_id)| (site_id.clone(), idx as u32))
+        .collect::<std::collections::BTreeMap<_, _>>();
+    let edge_weight_scale = 1_000_000.0;
+    let mut adjacency = graph
+        .nodes
+        .iter()
+        .map(|node| (node.site_id.clone(), Vec::<(String, i32)>::new()))
+        .collect::<std::collections::BTreeMap<_, _>>();
+
+    for edge in &graph.edges {
+        let weight = scaled_metis_weight(edge.weight, edge_weight_scale);
+        adjacency
+            .entry(edge.from_site_id.clone())
+            .or_default()
+            .push((edge.to_site_id.clone(), weight));
+        adjacency
+            .entry(edge.to_site_id.clone())
+            .or_default()
+            .push((edge.from_site_id.clone(), weight));
+    }
+
+    let mut xadj = Vec::with_capacity(vertex_site_ids.len() + 1);
+    let mut adjncy = Vec::new();
+    let mut adjwgt = Vec::new();
+    xadj.push(0);
+    for site_id in &vertex_site_ids {
+        if let Some(neighbors) = adjacency.get_mut(site_id) {
+            neighbors.sort_by(|left, right| left.0.cmp(&right.0));
+            for (neighbor_site_id, weight) in neighbors {
+                if let Some(vertex_idx) = vertex_by_site_id.get(neighbor_site_id) {
+                    adjncy.push(*vertex_idx);
+                    adjwgt.push(*weight);
+                }
+            }
+        }
+        xadj.push(adjncy.len() as u32);
+    }
+
+    let vwgt = graph
+        .nodes
+        .iter()
+        .map(|node| scaled_metis_weight(node.demand, 1.0))
+        .collect::<Vec<_>>();
+
+    Ok(MetisCoreHandoff {
+        vertex_site_ids,
+        xadj,
+        adjncy,
+        vwgt,
+        adjwgt,
+        edge_weight_scale,
+    })
+}
+
 pub fn build_site_graph(sites: &[Site]) -> SiteGraph {
     let mut nodes = sites
         .iter()
@@ -1685,6 +1822,10 @@ fn graph_edge_weight(graph: &SiteGraph, left_site_id: &str, right_site_id: &str)
         })
         .map(|edge| edge.weight)
         .unwrap_or(f64::INFINITY)
+}
+
+fn scaled_metis_weight(value: f64, scale: f64) -> i32 {
+    (value * scale).round().max(1.0).min(i32::MAX as f64) as i32
 }
 
 pub fn sample_territories_csv() -> &'static str {
@@ -2163,6 +2304,45 @@ south,S-001,10,100,2,2,2,8\n",
         assert_eq!(report.movements.len(), 6);
         assert_eq!(report.graph_diagnostics.component_count, 1);
         assert!(!report.graph_diagnostics.diagnostics.is_empty());
+    }
+
+    #[test]
+    fn emits_metis_core_csr_handoff() {
+        let sites = parse_sites_csv(sample_sites_csv()).expect("site sample parses");
+        let handoff = metis_core_handoff(&sites).expect("handoff builds");
+
+        assert_eq!(
+            handoff.vertex_site_ids,
+            ["N-001", "N-002", "N-003", "S-001", "S-002", "S-003"]
+        );
+        assert_eq!(handoff.xadj.len(), handoff.vertex_site_ids.len() + 1);
+        assert_eq!(handoff.xadj[0], 0);
+        assert_eq!(
+            handoff.xadj.last().copied(),
+            Some(handoff.adjncy.len() as u32)
+        );
+        assert_eq!(handoff.adjncy.len(), handoff.adjwgt.len());
+        assert!(handoff.vwgt.iter().all(|weight| *weight > 0));
+        assert!(handoff.adjwgt.iter().all(|weight| *weight > 0));
+    }
+
+    #[test]
+    fn partitions_sites_with_github_metis_core_dependency() {
+        let sites = parse_sites_csv(sample_sites_csv()).expect("site sample parses");
+        let territories =
+            partition_sites_with_metis_core(&sites, 2, 7).expect("METIS partition works");
+        let assigned_site_count = territories
+            .iter()
+            .map(|territory| territory.sites.len())
+            .sum::<usize>();
+
+        assert_eq!(territories.len(), 2);
+        assert_eq!(assigned_site_count, sites.len());
+        assert!(
+            territories
+                .iter()
+                .all(|territory| !territory.sites.is_empty())
+        );
     }
 
     #[test]

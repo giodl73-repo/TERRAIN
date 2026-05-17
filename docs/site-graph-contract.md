@@ -43,6 +43,8 @@ diagnostics.
 ```powershell
 cargo run -p terrain-cli -- graph-diagnostics-csv sample-sites.csv
 cargo run -p terrain-cli -- graph-partition-csv sample-sites.csv 2
+cargo run -p terrain-cli -- metis-handoff-csv sample-sites.csv
+cargo run -p terrain-cli -- metis-partition-csv sample-sites.csv 2
 ```
 
 The diagnostics command emits a summary line and stable diagnostic rows:
@@ -57,6 +59,25 @@ site graph, creates a coordinate-graph-seeded partition, and emits comparison
 rows for balance deltas, site movement, compactness exceptions, and graph
 diagnostics. This is still an internal baseline; METIS-CORE adoption remains a
 separate adapter decision after graph inputs stabilize.
+
+## METIS-CORE handoff
+
+The first METIS-CORE integration is a narrow GitHub-backed runtime dependency
+plus a fixture/benchmark handoff. `metis-handoff-csv` converts TERRAIN site graph
+inputs into METIS-style CSR rows:
+
+- `vertex_site_ids`: stable TERRAIN site IDs in deterministic vertex order,
+- `xadj`: row pointers,
+- `adjncy`: adjacency vertex IDs,
+- `vwgt`: positive integer demand weights,
+- `adjwgt`: positive integer coordinate-distance weights scaled by
+  `edge_weight_scale`.
+
+`metis-partition-csv` uses the same CSR handoff with METIS-CORE's Rust API and
+audits the resulting territories through TERRAIN's existing balance report. This
+keeps customer territory scoring, capacity, fairness, field-review language, and
+dashboard bindings in TERRAIN while giving METIS-CORE a strict, product-neutral
+input artifact for benchmark comparison.
 
 ## Boundary
 

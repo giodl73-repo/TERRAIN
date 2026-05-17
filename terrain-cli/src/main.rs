@@ -2,9 +2,10 @@ use terrain_core::{
     TerritoryVisualOptions, audit_product_balance, audit_territories, capacity_exceptions,
     compactness_exceptions, compare_territory_plans, dashboard_schema_json,
     diagnose_territories_csv, graph_partition_report, integration_fixture_manifest_json,
-    parse_assignee_capacity_csv, parse_sites_csv, parse_territories_csv, partition_count_sweep,
-    partition_sites, render_territory_geojson, render_territory_geojson_with_capacity,
-    render_territory_svg, render_territory_svg_with_capacity, sample_assignee_capacity_csv,
+    metis_core_handoff, parse_assignee_capacity_csv, parse_sites_csv, parse_territories_csv,
+    partition_count_sweep, partition_sites, partition_sites_with_metis_core,
+    render_territory_geojson, render_territory_geojson_with_capacity, render_territory_svg,
+    render_territory_svg_with_capacity, sample_assignee_capacity_csv,
     sample_proposed_territories_csv, sample_sites_csv, sample_territories, sample_territories_csv,
     site_graph_diagnostic_report, site_movements, summarize_territory,
 };
@@ -37,6 +38,8 @@ fn main() {
         "diagnose-csv" => run_csv_command(args.get(1), print_diagnostics_for_csv),
         "graph-diagnostics-csv" => run_graph_diagnostics_command(args.get(1), args.get(2)),
         "graph-partition-csv" => run_graph_partition_command(args.get(1), args.get(2)),
+        "metis-handoff-csv" => run_metis_handoff_command(args.get(1)),
+        "metis-partition-csv" => run_metis_partition_command(args.get(1), args.get(2)),
         "compare-csv" => run_compare_command(args.get(1), args.get(2)),
         "movement-csv" => run_movement_command(args.get(1), args.get(2)),
         "compactness-csv" => run_compactness_command(args.get(1), args.get(2)),
@@ -82,6 +85,8 @@ fn print_help() {
     println!("  diagnose-csv PATH Report territory CSV intake diagnostics");
     println!("  graph-diagnostics-csv PATH [LONG_EDGE_THRESHOLD] Report site graph diagnostics");
     println!("  graph-partition-csv PATH COUNT Compare greedy and graph-backed partitions");
+    println!("  metis-handoff-csv PATH Emit METIS-CORE CSR handoff rows");
+    println!("  metis-partition-csv PATH COUNT Audit a METIS-CORE partition");
     println!("  compare-csv BASELINE PROPOSED Compare two territory CSV plans");
     println!("  movement-csv BASELINE PROPOSED List stable site movement between plans");
     println!("  compactness-csv PATH THRESHOLD Report max-radius compactness exceptions");
@@ -330,6 +335,64 @@ fn run_graph_partition_command(path: Option<&String>, target_count: Option<&Stri
             diagnostic.message.replace(',', ";"),
         );
     }
+}
+
+fn run_metis_handoff_command(path: Option<&String>) {
+    let csv = read_csv_file(path);
+    let sites = parse_sites_csv(&csv).unwrap_or_else(|error| {
+        eprintln!("{error}");
+        std::process::exit(1);
+    });
+    let handoff = metis_core_handoff(&sites).unwrap_or_else(|error| {
+        eprintln!("{error}");
+        std::process::exit(1);
+    });
+    println!(
+        "status=pass vertex_count={} adjacency_entry_count={} edge_weight_scale={:.0}",
+        handoff.vertex_site_ids.len(),
+        handoff.adjncy.len(),
+        handoff.edge_weight_scale,
+    );
+    println!("vertex_index,site_id,vertex_weight,xadj_start,xadj_end");
+    for (idx, site_id) in handoff.vertex_site_ids.iter().enumerate() {
+        println!(
+            "{},{},{},{},{}",
+            idx,
+            site_id,
+            handoff.vwgt[idx],
+            handoff.xadj[idx],
+            handoff.xadj[idx + 1],
+        );
+    }
+    println!("adjacency_index,from_vertex,to_vertex,edge_weight");
+    for from_idx in 0..handoff.vertex_site_ids.len() {
+        let start = handoff.xadj[from_idx] as usize;
+        let end = handoff.xadj[from_idx + 1] as usize;
+        for adjacency_idx in start..end {
+            println!(
+                "{},{},{},{}",
+                adjacency_idx,
+                from_idx,
+                handoff.adjncy[adjacency_idx],
+                handoff.adjwgt[adjacency_idx],
+            );
+        }
+    }
+}
+
+fn run_metis_partition_command(path: Option<&String>, target_count: Option<&String>) {
+    let target_count = parse_count_arg(target_count, "missing target territory count");
+    let csv = read_csv_file(path);
+    let sites = parse_sites_csv(&csv).unwrap_or_else(|error| {
+        eprintln!("{error}");
+        std::process::exit(1);
+    });
+    let territories =
+        partition_sites_with_metis_core(&sites, target_count, 7).unwrap_or_else(|error| {
+            eprintln!("{error}");
+            std::process::exit(1);
+        });
+    print_audit(&territories);
 }
 
 fn print_sample_svg() {
