@@ -159,6 +159,14 @@ pub struct SiteGraph {
 }
 
 #[derive(Debug, Clone, PartialEq)]
+pub struct SiteGraphDiagnosticReport {
+    pub node_count: usize,
+    pub edge_count: usize,
+    pub component_count: usize,
+    pub diagnostics: Vec<SiteGraphDiagnostic>,
+}
+
+#[derive(Debug, Clone, PartialEq)]
 pub struct TerritoryVisualOptions {
     pub width: u32,
     pub height: u32,
@@ -1291,6 +1299,45 @@ pub fn build_site_graph(sites: &[Site]) -> SiteGraph {
     }
 }
 
+pub fn site_graph_diagnostic_report(
+    sites: &[Site],
+    long_edge_threshold_degrees: f64,
+) -> SiteGraphDiagnosticReport {
+    let graph = build_site_graph(sites);
+    let component_count = site_graph_component_count(&graph.nodes, &graph.edges);
+    let mut diagnostics = graph.diagnostics.clone();
+    diagnostics.extend(site_graph_isolated_site_diagnostics(
+        &graph.nodes,
+        &graph.edges,
+    ));
+    diagnostics.extend(site_graph_long_edge_diagnostics(
+        &graph.edges,
+        long_edge_threshold_degrees,
+    ));
+    diagnostics.sort_by(|left, right| {
+        left.severity
+            .cmp(&right.severity)
+            .then_with(|| left.code.cmp(&right.code))
+            .then_with(|| left.site_ids.cmp(&right.site_ids))
+            .then_with(|| left.message.cmp(&right.message))
+    });
+
+    SiteGraphDiagnosticReport {
+        node_count: graph.nodes.len(),
+        edge_count: graph.edges.len(),
+        component_count,
+        diagnostics,
+    }
+}
+
+pub fn site_graph_component_count(nodes: &[SiteGraphNode], edges: &[SiteGraphEdge]) -> usize {
+    if nodes.is_empty() {
+        return 0;
+    }
+
+    connected_components(nodes, edges).len()
+}
+
 pub fn site_graph_connectivity_diagnostics(
     nodes: &[SiteGraphNode],
     edges: &[SiteGraphEdge],
@@ -1304,53 +1351,7 @@ pub fn site_graph_connectivity_diagnostics(
         }];
     }
 
-    let node_ids = nodes
-        .iter()
-        .map(|node| node.site_id.clone())
-        .collect::<std::collections::BTreeSet<_>>();
-    let mut adjacency = node_ids
-        .iter()
-        .map(|site_id| (site_id.clone(), std::collections::BTreeSet::new()))
-        .collect::<std::collections::BTreeMap<_, _>>();
-
-    for edge in edges {
-        if node_ids.contains(&edge.from_site_id) && node_ids.contains(&edge.to_site_id) {
-            adjacency
-                .entry(edge.from_site_id.clone())
-                .or_default()
-                .insert(edge.to_site_id.clone());
-            adjacency
-                .entry(edge.to_site_id.clone())
-                .or_default()
-                .insert(edge.from_site_id.clone());
-        }
-    }
-
-    let mut seen = std::collections::BTreeSet::new();
-    let mut components = Vec::new();
-    for site_id in &node_ids {
-        if seen.contains(site_id) {
-            continue;
-        }
-        let mut stack = vec![site_id.clone()];
-        let mut component = Vec::new();
-        while let Some(current) = stack.pop() {
-            if !seen.insert(current.clone()) {
-                continue;
-            }
-            component.push(current.clone());
-            if let Some(neighbors) = adjacency.get(&current) {
-                for neighbor in neighbors.iter().rev() {
-                    if !seen.contains(neighbor) {
-                        stack.push(neighbor.clone());
-                    }
-                }
-            }
-        }
-        component.sort();
-        components.push(component);
-    }
-
+    let components = connected_components(nodes, edges);
     if components.len() <= 1 {
         return Vec::new();
     }
@@ -1366,6 +1367,46 @@ pub fn site_graph_connectivity_diagnostics(
                 site_ids.join(";")
             ),
             site_ids,
+        })
+        .collect()
+}
+
+pub fn site_graph_isolated_site_diagnostics(
+    nodes: &[SiteGraphNode],
+    edges: &[SiteGraphEdge],
+) -> Vec<SiteGraphDiagnostic> {
+    let connected_site_ids = edges
+        .iter()
+        .flat_map(|edge| [edge.from_site_id.as_str(), edge.to_site_id.as_str()])
+        .collect::<std::collections::BTreeSet<_>>();
+
+    nodes
+        .iter()
+        .filter(|node| !connected_site_ids.contains(node.site_id.as_str()))
+        .map(|node| SiteGraphDiagnostic {
+            severity: "warning".to_string(),
+            code: "isolated-site".to_string(),
+            site_ids: vec![node.site_id.clone()],
+            message: format!("site '{}' has no graph edges", node.site_id),
+        })
+        .collect()
+}
+
+pub fn site_graph_long_edge_diagnostics(
+    edges: &[SiteGraphEdge],
+    threshold_degrees: f64,
+) -> Vec<SiteGraphDiagnostic> {
+    edges
+        .iter()
+        .filter(|edge| edge.weight > threshold_degrees)
+        .map(|edge| SiteGraphDiagnostic {
+            severity: "warning".to_string(),
+            code: "long-edge".to_string(),
+            site_ids: vec![edge.from_site_id.clone(), edge.to_site_id.clone()],
+            message: format!(
+                "edge weight {:.6} exceeds threshold {:.6}",
+                edge.weight, threshold_degrees
+            ),
         })
         .collect()
 }
@@ -1418,6 +1459,56 @@ fn site_graph_input_diagnostics(nodes: &[SiteGraphNode]) -> Vec<SiteGraphDiagnos
     }
 
     diagnostics
+}
+
+fn connected_components(nodes: &[SiteGraphNode], edges: &[SiteGraphEdge]) -> Vec<Vec<String>> {
+    let node_ids = nodes
+        .iter()
+        .map(|node| node.site_id.clone())
+        .collect::<std::collections::BTreeSet<_>>();
+    let mut adjacency = node_ids
+        .iter()
+        .map(|site_id| (site_id.clone(), std::collections::BTreeSet::new()))
+        .collect::<std::collections::BTreeMap<_, _>>();
+
+    for edge in edges {
+        if node_ids.contains(&edge.from_site_id) && node_ids.contains(&edge.to_site_id) {
+            adjacency
+                .entry(edge.from_site_id.clone())
+                .or_default()
+                .insert(edge.to_site_id.clone());
+            adjacency
+                .entry(edge.to_site_id.clone())
+                .or_default()
+                .insert(edge.from_site_id.clone());
+        }
+    }
+
+    let mut seen = std::collections::BTreeSet::new();
+    let mut components = Vec::new();
+    for site_id in &node_ids {
+        if seen.contains(site_id) {
+            continue;
+        }
+        let mut stack = vec![site_id.clone()];
+        let mut component = Vec::new();
+        while let Some(current) = stack.pop() {
+            if !seen.insert(current.clone()) {
+                continue;
+            }
+            component.push(current.clone());
+            if let Some(neighbors) = adjacency.get(&current) {
+                for neighbor in neighbors.iter().rev() {
+                    if !seen.contains(neighbor) {
+                        stack.push(neighbor.clone());
+                    }
+                }
+            }
+        }
+        component.sort();
+        components.push(component);
+    }
+    components
 }
 
 fn coordinate_distance_edges(nodes: &[SiteGraphNode]) -> Vec<SiteGraphEdge> {
@@ -2094,5 +2185,37 @@ south,,10,95000,47.46,-222.33\n",
         assert_eq!(diagnostics[0].code, "disconnected-component");
         assert_eq!(diagnostics[0].site_ids, ["A", "B"]);
         assert_eq!(diagnostics[1].site_ids, ["C"]);
+    }
+
+    #[test]
+    fn reports_graph_diagnostics_with_stable_ordering() {
+        let sites = vec![
+            Site::new("B", 1.0, 10.0, 47.0, -122.0),
+            Site::new("A", 1.0, 10.0, 47.2, -122.2),
+        ];
+        let report = site_graph_diagnostic_report(&sites, 0.01);
+
+        assert_eq!(report.node_count, 2);
+        assert_eq!(report.edge_count, 1);
+        assert_eq!(report.component_count, 1);
+        assert_eq!(report.diagnostics.len(), 1);
+        assert_eq!(report.diagnostics[0].code, "long-edge");
+        assert_eq!(report.diagnostics[0].site_ids, ["A", "B"]);
+    }
+
+    #[test]
+    fn reports_isolated_sites_for_empty_edge_sets() {
+        let nodes = vec![SiteGraphNode {
+            site_id: "solo".to_string(),
+            demand: 1.0,
+            revenue: 10.0,
+            latitude: 47.0,
+            longitude: -122.0,
+        }];
+        let diagnostics = site_graph_isolated_site_diagnostics(&nodes, &[]);
+
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0].code, "isolated-site");
+        assert_eq!(diagnostics[0].site_ids, ["solo"]);
     }
 }

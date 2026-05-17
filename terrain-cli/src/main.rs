@@ -6,7 +6,7 @@ use terrain_core::{
     render_territory_geojson, render_territory_geojson_with_capacity, render_territory_svg,
     render_territory_svg_with_capacity, sample_assignee_capacity_csv,
     sample_proposed_territories_csv, sample_sites_csv, sample_territories, sample_territories_csv,
-    site_movements,
+    site_graph_diagnostic_report, site_movements,
 };
 
 fn main() {
@@ -35,6 +35,7 @@ fn main() {
         "capacity-csv" => run_csv_command(args.get(1), print_capacity_for_csv),
         "capacity-audit-csv" => run_capacity_audit_command(args.get(1), args.get(2)),
         "diagnose-csv" => run_csv_command(args.get(1), print_diagnostics_for_csv),
+        "graph-diagnostics-csv" => run_graph_diagnostics_command(args.get(1), args.get(2)),
         "compare-csv" => run_compare_command(args.get(1), args.get(2)),
         "movement-csv" => run_movement_command(args.get(1), args.get(2)),
         "compactness-csv" => run_compactness_command(args.get(1), args.get(2)),
@@ -78,6 +79,7 @@ fn print_help() {
     println!("  capacity-csv PATH Summarize assignee capacity CSV");
     println!("  capacity-audit-csv TERRITORIES CAPACITY Report capacity overloads");
     println!("  diagnose-csv PATH Report territory CSV intake diagnostics");
+    println!("  graph-diagnostics-csv PATH [LONG_EDGE_THRESHOLD] Report site graph diagnostics");
     println!("  compare-csv BASELINE PROPOSED Compare two territory CSV plans");
     println!("  movement-csv BASELINE PROPOSED List stable site movement between plans");
     println!("  compactness-csv PATH THRESHOLD Report max-radius compactness exceptions");
@@ -205,6 +207,47 @@ fn print_diagnostics_for_csv(csv: &str) {
             diagnostic.severity,
             diagnostic.line,
             diagnostic.field,
+            diagnostic.message.replace(',', ";"),
+        );
+    }
+}
+
+fn run_graph_diagnostics_command(path: Option<&String>, threshold: Option<&String>) {
+    let threshold = threshold
+        .map(|value| {
+            value.parse::<f64>().unwrap_or_else(|_| {
+                eprintln!("long edge threshold must be a number");
+                std::process::exit(2);
+            })
+        })
+        .unwrap_or(0.10);
+    let csv = read_csv_file(path);
+    let sites = parse_sites_csv(&csv).unwrap_or_else(|error| {
+        eprintln!("{error}");
+        std::process::exit(1);
+    });
+    let report = site_graph_diagnostic_report(&sites, threshold);
+    println!(
+        "status={} node_count={} edge_count={} component_count={} diagnostic_count={}",
+        if report.diagnostics.iter().any(|d| d.severity == "error") {
+            "error"
+        } else if report.diagnostics.is_empty() {
+            "pass"
+        } else {
+            "review"
+        },
+        report.node_count,
+        report.edge_count,
+        report.component_count,
+        report.diagnostics.len()
+    );
+    println!("severity,code,site_ids,message");
+    for diagnostic in report.diagnostics {
+        println!(
+            "{},{},{},{}",
+            diagnostic.severity,
+            diagnostic.code,
+            diagnostic.site_ids.join(";"),
             diagnostic.message.replace(',', ";"),
         );
     }

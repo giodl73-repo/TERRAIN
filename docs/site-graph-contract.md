@@ -35,6 +35,21 @@ diagnostics.
 | `duplicate-site-id` | error | More than one row has the same stable site ID. |
 | `duplicate-coordinate` | warning | Multiple site IDs share the same coordinate. |
 | `disconnected-component` | warning | A graph edge set contains more than one connected component. |
+| `isolated-site` | warning | A graph node has no incident edges. |
+| `long-edge` | warning | A coordinate-distance edge exceeds the review threshold. |
+
+## CLI
+
+```powershell
+cargo run -p terrain-cli -- graph-diagnostics-csv sample-sites.csv
+```
+
+The command emits a summary line and stable diagnostic rows:
+
+```text
+status=review node_count=6 edge_count=15 component_count=1 diagnostic_count=...
+severity,code,site_ids,message
+```
 
 ## Boundary
 

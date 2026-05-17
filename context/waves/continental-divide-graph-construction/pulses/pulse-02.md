@@ -1,6 +1,6 @@
 # Pulse 02: Graph Diagnostics CLI
 
-Status: planned
+Status: done
 
 ## Goal
 
@@ -9,11 +9,11 @@ partitioning is used for planning decisions.
 
 ## Scope
 
-- Add a CLI command for graph diagnostics over `sample-sites.csv` and user CSVs.
-- Report component count, isolated sites, duplicate coordinates, and long-edge
-  warnings.
-- Keep output plain CSV/text so it can join existing packet and dashboard flows.
-- Add fixtures that prove deterministic diagnostic ordering.
+- Added `graph-diagnostics-csv PATH [LONG_EDGE_THRESHOLD]`.
+- Reports node count, edge count, component count, diagnostic count, isolated
+  sites, duplicate coordinates, disconnected components, and long-edge warnings.
+- Keeps output as a summary line plus plain CSV diagnostic rows for joins.
+- Added core tests for deterministic graph diagnostic report ordering.
 
 ## Validation
 
