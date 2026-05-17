@@ -57,8 +57,8 @@ severity,code,site_ids,message
 The partition command keeps `partition_sites` as the greedy baseline, builds the
 site graph, creates a coordinate-graph-seeded partition, and emits comparison
 rows for balance deltas, site movement, compactness exceptions, and graph
-diagnostics. This is still an internal baseline; METIS-CORE adoption remains a
-separate adapter decision after graph inputs stabilize.
+diagnostics. METIS-CORE adoption is handled through the narrow GitHub-backed
+adapter below.
 
 ## METIS-CORE handoff
 

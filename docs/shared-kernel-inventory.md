@@ -9,8 +9,8 @@ candidates for shared kernels in RLINE or METIS-CORE.
   review packets, and field-manager language.
 - RLINE is the likely home for product-neutral tabular diagnostics, statistics,
   graph helpers, and dashboard schema primitives.
-- METIS-CORE is the likely home for graph partitioning and refinement once
-  TERRAIN has a real graph construction layer.
+- METIS-CORE is the GitHub-backed runtime dependency for graph partitioning and
+  refinement. TERRAIN owns the site-to-CSR adapter and product interpretation.
 - CROP/PEBBLE/FLETCH are candidates for reusable cached geography, benchmark
   fixtures, and integration packets, not territory policy.
 
@@ -22,7 +22,7 @@ candidates for shared kernels in RLINE or METIS-CORE.
 | Spread ratios and centroid summaries | `terrain-core` | RLINE `rstat-core` / `rmath-core` | candidate | Product-neutral math, but TERRAIN field names stay local. |
 | Compactness max-radius check | `terrain-core` | RLINE `rgraph-core` or `rmath-core` | candidate | Current implementation is coordinate-only, not a graph kernel yet. |
 | Deterministic greedy partition | `terrain-core` | RLINE `ropt-core` | candidate | Useful as a baseline heuristic; not a METIS replacement. |
-| Graph partition/refinement | not implemented | METIS-CORE | future dependency | Adopt after TERRAIN builds a stable CSR graph from sites/geography. |
+| Graph partition/refinement | METIS-CORE via GitHub dependency | METIS-CORE | active dependency | TERRAIN emits CSR handoff artifacts and audits METIS-backed partitions locally. |
 | Movement manifests | `terrain-core` | TERRAIN | keep local | Site movement language is territory-review policy. |
 | Capacity exceptions | `terrain-core` | TERRAIN | keep local | Fairness and workload thresholds are product policy. |
 | SVG/GeoJSON data bindings | `terrain-core` | TERRAIN + documented schema | keep local | Field names are dashboard contract for this product. |
@@ -33,7 +33,6 @@ candidates for shared kernels in RLINE or METIS-CORE.
 1. Stabilize dashboard schemas and fixture outputs in TERRAIN.
 2. Extract reusable CSV/diagnostic primitives only after a second repo needs
    the same row-context contract.
-3. Add a graph construction layer for sites and geography.
-4. Use METIS-CORE for real graph partitioning once the graph input contract is
-   explicit.
+3. Keep the site graph and CSR adapter explicit in TERRAIN.
+4. Use METIS-CORE through GitHub dependencies for graph partitioning.
 5. Keep all people, capacity, fairness, and field-review wording in TERRAIN.

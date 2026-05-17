@@ -32,6 +32,13 @@ worth adopting.
 - Any METIS-CORE dependency has a narrow graph-partitioning boundary and does
   not absorb TERRAIN policy.
 
+## Completion
+
+Continental Divide is complete. TERRAIN now has deterministic site graph
+construction, graph diagnostics, a graph-seeded partition baseline, a
+GitHub-backed METIS-CORE adapter, and CSR handoff artifacts for benchmark
+comparison while keeping territory policy local.
+
 ## Non-goals
 
 - TERRAIN does not become a turn-by-turn routing engine.

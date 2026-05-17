@@ -14,11 +14,11 @@ historical harms or politics of expansion.
 | 3 | Oregon Trail | First movement/territory split scenarios | done |
 | 4 | Homestead Act | People, capacity, ownership, and fairness | done |
 | 5 | Transcontinental Railroad | Shared kernels, dashboards, and integrations | done |
-| 6 | Continental Divide | Graph construction and METIS-CORE partition readiness | planned |
+| 6 | Continental Divide | Graph construction and METIS-CORE partition readiness | done |
 
 ## Active phase
 
-- `continental-divide-graph-construction`
+- No active phase. Continental Divide is complete.
 
 ## Protocol
 
