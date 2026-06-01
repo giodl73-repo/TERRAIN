@@ -4,3 +4,4 @@
 /.claude/agents_state/
 *.log
 *.tmp
+.cargo/config.toml
