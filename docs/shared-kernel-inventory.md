@@ -11,7 +11,7 @@ candidates for shared kernels in RLINE or METIS-CORE.
   graph helpers, and dashboard schema primitives.
 - METIS-CORE is the GitHub-backed runtime dependency for graph partitioning and
   refinement. TERRAIN owns the site-to-CSR adapter and product interpretation.
-- CROP/PEBBLE/FLETCH are candidates for reusable cached geography, benchmark
+- CROP/MDPORT/FLETCH are candidates for reusable cached geography, benchmark
   fixtures, and integration packets, not territory policy.
 
 ## Inventory

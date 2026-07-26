@@ -369,7 +369,7 @@ pub fn dashboard_schema_json() -> &'static str {
 }
 
 pub fn integration_fixture_manifest_json() -> &'static str {
-    r#"{"manifest_id":"terrain.integration-fixtures.v1","sources":[{"name":"crop-geography-cache","repo":"CROP","role":"cached public geography and boundaries","status":"candidate"},{"name":"pebble-context-packets","repo":"PEBBLE","role":"portable context and benchmark packets","status":"candidate"},{"name":"fletch-fetch-cache","repo":"FLETCH","role":"registered URL/cacheline-backed fixture retrieval","status":"candidate"}],"fixtures":[{"name":"sample-territories","path":"fixtures/sample-territories.csv","schema":"terrain.dashboard.v1","role":"assigned territory baseline"},{"name":"sample-sites","path":"fixtures/sample-sites.csv","schema":"terrain.dashboard.v1","role":"unassigned partition input"},{"name":"sample-capacity","path":"fixtures/sample-capacity.csv","schema":"terrain.dashboard.v1","role":"assignee capacity input"},{"name":"steady-state-scenario","path":"fixtures/scenarios/steady-state-territories.csv","schema":"terrain.dashboard.v1","role":"balanced multi-product territory scenario"},{"name":"risky-reassignment-scenario","path":"fixtures/scenarios/risky-reassignment-territories.csv","schema":"terrain.dashboard.v1","role":"movement, product imbalance, and capacity overload scenario"},{"name":"growth-sites-scenario","path":"fixtures/scenarios/growth-sites.csv","schema":"terrain.dashboard.v1","role":"multi-product count sweep input"}]}"#
+    r#"{"manifest_id":"terrain.integration-fixtures.v1","sources":[{"name":"crop-geography-cache","repo":"CROP","role":"cached public geography and boundaries","status":"candidate"},{"name":"mdport-context-packets","repo":"MDPORT","role":"portable context and benchmark packets","status":"candidate"},{"name":"fletch-fetch-cache","repo":"FLETCH","role":"registered URL/cacheline-backed fixture retrieval","status":"candidate"}],"fixtures":[{"name":"sample-territories","path":"fixtures/sample-territories.csv","schema":"terrain.dashboard.v1","role":"assigned territory baseline"},{"name":"sample-sites","path":"fixtures/sample-sites.csv","schema":"terrain.dashboard.v1","role":"unassigned partition input"},{"name":"sample-capacity","path":"fixtures/sample-capacity.csv","schema":"terrain.dashboard.v1","role":"assignee capacity input"},{"name":"steady-state-scenario","path":"fixtures/scenarios/steady-state-territories.csv","schema":"terrain.dashboard.v1","role":"balanced multi-product territory scenario"},{"name":"risky-reassignment-scenario","path":"fixtures/scenarios/risky-reassignment-territories.csv","schema":"terrain.dashboard.v1","role":"movement, product imbalance, and capacity overload scenario"},{"name":"growth-sites-scenario","path":"fixtures/scenarios/growth-sites.csv","schema":"terrain.dashboard.v1","role":"multi-product count sweep input"}]}"#
 }
 
 pub fn summarize_territory(territory: &Territory) -> TerritorySummary {
@@ -3008,7 +3008,7 @@ mod tests {
 
         assert!(manifest.contains("\"manifest_id\":\"terrain.integration-fixtures.v1\""));
         assert!(manifest.contains("\"repo\":\"CROP\""));
-        assert!(manifest.contains("\"repo\":\"PEBBLE\""));
+        assert!(manifest.contains("\"repo\":\"MDPORT\""));
         assert!(manifest.contains("\"repo\":\"FLETCH\""));
         assert!(manifest.contains("fixtures/sample-capacity.csv"));
     }
