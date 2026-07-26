@@ -99,7 +99,7 @@ Planned integrations:
 
 - RLINE for shared graph/stat/optimization helpers.
 - METIS-CORE for partition/refinement once the product contract is clear.
-- CROP/MDPORT/FLETCH later for context packs, import bundles, and cached public
+- MDCROP/MDPORT/FLETCH later for context packs, import bundles, and cached public
   geography or benchmark fixtures.
 
 ## Phase 6: Continental Divide - Graph construction

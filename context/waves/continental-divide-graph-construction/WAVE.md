@@ -42,7 +42,7 @@ comparison while keeping territory policy local.
 ## Non-goals
 
 - TERRAIN does not become a turn-by-turn routing engine.
-- TERRAIN does not own public geography acquisition; CROP/FLETCH remain future
+- TERRAIN does not own public geography acquisition; MDCROP/FLETCH remain future
   candidates for cached geography inputs.
 - TERRAIN does not extract shared kernels until a second consumer or stable
   contract justifies it.

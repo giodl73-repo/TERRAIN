@@ -205,7 +205,7 @@ fn run_integration_packet_command(output_dir: Option<&String>) {
     write_packet_file(
         output_dir,
         "integration-summary.txt",
-        "TERRAIN integration packet\nschema=terrain.dashboard.v1\nfixtures=terrain.integration-fixtures.v1\npolicy_boundary=TERRAIN keeps territory policy local; RLINE/METIS/CROP/MDPORT/FLETCH are candidate integration surfaces.\n",
+        "TERRAIN integration packet\nschema=terrain.dashboard.v1\nfixtures=terrain.integration-fixtures.v1\npolicy_boundary=TERRAIN keeps territory policy local; RLINE/METIS/MDCROP/MDPORT/FLETCH are candidate integration surfaces.\n",
     );
     println!(
         "wrote integration packet to {} with 3 files",

@@ -4,7 +4,7 @@ Status: done
 
 ## Goal
 
-Evaluate CROP, MDPORT, and FLETCH as reusable fixture and cached-data handoff
+Evaluate MDCROP, MDPORT, and FLETCH as reusable fixture and cached-data handoff
 points without adding premature dependencies.
 
 ## Outcome
@@ -12,7 +12,7 @@ points without adding premature dependencies.
 - Added `docs\integration-fixtures.md`.
 - Added a machine-readable `terrain.integration-fixtures.v1` manifest.
 - Added `terrain-cli integration-fixtures` for downstream tools.
-- Identified CROP, MDPORT, and FLETCH as candidate handoff sources while keeping
+- Identified MDCROP, MDPORT, and FLETCH as candidate handoff sources while keeping
   territory policy local.
 
 ## Validation
