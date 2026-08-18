@@ -177,6 +177,20 @@ Reusable fixture and cache-source handoffs are tracked in
 The integration packet command writes both manifests plus a policy-boundary
 summary for downstream repos.
 
+## Portfolio reuse posture
+
+TERRAIN is intentionally a specialist territory-planning product, not currently
+a shared portfolio dependency. `terrain.dashboard.v1` and
+`terrain.integration-fixtures.v1` are documented local export surfaces, but no
+downstream manifest consumes them today; the MDCROP, MDPORT, and FLETCH rows in
+the integration inventory remain candidate sources rather than adopters.
+
+Territory policy, intake rules, diagnostics, movement/fairness decisions, and
+manager review packets stay in TERRAIN. Shared graph and partition primitives
+flow outward through RLINE and METIS-CORE instead of through `terrain-core`.
+Direct reuse requires a pinned downstream schema/packet manifest and
+consumer-owned fixture compatibility tests.
+
 ## Test scenarios
 
 Richer test scenarios live under `fixtures\scenarios\` and are documented in
