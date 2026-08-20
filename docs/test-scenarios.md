@@ -20,6 +20,7 @@ cargo run -p terrain-cli -- product-balance-csv fixtures\scenarios\risky-reassig
 cargo run -p terrain-cli -- movement-csv fixtures\scenarios\steady-state-territories.csv fixtures\scenarios\risky-reassignment-territories.csv
 cargo run -p terrain-cli -- capacity-audit-csv fixtures\scenarios\risky-reassignment-territories.csv fixtures\scenarios\steady-state-capacity.csv
 cargo run -p terrain-cli -- field-review-csv fixtures\scenarios\steady-state-territories.csv fixtures\scenarios\risky-reassignment-territories.csv
+cargo run -p terrain-cli -- packet-csv fixtures\scenarios\steady-state-territories.csv fixtures\scenarios\risky-reassignment-territories.csv terrain-scenarium-packet
 cargo run -p terrain-cli -- sweep-csv fixtures\scenarios\growth-sites.csv 2 4
 ```
 

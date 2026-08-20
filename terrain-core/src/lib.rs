@@ -1,3 +1,8 @@
+use scenarium::{
+    ComparisonReport, EvidencePacket, Finding, Metric, MetricDirection, Provenance, RunRecord,
+    RunVariant, Scenario, Severity,
+};
+
 #[derive(Debug, Clone, PartialEq)]
 pub struct Site {
     pub id: String,
@@ -79,6 +84,8 @@ pub struct ScenarioComparison {
     pub proposed: BalanceAudit,
     pub territory_deltas: Vec<TerritoryScenarioDelta>,
 }
+
+pub type ScenariumPlanEvidence = (RunRecord, RunRecord, ComparisonReport, EvidencePacket);
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct CompactnessException {
@@ -553,6 +560,114 @@ pub fn compare_territory_plans(
         proposed: proposed_audit,
         territory_deltas,
     }
+}
+
+pub fn scenarium_plan_evidence(
+    comparison: &ScenarioComparison,
+    input_id: &str,
+) -> Result<ScenariumPlanEvidence, scenarium::Error> {
+    let scenario = Scenario::new(
+        "terrain.plan-comparison.v1",
+        "territory plan balance",
+        input_id,
+    )?;
+    let provenance = Provenance::new("terrain-core", env!("CARGO_PKG_VERSION"), input_id)?;
+    let mut baseline = RunRecord::new(
+        &scenario,
+        RunVariant::baseline("baseline-plan")?,
+        "terrain-core",
+    )?;
+    let mut candidate = RunRecord::new(
+        &scenario,
+        RunVariant::candidate("proposed-plan")?,
+        "terrain-core",
+    )?;
+    record_balance_metrics(&mut baseline, &comparison.baseline)?;
+    record_balance_metrics(&mut candidate, &comparison.proposed)?;
+    baseline.set_provenance(provenance.clone());
+    candidate.set_provenance(provenance.clone());
+    add_balance_finding(&mut baseline, &comparison.baseline)?;
+    add_balance_finding(&mut candidate, &comparison.proposed)?;
+
+    let report = scenarium::compare_runs(&baseline, &candidate)?;
+    let mut packet = EvidencePacket::from_comparison(
+        "terrain.plan-comparison.packet.v1",
+        "territory plan comparison",
+        provenance,
+        &baseline,
+        &candidate,
+        &report,
+    )?;
+    for (name, path, media_type) in [
+        ("baseline-run", "baseline-run.json", "application/json"),
+        ("candidate-run", "candidate-run.json", "application/json"),
+        ("comparison", "comparison.json", "application/json"),
+        ("scenario-summary", "scenario-summary.csv", "text/csv"),
+        ("territory-deltas", "territory-deltas.csv", "text/csv"),
+        ("movement-manifest", "movement-manifest.csv", "text/csv"),
+        (
+            "baseline-diagnostics",
+            "baseline-diagnostics.csv",
+            "text/csv",
+        ),
+        (
+            "proposed-diagnostics",
+            "proposed-diagnostics.csv",
+            "text/csv",
+        ),
+        (
+            "compactness-exceptions",
+            "compactness-exceptions.csv",
+            "text/csv",
+        ),
+        ("proposed-svg", "proposed.svg", "image/svg+xml"),
+        (
+            "proposed-geojson",
+            "proposed.geojson",
+            "application/geo+json",
+        ),
+    ] {
+        packet.add_artifact_path(name, path, media_type)?;
+    }
+    Ok((baseline, candidate, report, packet))
+}
+
+fn record_balance_metrics(
+    run: &mut RunRecord,
+    audit: &BalanceAudit,
+) -> Result<(), scenarium::Error> {
+    for metric in [
+        Metric::new(
+            "demand_spread_ratio",
+            audit.demand_spread_ratio,
+            MetricDirection::LowerIsBetter,
+        )?,
+        Metric::new(
+            "revenue_spread_ratio",
+            audit.revenue_spread_ratio,
+            MetricDirection::LowerIsBetter,
+        )?,
+        Metric::new(
+            "max_radius_degrees",
+            audit.max_radius_degrees,
+            MetricDirection::LowerIsBetter,
+        )?,
+    ] {
+        run.record_metric(metric)?;
+    }
+    Ok(())
+}
+
+fn add_balance_finding(run: &mut RunRecord, audit: &BalanceAudit) -> Result<(), scenarium::Error> {
+    if !audit.passes {
+        run.add_finding(Finding::new(
+            Severity::Warning,
+            "terrain.balance.review",
+            run.variant().id(),
+            "territory balance exceeds the configured demand or revenue spread threshold",
+        )?);
+    }
+    Ok(())
 }
 
 pub fn compactness_exceptions(
@@ -3074,6 +3189,33 @@ south,S-001,10,100,2,2,2,8\n",
         assert_eq!(comparison.territory_deltas[0].territory_id, "north");
         assert_eq!(comparison.territory_deltas[0].site_count_delta, -1);
         near(comparison.territory_deltas[1].demand_delta, 9.0);
+    }
+
+    #[test]
+    fn projects_real_risky_reassignment_into_scenarium_evidence() {
+        let baseline = parse_territories_csv(include_str!(
+            "../../fixtures/scenarios/steady-state-territories.csv"
+        ))
+        .expect("baseline parses");
+        let proposed = parse_territories_csv(include_str!(
+            "../../fixtures/scenarios/risky-reassignment-territories.csv"
+        ))
+        .expect("proposed parses");
+        let comparison = compare_territory_plans(&baseline, &proposed, 0.05, 0.05);
+
+        let first = scenarium_plan_evidence(&comparison, "terrain.risky-reassignment.v1")
+            .expect("evidence builds");
+        let second = scenarium_plan_evidence(&comparison, "terrain.risky-reassignment.v1")
+            .expect("evidence repeats");
+
+        assert_eq!(first.0.status(), scenarium::RunStatus::Pass);
+        assert_eq!(first.1.status(), scenarium::RunStatus::Review);
+        assert_ne!(first.2.status(), scenarium::ComparisonStatus::Equivalent);
+        assert_eq!(first.3.artifacts().len(), 11);
+        assert_eq!(
+            first.3.to_json().expect("packet serializes"),
+            second.3.to_json().expect("packet repeats")
+        );
     }
 
     #[test]

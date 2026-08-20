@@ -9,8 +9,9 @@ use terrain_core::{
     render_territory_geojson, render_territory_geojson_with_capacity, render_territory_svg,
     render_territory_svg_with_capacity, sample_assignee_capacity_csv,
     sample_proposed_territories_csv, sample_site_edges_csv, sample_sites_csv, sample_territories,
-    sample_territories_csv, site_graph_diagnostic_report, site_graph_diagnostic_report_with_edges,
-    site_movements, summarize_territory, territory_edge_audit, territory_edge_field_review,
+    sample_territories_csv, scenarium_plan_evidence, site_graph_diagnostic_report,
+    site_graph_diagnostic_report_with_edges, site_movements, summarize_territory,
+    territory_edge_audit, territory_edge_field_review,
 };
 
 fn main() {
@@ -1021,9 +1022,15 @@ fn run_compare_command(baseline_path: Option<&String>, proposed_path: Option<&St
         std::process::exit(1);
     });
     let comparison = compare_territory_plans(&baseline, &proposed, 0.05, 0.05);
+    let input_id = scenario_input_id(baseline_path.map_or("-", String::as_str), proposed_path);
+    let (_, _, report, _) =
+        scenarium_plan_evidence(&comparison, &input_id).unwrap_or_else(|error| {
+            eprintln!("failed to build SCENARIUM comparison: {error}");
+            std::process::exit(1);
+        });
     println!("TERRAIN scenario comparison");
     println!(
-        "baseline_status={} proposed_status={} demand_spread_delta={:.3} revenue_spread_delta={:.3}",
+        "baseline_status={} proposed_status={} scenarium_status={} demand_spread_delta={:.3} revenue_spread_delta={:.3}",
         if comparison.baseline.passes {
             "pass"
         } else {
@@ -1034,6 +1041,7 @@ fn run_compare_command(baseline_path: Option<&String>, proposed_path: Option<&St
         } else {
             "review"
         },
+        report.status().as_str(),
         comparison.proposed.demand_spread_ratio - comparison.baseline.demand_spread_ratio,
         comparison.proposed.revenue_spread_ratio - comparison.baseline.revenue_spread_ratio,
     );
@@ -1205,11 +1213,37 @@ fn run_packet_command(
         std::process::exit(1);
     });
     let comparison = compare_territory_plans(&baseline, &proposed, 0.05, 0.05);
+    let input_id = scenario_input_id(baseline_path.map_or("-", String::as_str), proposed_path);
+    let (baseline_run, candidate_run, report, packet) =
+        scenarium_plan_evidence(&comparison, &input_id).unwrap_or_else(|error| {
+            eprintln!("failed to build SCENARIUM evidence: {error}");
+            std::process::exit(1);
+        });
     let output_dir = std::path::Path::new(output_dir);
     std::fs::create_dir_all(output_dir).unwrap_or_else(|error| {
         eprintln!("failed to create {}: {error}", output_dir.display());
         std::process::exit(1);
     });
+    write_packet_file(
+        output_dir,
+        "baseline-run.json",
+        &baseline_run.to_json().expect("validated run serializes"),
+    );
+    write_packet_file(
+        output_dir,
+        "candidate-run.json",
+        &candidate_run.to_json().expect("validated run serializes"),
+    );
+    write_packet_file(
+        output_dir,
+        "comparison.json",
+        &report.to_json().expect("validated comparison serializes"),
+    );
+    write_packet_file(
+        output_dir,
+        "evidence-packet.json",
+        &packet.to_json().expect("validated packet serializes"),
+    );
     write_packet_file(
         output_dir,
         "scenario-summary.csv",
@@ -1251,7 +1285,7 @@ fn run_packet_command(
         &render_territory_geojson(&proposed),
     );
     println!(
-        "wrote scenario packet to {} with 8 files",
+        "wrote scenario packet to {} with 12 files",
         output_dir.display()
     );
 }
@@ -1577,6 +1611,14 @@ fn write_packet_file(output_dir: &std::path::Path, file_name: &str, contents: &s
         eprintln!("failed to write {}: {error}", path.display());
         std::process::exit(1);
     });
+}
+
+fn scenario_input_id(baseline_path: &str, proposed_path: &str) -> String {
+    format!(
+        "{}=>{}",
+        baseline_path.replace('\\', "/"),
+        proposed_path.replace('\\', "/")
+    )
 }
 
 fn scenario_summary_csv(comparison: &terrain_core::ScenarioComparison) -> String {

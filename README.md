@@ -89,7 +89,9 @@ or route kernels are adopted.
 
 The packet command writes a review folder with scenario summary metrics,
 per-territory deltas, movement manifest, diagnostics, compactness exceptions,
-proposed SVG, and proposed GeoJSON for operations and dashboard handoff.
+proposed SVG, and proposed GeoJSON for operations and dashboard handoff. It
+also emits SCENARIUM baseline/candidate runs, comparison, and evidence packet
+documents without moving territory policy out of TERRAIN.
 
 The movement command starts the Oregon Trail phase by listing site-level moves
 between baseline and proposed plans with stable IDs, before/after territories,
@@ -169,6 +171,8 @@ their own dashboards instead of screenshotting the app.
 
 TERRAIN keeps territory policy local while tracking reusable candidates for
 RLINE and METIS-CORE in `docs\shared-kernel-inventory.md`.
+The bounded SCENARIUM evidence projection and its stop gate are documented in
+`docs\scenarium-adoption.md`.
 Dashboard bindings are tracked in `docs\dashboard-schema.md` and emitted with
 `cargo run -p terrain-cli -- schema`.
 Reusable fixture and cache-source handoffs are tracked in

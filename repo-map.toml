@@ -20,3 +20,8 @@ clone_url = "https://github.com/giodl73-repo/METIS-CORE.git"
 cargo_patches = [
   { package = "metis-core", source = "https://github.com/giodl73-repo/METIS-CORE.git", path = "." },
 ]
+
+[repos.scenarium]
+role = "source-pinned evidence dependency for terrain"
+relative = "..\\..\\tools-infra\\scenarium"
+clone_url = "https://github.com/giodl73-repo/SCENARIUM.git"
