@@ -372,7 +372,7 @@ impl Territory {
 }
 
 pub fn dashboard_schema_json() -> &'static str {
-    r#"{"schema_id":"terrain.dashboard.v1","exports":[{"name":"territory","fields":["territory_id","territory_label","site_count","demand","revenue","capacity","overload","owner_count","assignee_count","assignees","centroid_latitude","centroid_longitude","max_radius_degrees"]},{"name":"site","fields":["site_id","territory_id","territory_label","demand","revenue","capacity","overload","owner_count","assignee_count","assignees","latitude","longitude","product_*"]},{"name":"product_balance","fields":["product","min_demand","max_demand","spread_ratio"]},{"name":"scenario_delta","fields":["territory_id","baseline_site_count","proposed_site_count","site_count_delta","baseline_demand","proposed_demand","demand_delta","baseline_revenue","proposed_revenue","revenue_delta"]},{"name":"movement","fields":["site_id","baseline_territory_id","proposed_territory_id","movement_kind","demand","revenue"]},{"name":"capacity_exception","fields":["territory_id","demand","capacity","overload","assignees"]}]}"#
+    r#"{"schema_id":"terrain.dashboard.v1","exports":[{"name":"territory","fields":["territory_id","territory_label","site_count","demand","revenue","capacity","overload","owner_count","assignee_count","assignees","centroid_latitude","centroid_longitude","max_radius_degrees"]},{"name":"site","fields":["site_id","territory_id","territory_label","demand","revenue","capacity","overload","owner_count","assignee_count","assignees","latitude","longitude","product_*"]},{"name":"product_balance","fields":["product","min_demand","max_demand","spread_ratio"]},{"name":"scenario_delta","fields":["territory_id","baseline_site_count","proposed_site_count","site_count_delta","baseline_demand","proposed_demand","demand_delta","baseline_revenue","proposed_revenue","revenue_delta"]},{"name":"movement","fields":["site_id","baseline_territory_id","proposed_territory_id","movement_kind","demand","revenue"]},{"name":"capacity_exception","fields":["territory_id","demand","capacity","overload","assignees"]},{"name":"manager_exception_register","fields":["category","severity","territory_id","site_id","from_site_id","to_site_id","action","message"]}]}"#
 }
 
 pub fn integration_fixture_manifest_json() -> &'static str {
@@ -1619,17 +1619,15 @@ pub fn diagnose_territories_csv(input: &str) -> Vec<CsvDiagnostic> {
         }
 
         let site_id = csv_field(&fields, &header_map, "site_id").trim();
-        if !site_id.is_empty() {
-            if let Some(first_line) = site_lines.insert(site_id.to_string(), line_number) {
-                diagnostics.push(CsvDiagnostic {
-                    severity: "error".to_string(),
-                    line: line_number,
-                    field: "site_id".to_string(),
-                    message: format!(
-                        "duplicate site_id '{site_id}' first seen on line {first_line}"
-                    ),
-                });
-            }
+        if !site_id.is_empty()
+            && let Some(first_line) = site_lines.insert(site_id.to_string(), line_number)
+        {
+            diagnostics.push(CsvDiagnostic {
+                severity: "error".to_string(),
+                line: line_number,
+                field: "site_id".to_string(),
+                message: format!("duplicate site_id '{site_id}' first seen on line {first_line}"),
+            });
         }
 
         for header in ["demand", "revenue", "latitude", "longitude"] {
@@ -3115,6 +3113,9 @@ mod tests {
         assert!(schema.contains("\"territory_id\""));
         assert!(schema.contains("\"site_id\""));
         assert!(schema.contains("\"capacity_exception\""));
+        assert!(schema.contains("\"manager_exception_register\""));
+        assert!(schema.contains("\"from_site_id\""));
+        assert!(schema.contains("\"action\""));
     }
 
     #[test]

@@ -15,6 +15,7 @@ bindings, GeoJSON properties, and packet outputs.
 | `scenario_delta` | `territory_id`, `baseline_site_count`, `proposed_site_count`, `site_count_delta`, `baseline_demand`, `proposed_demand`, `demand_delta`, `baseline_revenue`, `proposed_revenue`, `revenue_delta` |
 | `movement` | `site_id`, `baseline_territory_id`, `proposed_territory_id`, `movement_kind`, `demand`, `revenue` |
 | `capacity_exception` | `territory_id`, `demand`, `capacity`, `overload`, `assignees` |
+| `manager_exception_register` | `category`, `severity`, `territory_id`, `site_id`, `from_site_id`, `to_site_id`, `action`, `message` |
 
 ## CLI
 
