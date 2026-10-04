@@ -1,6 +1,10 @@
 # Browser territory planner
 
-Status: implementation started.
+Status: implemented and locally validated; hosted publication tracked in Actions.
+
+Validation: 43 core + 3 adapter tests; four real-WASM browser tests; scoped
+clippy/fmt; CLI sample audit/SVG; 481,875-byte build; final code review clean.
+Review fixed maximum/minimum ratio semantics and stale file-read responses.
 
 Expose the existing TERRAIN parsing, partitioning, balance audit, SVG, and
 GeoJSON functions through a bounded Rust/WASM adapter. Start with a small public
