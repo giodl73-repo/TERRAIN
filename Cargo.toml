@@ -2,6 +2,7 @@
 members = [
     "terrain-core",
     "terrain-cli",
+    "terrain-web",
 ]
 resolver = "2"
 

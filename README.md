@@ -7,6 +7,14 @@ and revenue data into compact, balanced territories with an auditable tradeoff
 report. The first wedge is simple: upload or import sites, partition them into
 territories, then explain balance, compactness, and workload gaps.
 
+## Browser planner
+
+[Try the territory planner](https://giodl73-repo.github.io/TERRAIN/): adjust
+territory counts and balance limits, choose greedy or graph partitioning, and
+export GeoJSON. The native Rust engine runs locally as WebAssembly. CSV uploads
+stay on your device; shared links contain settings and load the public sample.
+See [browser architecture and validation](docs/browser-planner.md).
+
 ## First command
 
 Generate sample files first, then run the audit, graph, visual, and packet

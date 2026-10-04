@@ -1,4 +1,7 @@
 /target/
+/dist/
+/node_modules/
+/test-results/
 /.claude/settings.local.json
 /.claude/scheduled_tasks.lock
 /.claude/agents_state/

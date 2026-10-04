@@ -1117,7 +1117,7 @@ pub fn render_territory_svg(territories: &[Territory], options: &TerritoryVisual
     svg.push_str(r##"<rect width="100%" height="100%" fill="#f8fafc"/>"##);
     svg.push_str(r#"<g transform="translate(28 64)">"#);
     svg.push_str(r##"<text x="0" y="-28" font-family="Inter,Segoe UI,sans-serif" font-size="28" font-weight="700" fill="#0f172a">TERRAIN split preview</text>"##);
-    svg.push_str(r##"<text x="0" y="-6" font-family="Inter,Segoe UI,sans-serif" font-size="13" fill="#475569">Every territory and site carries data-* bindings for dashboard joins.</text>"##);
+    svg.push_str(r##"<text x="0" y="-6" font-family="Inter,Segoe UI,sans-serif" font-size="13" fill="#475569">Site assignments and territory centroids.</text>"##);
 
     for (idx, territory) in territories.iter().enumerate() {
         let color = palette[idx % palette.len()];
