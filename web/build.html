@@ -8,7 +8,7 @@
 <p><a href="source.tar.xz" download>Complete committed source (tar.xz)</a> · <a href="receiver.zip" download>Small Python receiver bundle</a> · <a href="@@RUNTIME@@/pkg/terrain_web_bg.wasm" download>Compiled WASM</a> · <a href="@@RUNTIME@@/pkg/terrain_web.js" download>JavaScript adapter</a> · <a href="@@RUNTIME@@/sample.csv" download>Sample CSV</a></p>
 <p>Source SHA-256: <code>@@SOURCE_SHA@@</code><br>Receiver SHA-256: <code>@@RECEIVER_SHA@@</code></p>
 <h2>Receive without Git</h2>
-<p>Prerequisite: Python 3.11+ with its standard library including lzma. Inspect and trust the receiver bundle first, then unpack its three Python modules into a new helper directory. It uses no pip packages, Git, Cargo or network during receipt. From that directory:</p>
+<p>Prerequisite: Python 3.11+ with its standard library including lzma. The receiver bundle contains its complete MIT license. Inspect and trust the receiver bundle first, then unpack its three Python modules into a new helper directory. It uses no pip packages, Git, Cargo or network during receipt. From that directory:</p>
 <pre>python -I -S -B receive-source.py --archive /downloads/source.tar.xz --sha256 @@SOURCE_SHA@@ --output /new/TERRAIN --protect /your/compiled-target</pre>
 <p>Choose a new source directory outside the helper, download and compiled-target directories. Verification bounds archive resources, checks the full Git tree/commit/file/mode inventory, rejects links and unsafe paths, and preserves existing destinations. POSIX disk executable modes are checked on POSIX; Windows preserves the archived mode inventory without claiming equivalent ACLs.</p>
 <h2>Build offline from original inputs</h2>
