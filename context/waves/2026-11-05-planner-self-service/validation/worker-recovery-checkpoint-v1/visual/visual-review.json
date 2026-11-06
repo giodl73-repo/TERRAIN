@@ -1,0 +1,38 @@
+{
+  "browser": "145.0.7632.6",
+  "desktop": {
+    "overflow": false,
+    "status": "18 sites \u00b7 3 territories \u00b7 3.7 ms \u00b7 processing stays on your device"
+  },
+  "mobile": {
+    "overflow": false,
+    "status": "18 sites \u00b7 3 territories \u00b7 3.7 ms \u00b7 processing stays on your device"
+  },
+  "stopped": {
+    "overflow": false,
+    "status": "Planning stopped. Your CSV and settings are kept. Choose Retry planner to resume."
+  },
+  "errors": [],
+  "scope": "Actual built planner desktop/mobile viewport capture; stopped state uses deliberately stalled initialization. Viewport sizes are not physical-device performance evidence.",
+  "source_head": "d82e26e30de450cb912b444c4eb32b188fd2b688",
+  "reviewed_with_view_image": true,
+  "images": [
+    {
+      "path": "desktop-completed.png",
+      "bytes": 178250,
+      "sha256": "8048eacb53caf3d6c2eb56c0c4076d5cb40e9d7db135eabb516f0f71d72136fc"
+    },
+    {
+      "path": "mobile-completed.png",
+      "bytes": 132035,
+      "sha256": "05bded6bc5ef2da3847ec811185f8c1a244eb7e32e3b136baa01a8b899a43949"
+    },
+    {
+      "path": "mobile-stopped.png",
+      "bytes": 119635,
+      "sha256": "228a502023f4b53adf4e3a23caf6da3bfb9d4ce5699731ae31aea8c34e7f08c6"
+    }
+  ],
+  "review": "Desktop completed and mobile completed/stopped states inspected. Controls and retry text fit, no horizontal overflow or page errors. Original native SVG centroid labels overlap in the retained model and become small when scaled on mobile; no renderer/model correction or visual perfection is claimed. Existing mobile intro line-break removal concatenates two sentences; a single HTML whitespace correction is queued after this measured source.",
+  "limits": "Viewport observation only, no physical-device/performance guarantee; generated screenshots retained outside Git as rebuildable QA output, not part of the eventual complete source package."
+}

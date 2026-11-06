@@ -1,0 +1,833 @@
+{
+  "repository": "giodl73-repo/TERRAIN",
+  "source_commit": "bfa81f8a0d6f3aa369c3689ae5c393b458554214",
+  "source_tree": "dd716ef9e2f79ba9fe70c4bf94d90fe87be41f17",
+  "commit_object_hex": "7472656520646437313665663965326637396261396665373063346266393464393066653837626534316631370a706172656e7420633237613232643332363061343633353365666634383832383937653131633666356533636239330a617574686f722047696f2044656c6c612d4c6962657261203c67696f646c373340676d61696c2e636f6d3e2031373931313535343633202d303730300a636f6d6d697474657220476974487562203c6e6f7265706c79406769746875622e636f6d3e2031373931313535343633202d303730300a677067736967202d2d2d2d2d424547494e20504750205349474e41545552452d2d2d2d2d0a200a2077734663424141424341415142514a71777430484352433161513775753555686c41414164515151414a5065743945324c653772367249414c426e72517372580a207357332f7835412b446737414b55776233627a69366a6550317a74665033665a76735a784e734147575a54397a4c61424d595745494c4a35725a65365779366b0a20685635554c36336e37766a794c59374a6566414a43434c477242657a6236495639307436794463396d7653636b77537957752f622f697869596d494c4d73565a0a20354c56507455417579436177754f384a597475516e6457586f6c6b685366523053576265366a71452b6642384278556d652b317272374d785a70306a6e3233460a203249477573695744424d355539364b54477974335064366a5833746d7a3541624b627a62654134414a693552544d6c49454d4c697a556330676e6a34525063470a20765432435161462b71374b3047646c312f434d6e567175516546414445455274723144497171324e766d4e4138746e33776248416a38564e2b582b6f6735324a0a2071644273647057444c516a4a49774178693639633879456c70313277624b776775686162586f3776717641616b706a3361446d54704d363532556d4346464a5a0a203968394f6f6b506b2b4d6c364a476f6a476c305a452b74752b626837574e2f546f6c654e30594b7742786b56566274356137596556516530695a706f6d2b4d6d0a2059762f556c5a57786d734f7179684773494a7a414b65634d346f784b7a77736d3030417255792b3645595941697030794e534d594e766a645a4a7555634f654a0a20304a42694f6b48562b43454162506a383656436a4c6639513735417961744472526b4b482f656554456f6e537061472f5933547734745a6833676d7a386777760a206b355a34357a726370336d39353067366958697646534f68566b694d4b4a53695143486d77524751326441776b5466614b58702f76464664502f4c557a342b780a203144786d3375515366776d5875576a45342b72340a203d314258500a202d2d2d2d2d454e4420504750205349474e41545552452d2d2d2d2d0a200a0a496e636c756465207265706f7369746f7279206c6963656e7365206e6f746963657320696e20506167657320646f776e6c6f6164732028233229",
+  "git_files": [
+    {
+      "path": ".claude/skills/terrain-pulse/SKILL.md",
+      "mode": "100644",
+      "git_blob": "ea898fcc299797558190f9ec212922b05f784ec7",
+      "bytes": 583,
+      "sha256": "3f233d917b681443e73914de88dab21a865e440e05d065c7688e98a68b476613"
+    },
+    {
+      "path": ".claude/skills/terrain-research/SKILL.md",
+      "mode": "100644",
+      "git_blob": "962dd88d7eaa62edd9368a0aa8bc86e9c243f293",
+      "bytes": 941,
+      "sha256": "68b337e5735f88563abe128505687398daab7a73edea83553533effe1ef5fbb5"
+    },
+    {
+      "path": ".claude/skills/terrain-wave/SKILL.md",
+      "mode": "100644",
+      "git_blob": "12f8bbdfce13e4cb94ca3a1bf36b0e2bef5366a3",
+      "bytes": 467,
+      "sha256": "f13e808bd0eab3ec1ae1011bda67fcbf4f5039dedbf7d41e2e0907dda70f3251"
+    },
+    {
+      "path": ".github/workflows/pages.yml",
+      "mode": "100644",
+      "git_blob": "f1814659f3b26e8aeb665c1fa506cf6dae287a98",
+      "bytes": 1466,
+      "sha256": "fcabb4978743b80ba57197923449539ce92f6a38721bd5f42051487a8dcc3afe"
+    },
+    {
+      "path": ".gitignore",
+      "mode": "100644",
+      "git_blob": "c84252e95996d572e6d10a16409d3cb4adcd589d",
+      "bytes": 159,
+      "sha256": "5c920fa86f113e321cfe8df012dfa2f347a30e178043397a0c0f59a95d70573c"
+    },
+    {
+      "path": ".roles/ROLE.md",
+      "mode": "100644",
+      "git_blob": "cad3178ed1d26934e93858e15b566ec524d4a2ae",
+      "bytes": 1676,
+      "sha256": "de9f0c96f02371771f6e2f8b206af8d4d228c37c3f4b87220ff04feedf360b42"
+    },
+    {
+      "path": ".roles/editorial/readme-product-editor.md",
+      "mode": "100644",
+      "git_blob": "0bc73191263624ece167b586779b22a140721ee3",
+      "bytes": 303,
+      "sha256": "f1cb067710a1499f9b728ee2d8f7f84a4b6fcd9411c099defd82b233ac6ac049"
+    },
+    {
+      "path": ".roles/editorial/report-contract-editor.md",
+      "mode": "100644",
+      "git_blob": "befb0a0190b34a5934d781f216bf735543d991b5",
+      "bytes": 297,
+      "sha256": "2be30a4bcce99bced3ea55321d0717ba8244f0950056ea16ef2481219fc6b5a8"
+    },
+    {
+      "path": ".roles/parliament/data-binding-auditor.md",
+      "mode": "100644",
+      "git_blob": "fe53aa0c8d450ea3026ca9c7c1ba797097e0e29b",
+      "bytes": 508,
+      "sha256": "900bcd85406c1ef346174fcbd35579f64fbf463fa5b943a71297a13a3e3857f2"
+    },
+    {
+      "path": ".roles/parliament/fairness-capacity-auditor.md",
+      "mode": "100644",
+      "git_blob": "6fb60af7a6a3168520555e79641df27a3f1a0581",
+      "bytes": 380,
+      "sha256": "b085028362a6178b9c2dc364caa52597064ee3ee9fa9204c916d7ca9c19afc6c"
+    },
+    {
+      "path": ".roles/parliament/kernel-boundary-engineer.md",
+      "mode": "100644",
+      "git_blob": "fa80615ed1d43dc4e62ba2091dd8e977ed97d9bf",
+      "bytes": 362,
+      "sha256": "43cc8e99626154b0da38f31ad4eb94ba9c8b57c5f1111acf06c3e4ccfea9697c"
+    },
+    {
+      "path": ".roles/parliament/operations-buyer.md",
+      "mode": "100644",
+      "git_blob": "77613c944be5fa0d6cc6a7517df1e5c9840a9ad5",
+      "bytes": 418,
+      "sha256": "79cdc802a3c82dc20a69d9b0f3848ec5a761f7bc19edf3270ecc5c5de80e0cae"
+    },
+    {
+      "path": ".roles/parliament/territory-planner.md",
+      "mode": "100644",
+      "git_blob": "004cb0491036f4ddee313492e5ab1e14311aafb9",
+      "bytes": 461,
+      "sha256": "fe1b1800ec382923fd52086fbc799b015345dc1f71f891bf2ec8f22cb362569d"
+    },
+    {
+      "path": ".roles/parliament/visual-split-designer.md",
+      "mode": "100644",
+      "git_blob": "de91dd8d61a29aaa16837c338d12372451387d26",
+      "bytes": 350,
+      "sha256": "74d80c796a65789f954a9ac1145fc28fdcc50240466c7798d1ea83d67d2191cd"
+    },
+    {
+      "path": ".roles/stakeholders/dashboard-builder.md",
+      "mode": "100644",
+      "git_blob": "9a60c17b716be87b9998dbd857f04de0a9ab4bc2",
+      "bytes": 326,
+      "sha256": "9c369f117c1ba8a45ce6104545cd8c86307aba4b6b0085b8df89114804939ada"
+    },
+    {
+      "path": ".roles/stakeholders/field-manager.md",
+      "mode": "100644",
+      "git_blob": "702115d152841f508e491a82932c59d11f760571",
+      "bytes": 360,
+      "sha256": "6c5ea732f81b7fde627ffd9881fb526a4af6b4f66652918ca2c645b109bf0e34"
+    },
+    {
+      "path": ".roles/stakeholders/future-agent.md",
+      "mode": "100644",
+      "git_blob": "e64b9bd9e347f803f9351b45a07567b86348b176",
+      "bytes": 299,
+      "sha256": "0734263a839d0c76fb34c3640242b8767e1263f9eae33b7aa95f21326e980aca"
+    },
+    {
+      "path": "CLAUDE.md",
+      "mode": "100644",
+      "git_blob": "00d02e4c68d5a515fa991cf18c560dbe8d81f565",
+      "bytes": 624,
+      "sha256": "b4ed2b82aa6c8487a82e3d85854c033f4bea0e131e29ca1e590a0459bb43a77a"
+    },
+    {
+      "path": "Cargo.lock",
+      "mode": "100644",
+      "git_blob": "e68b41e6126975cd06597a08c88beeb5738b9cfa",
+      "bytes": 6622,
+      "sha256": "e4862410393502f6c244fab17dd35548b4c7590635fae542ba0a39898efdb41b"
+    },
+    {
+      "path": "Cargo.toml",
+      "mode": "100644",
+      "git_blob": "134ae40c4bb8d60db33df47f055bb27523de7944",
+      "bytes": 226,
+      "sha256": "3b5ada7c33233382b02d5e453359eb30d9a39b87effcb4985326b2fb824bb467"
+    },
+    {
+      "path": "LICENSE",
+      "mode": "100644",
+      "git_blob": "e6ce15fa5c671fae9543e337fb2ab34d5f873e15",
+      "bytes": 1068,
+      "sha256": "54d865855854bb39b0803fa6df674004efdacc4599de22b5a28dd106e7685a5a"
+    },
+    {
+      "path": "PRODUCT_PLAN.md",
+      "mode": "100644",
+      "git_blob": "78b49bb01331744260e0272c9c3d02d7fa9562d6",
+      "bytes": 8442,
+      "sha256": "16b7112af123ac72b7eefad7e4a68929cc0555f7d9f8cb6aea92cdffe60a4cb1"
+    },
+    {
+      "path": "README.md",
+      "mode": "100644",
+      "git_blob": "dc5cc2cd3901af1bc585195fb6aa999531b0e64f",
+      "bytes": 12526,
+      "sha256": "43d4892f3c17e03acc7d050126c15e7581e34beb21663bcad5b778a7799450df"
+    },
+    {
+      "path": "context/waves/2026-07-26-mdport-migration/WAVE.md",
+      "mode": "100644",
+      "git_blob": "90fd87d093355d06c48bebb5729b06a12425c9eb",
+      "bytes": 340,
+      "sha256": "90850efe4f8ffddc5012444185258aa1bbde8441853a8863e9c9af41fa5bfce4"
+    },
+    {
+      "path": "context/waves/2026-10-04-browser-planner/README.md",
+      "mode": "100644",
+      "git_blob": "de6d2084de4fba5cd39266519bcdec1a3a77f199",
+      "bytes": 980,
+      "sha256": "4451e6ecd99b1fa383beb182e6c46a859ebc3d7c02103de88f88de76121a3551"
+    },
+    {
+      "path": "context/waves/PHASES.md",
+      "mode": "100644",
+      "git_blob": "3e1f3891eea829b3b0f9f9b044b456b82d232e8e",
+      "bytes": 1667,
+      "sha256": "c6c567e69ab48f06cb1c790c48822bff35ee526b908367e90ad324673fa041d7"
+    },
+    {
+      "path": "context/waves/chisholm-trail-manager-exception-register/ROLE_REVIEW.md",
+      "mode": "100644",
+      "git_blob": "cf98a963be13ec505ae0479608e159c46c2a2dc6",
+      "bytes": 1343,
+      "sha256": "8853374d2c19303d0b3af2e44509ca4b2a4440475325c588d066fd14bde0b5e4"
+    },
+    {
+      "path": "context/waves/chisholm-trail-manager-exception-register/WAVE.md",
+      "mode": "100644",
+      "git_blob": "e33d3346c37e23cdbf7990bdbd2bfcfd92b1416c",
+      "bytes": 1337,
+      "sha256": "e397f4bd04af3fc31e85123c292832a875f7658748dfa4bfa3629c51fc51a569"
+    },
+    {
+      "path": "context/waves/chisholm-trail-manager-exception-register/pulses/pulse-01.md",
+      "mode": "100644",
+      "git_blob": "f725f273c28f366a8a59ad476df379a05bcf4484",
+      "bytes": 517,
+      "sha256": "a2c9160eb700136b52d330aaa1a93808a1a229d886c127ac1178e473f75ff4f6"
+    },
+    {
+      "path": "context/waves/chisholm-trail-manager-exception-register/pulses/pulse-02.md",
+      "mode": "100644",
+      "git_blob": "eccf2a2ad398bd3c39045e9eb4795df5c12190f2",
+      "bytes": 581,
+      "sha256": "9c8b1ee6d4a104f6394d872bd828b18c655bdf27ec26c211294a6f6e98c5a323"
+    },
+    {
+      "path": "context/waves/chisholm-trail-manager-exception-register/pulses/pulse-03.md",
+      "mode": "100644",
+      "git_blob": "c6810b4dcec680579ae39ff73d613d00a99910f1",
+      "bytes": 321,
+      "sha256": "b73a4bd8e2febd7a0e9937412e1e808ebc434ed765cde06d396fd3804cdbfac5"
+    },
+    {
+      "path": "context/waves/continental-divide-graph-construction/WAVE.md",
+      "mode": "100644",
+      "git_blob": "77c1263ee6e5143ff24e0ea9c2b10927551bf130",
+      "bytes": 2246,
+      "sha256": "e8a3bd88c8a9825b7d2dea2af0263dbf091aff66c659c2019ab6e7278aadf7fa"
+    },
+    {
+      "path": "context/waves/continental-divide-graph-construction/pulses/pulse-01.md",
+      "mode": "100644",
+      "git_blob": "6f646062906ea21ecb08ea2d695ee2ef8856ece7",
+      "bytes": 734,
+      "sha256": "fd0413a8ed488a92ed76137ad31b0680660a33ce142366786dab21f7f4c85773"
+    },
+    {
+      "path": "context/waves/continental-divide-graph-construction/pulses/pulse-02.md",
+      "mode": "100644",
+      "git_blob": "484b659a8197e48786d3e831c45c72d144b485c7",
+      "bytes": 714,
+      "sha256": "00d7b162b36d6169f4d74631e6e453affa31d31ebce11083bd7f92f9704d7748"
+    },
+    {
+      "path": "context/waves/continental-divide-graph-construction/pulses/pulse-03.md",
+      "mode": "100644",
+      "git_blob": "c406ea75f7e5a66917f4af45745145ab9dcbc6af",
+      "bytes": 981,
+      "sha256": "9e350e2e4147fd48d2afbc271fdbad3ca7424f0c99896c0c6bcd66ee43cc7bfb"
+    },
+    {
+      "path": "context/waves/continental-divide-graph-construction/pulses/pulse-04.md",
+      "mode": "100644",
+      "git_blob": "67605fe07ce4ebd69ad3cdf6b34e24a82037c92f",
+      "bytes": 1930,
+      "sha256": "afaf27a503fcd1e5857e46a4404704576a0b7d1c8081ab491a5a52b106593bf2"
+    },
+    {
+      "path": "context/waves/cumberland-gap-edge-audits/ROLE_REVIEW.md",
+      "mode": "100644",
+      "git_blob": "ce0c59ec58c00b9845e8120f6fe9475b83a9d2fc",
+      "bytes": 1505,
+      "sha256": "8c5b040c61f8ef41c619f4d1f28288406b3fc17e8cfd1c914d04f04e7fbb2e8b"
+    },
+    {
+      "path": "context/waves/cumberland-gap-edge-audits/WAVE.md",
+      "mode": "100644",
+      "git_blob": "c2f12342d614cb363f82ddb52688643bc8fb8377",
+      "bytes": 1642,
+      "sha256": "145f79c5251f843dda57b1db3a786badfd8f8e522ceea826f0db845fbf842a56"
+    },
+    {
+      "path": "context/waves/cumberland-gap-edge-audits/pulses/pulse-01.md",
+      "mode": "100644",
+      "git_blob": "e0e28b58477f341d5957f571c3c03f945f8d8fc0",
+      "bytes": 668,
+      "sha256": "bf93964647f77c0410e5d3aeb1e9d3ba2b5005b2262732b346b743aa8c08e2e2"
+    },
+    {
+      "path": "context/waves/cumberland-gap-edge-audits/pulses/pulse-02.md",
+      "mode": "100644",
+      "git_blob": "ba19d64fa602d84c7f4c4fc8cf879f463d7664c9",
+      "bytes": 650,
+      "sha256": "5d6795830bbf7d16ed564fc368d751f2136b0407f961427b1829072855c52c94"
+    },
+    {
+      "path": "context/waves/cumberland-gap-edge-audits/pulses/pulse-03.md",
+      "mode": "100644",
+      "git_blob": "ae3b1e8a2a869b4df75c23ef95b2ef5d3ae77a9e",
+      "bytes": 358,
+      "sha256": "3299538304793d62d00ba87ab171eff2804ff4f31abbb36cc0cfd4f7d1a1c70d"
+    },
+    {
+      "path": "context/waves/homestead-act-ownership/WAVE.md",
+      "mode": "100644",
+      "git_blob": "e4681a71522b08d1d2a75963fb2ed38059f97454",
+      "bytes": 1151,
+      "sha256": "5ad22d06c35e9bf8383f40231cf16efee52adfdfebbee3ab608ce3e23c95d366"
+    },
+    {
+      "path": "context/waves/homestead-act-ownership/pulses/pulse-01.md",
+      "mode": "100644",
+      "git_blob": "9fb3517dd93371ca65f5eaff5b496f763dc2bed2",
+      "bytes": 651,
+      "sha256": "ea08ee15808696011153da5192610b5a0c3ac6d0de6366ff106e1cecfcfa6078"
+    },
+    {
+      "path": "context/waves/homestead-act-ownership/pulses/pulse-02.md",
+      "mode": "100644",
+      "git_blob": "8253f47f4a49a3eba13037faa904abc8e8c59535",
+      "bytes": 580,
+      "sha256": "2b57e0445da9ccc6f781fc0cdb79fadb6d523a8d34293d2160a5d09012328f17"
+    },
+    {
+      "path": "context/waves/homestead-act-ownership/pulses/pulse-03.md",
+      "mode": "100644",
+      "git_blob": "e20fc8280b5b2b770f2885a961c7c1d85b22afd6",
+      "bytes": 802,
+      "sha256": "1fa5c22b04ff028751e64cab3fed3fdb8809b3efe73586ef2193f7a07f31f456"
+    },
+    {
+      "path": "context/waves/homestead-act-ownership/pulses/pulse-04.md",
+      "mode": "100644",
+      "git_blob": "f7e0a5f410454eba355179f961c12dfcf58ed13c",
+      "bytes": 1005,
+      "sha256": "1581c6f79de11f58cc3103ef45efb703738debfb5faabfce88580396e1a0f804"
+    },
+    {
+      "path": "context/waves/lewis-and-clark-scenario-audit/WAVE.md",
+      "mode": "100644",
+      "git_blob": "9e9c97edff9abfcf4c1b6c2dd13451af2e7e327f",
+      "bytes": 1254,
+      "sha256": "2a383740919012dadb37f1b8a9edeb21981ed5b15a8681fb0233a17312411018"
+    },
+    {
+      "path": "context/waves/lewis-and-clark-scenario-audit/pulses/pulse-01.md",
+      "mode": "100644",
+      "git_blob": "1fa483e5d4e381db4df275161baac5021dab01d2",
+      "bytes": 643,
+      "sha256": "803e5cf77f785ad3ac05cb6bcd5d8174969e945ed4bf885fdd3320412b3f7f14"
+    },
+    {
+      "path": "context/waves/lewis-and-clark-scenario-audit/pulses/pulse-02.md",
+      "mode": "100644",
+      "git_blob": "8becc1655128427027515ad224eead37e5a7d6b9",
+      "bytes": 637,
+      "sha256": "3f67647af2a6cd16e980ee2ba502d9148ef3393aea4e1ccdd57f7231adafe2fd"
+    },
+    {
+      "path": "context/waves/lewis-and-clark-scenario-audit/pulses/pulse-03.md",
+      "mode": "100644",
+      "git_blob": "8ddfb14e3c24430f5d788a666105eaf8a714c1c9",
+      "bytes": 632,
+      "sha256": "48472dee433b5a718f5d2488079add209cc550a1579fb8537cdf1bef88dcc9f2"
+    },
+    {
+      "path": "context/waves/lewis-and-clark-scenario-audit/pulses/pulse-04.md",
+      "mode": "100644",
+      "git_blob": "3ee3c7adfbdf0ed0149ceec20d8b9846a1fc349f",
+      "bytes": 896,
+      "sha256": "091349ee75f61dddda172b2b74f2475593253d6fba603bc3cdc6edd585b45e66"
+    },
+    {
+      "path": "context/waves/national-road-edge-visuals/ROLE_REVIEW.md",
+      "mode": "100644",
+      "git_blob": "60554db190e8c99b93a582706b10ba50a22361d9",
+      "bytes": 3279,
+      "sha256": "1c2be12a3c58019b703dd1564fc5e7e7d059b579a856a4453e9f8288e929b532"
+    },
+    {
+      "path": "context/waves/national-road-edge-visuals/WAVE.md",
+      "mode": "100644",
+      "git_blob": "a00cb858b4727085241b892fad24b89614e0c84a",
+      "bytes": 1574,
+      "sha256": "a6ec947d7ea9de6742f37d049a7a5830033f12a1d6a66ed2aa7498266ab6d3a2"
+    },
+    {
+      "path": "context/waves/national-road-edge-visuals/pulses/pulse-01.md",
+      "mode": "100644",
+      "git_blob": "bf88e1992c02c4ad6cada67e095416ddac4a6df0",
+      "bytes": 628,
+      "sha256": "af891772e4350c2045838e36254d19b696c8944cd4a8473d437878c349a5a8e9"
+    },
+    {
+      "path": "context/waves/national-road-edge-visuals/pulses/pulse-02.md",
+      "mode": "100644",
+      "git_blob": "6ce312bf0bdd14566b0422b1732fb1d2111fa69c",
+      "bytes": 635,
+      "sha256": "3dc2c28de4285d3a4cd74b1e8d9eb92e28e4281acc1f1c2357332e42905a8981"
+    },
+    {
+      "path": "context/waves/national-road-edge-visuals/pulses/pulse-03.md",
+      "mode": "100644",
+      "git_blob": "8c0537d8489bafaa4871c56464c45c08752f8df4",
+      "bytes": 713,
+      "sha256": "6dfb83a0432dc79ecb4dc732c4c2aeb46daf947524110ea27d58c8459d50c2f1"
+    },
+    {
+      "path": "context/waves/oregon-trail-movement-scenarios/WAVE.md",
+      "mode": "100644",
+      "git_blob": "95ce7b198c3819d3eca38a5f750c43ad59be7be2",
+      "bytes": 1199,
+      "sha256": "7e5da83d5dbd44b2924ccec8980941a9491d35e028bb73d5ee619db6b24d62d1"
+    },
+    {
+      "path": "context/waves/oregon-trail-movement-scenarios/pulses/pulse-01.md",
+      "mode": "100644",
+      "git_blob": "f2a24b901ce99ef832f580c8c3d57ab88e20c244",
+      "bytes": 598,
+      "sha256": "76630ab4a65d6e4f3c587a92f6e285244a55eab9c706681eb06f83ec81460a97"
+    },
+    {
+      "path": "context/waves/oregon-trail-movement-scenarios/pulses/pulse-02.md",
+      "mode": "100644",
+      "git_blob": "9bb9fd1948f11389816bc2a46de3005b8a378596",
+      "bytes": 564,
+      "sha256": "3632e899cfc2d4c69afe568d16baf93718cbcad0ed417a19defc92223abc1891"
+    },
+    {
+      "path": "context/waves/oregon-trail-movement-scenarios/pulses/pulse-03.md",
+      "mode": "100644",
+      "git_blob": "09dc1109b2a4aef97bf94487ce7b2e158bb37146",
+      "bytes": 814,
+      "sha256": "e0318999cab4550adcef0c86584b9483188edfed85ab9906a34beefed99f1119"
+    },
+    {
+      "path": "context/waves/oregon-trail-movement-scenarios/pulses/pulse-04.md",
+      "mode": "100644",
+      "git_blob": "f87c14a38b2ebd693665668f26c0682ff1c20ea1",
+      "bytes": 678,
+      "sha256": "aca4014d658d9527a147a22d01a5db0473e201406151b8f7dc0a33974551bfaa"
+    },
+    {
+      "path": "context/waves/pony-express-edge-field-review/ROLE_REVIEW.md",
+      "mode": "100644",
+      "git_blob": "02bb1d6a144bd0ad98bbe20f43c8480d0880c9e3",
+      "bytes": 1366,
+      "sha256": "88e58e540d8f1ecafe095443754a6c9abea8f14998f60a81956d2e56e7e226a8"
+    },
+    {
+      "path": "context/waves/pony-express-edge-field-review/WAVE.md",
+      "mode": "100644",
+      "git_blob": "66437d9cc76dc6e3c23107514b59df8bc2a53118",
+      "bytes": 1333,
+      "sha256": "09918983f5ffae922adbc9a04dbdb09a17cbb4c834ad4f3b8bd3660f78379916"
+    },
+    {
+      "path": "context/waves/pony-express-edge-field-review/pulses/pulse-01.md",
+      "mode": "100644",
+      "git_blob": "9a9a08ad8a8258ea673137b0d09d44e30a908908",
+      "bytes": 576,
+      "sha256": "961bd7eeb4572b60adcd04d3cf7291bdbce4a9bfb6e209335f6b3344a72c6682"
+    },
+    {
+      "path": "context/waves/pony-express-edge-field-review/pulses/pulse-02.md",
+      "mode": "100644",
+      "git_blob": "0d96466b095c46985198c6173040d44f2578fb34",
+      "bytes": 558,
+      "sha256": "d6b64bfd6606ee4962deb8da469b8c5403766279409ca1015826d4bd867ac89e"
+    },
+    {
+      "path": "context/waves/pony-express-edge-field-review/pulses/pulse-03.md",
+      "mode": "100644",
+      "git_blob": "be03940a09f056b03401c6424651d935caaf1115",
+      "bytes": 376,
+      "sha256": "90ca17d29399e63f6152ca9009853a55b6aa9a00f69ab03e9673e5e45c078016"
+    },
+    {
+      "path": "context/waves/public-land-survey-edge-evidence/WAVE.md",
+      "mode": "100644",
+      "git_blob": "05eea3049f5dbe2ef196d2ca30b1abe9a1cf40c8",
+      "bytes": 1888,
+      "sha256": "2596b615eef245285f6ed6a624586c5418e8a4807e55722e14d5bafcf64be403"
+    },
+    {
+      "path": "context/waves/public-land-survey-edge-evidence/pulses/pulse-01.md",
+      "mode": "100644",
+      "git_blob": "f84d8272e70e79ed3e602084631b9424116ed873",
+      "bytes": 1183,
+      "sha256": "0b0c0cbe8771f7f36f8ceb42377349c61a672f36b3652e1797e834da4a1315f2"
+    },
+    {
+      "path": "context/waves/public-land-survey-edge-evidence/pulses/pulse-02.md",
+      "mode": "100644",
+      "git_blob": "45fc41681e3f0a504640856711b960f85f64e462",
+      "bytes": 991,
+      "sha256": "b3c68872dd9e8643e6e7fca42fa506a9f50d7f91d27a39a9a13022ea2d151fd7"
+    },
+    {
+      "path": "context/waves/public-land-survey-edge-evidence/pulses/pulse-03.md",
+      "mode": "100644",
+      "git_blob": "6a180f338a86f53d8712d5592fee82fe5154e204",
+      "bytes": 854,
+      "sha256": "d201ce901ed89dfc3b5b9eaebe1ca36a2ebdbafa16bca6673dfb7eb066c3b499"
+    },
+    {
+      "path": "context/waves/terrain-foundation/ROLE_REVIEW.md",
+      "mode": "100644",
+      "git_blob": "f7d2728df2030a01a7040b19085430d67c304632",
+      "bytes": 2552,
+      "sha256": "1fdae831288dd7916caeae2c6042cb596dc28d39fe836a8c0f42f4d7834a31c8"
+    },
+    {
+      "path": "context/waves/terrain-foundation/WAVE.md",
+      "mode": "100644",
+      "git_blob": "850d02cbcb42cffcb00267fb953528d50dbc372c",
+      "bytes": 2728,
+      "sha256": "6e0b1b47b30da258c89fbc64277e5847909a22d094a4bbc62cf5c463790fa624"
+    },
+    {
+      "path": "context/waves/terrain-foundation/pulses/pulse-01.md",
+      "mode": "100644",
+      "git_blob": "ab688f58e9ebe34cff664b135be33fab4c976a01",
+      "bytes": 594,
+      "sha256": "352af9d04c2c7dd766fc9203af5884c0fb7e765913f9d8ccf74f74dd3c8b2d50"
+    },
+    {
+      "path": "context/waves/terrain-foundation/pulses/pulse-02.md",
+      "mode": "100644",
+      "git_blob": "294a6e43b8155a78ca67eb1f900f1375bad10c3d",
+      "bytes": 843,
+      "sha256": "f731b45514a684c96769ca0cabb57c64ca97ed7bf9825c62b55c27f7d0b87810"
+    },
+    {
+      "path": "context/waves/terrain-foundation/pulses/pulse-03.md",
+      "mode": "100644",
+      "git_blob": "4b57396d282125cc71a729b995d2ac47ca2495bc",
+      "bytes": 816,
+      "sha256": "b8ef96d26990c868f04ac5128a628313277cf73a3c22f7086630ad4af75c65f9"
+    },
+    {
+      "path": "context/waves/terrain-foundation/pulses/pulse-04.md",
+      "mode": "100644",
+      "git_blob": "df29b5f4d2fe15cf5117d10b34b8599f48f0c45e",
+      "bytes": 877,
+      "sha256": "5630df44706ac92d5d0c2f0d0648f2057f49d58e3a27df7826d2247455d2144e"
+    },
+    {
+      "path": "context/waves/transcontinental-railroad-integrations/WAVE.md",
+      "mode": "100644",
+      "git_blob": "1e19220c31b9126114ca11c5757e6da1d2d38a4d",
+      "bytes": 1231,
+      "sha256": "32a8ffe5ccb534a456bb76ead0ba41a763e0c14aed05e86dcdb7d62dfd06e086"
+    },
+    {
+      "path": "context/waves/transcontinental-railroad-integrations/pulses/pulse-01.md",
+      "mode": "100644",
+      "git_blob": "b281c6c0f34d8e0ddc61920b5f565c99ddd77dc4",
+      "bytes": 702,
+      "sha256": "1f2343edcef2a880075830f24cad8781669c130c5d676df568bcf8e80bc6514f"
+    },
+    {
+      "path": "context/waves/transcontinental-railroad-integrations/pulses/pulse-02.md",
+      "mode": "100644",
+      "git_blob": "ea4c74540067c7449db531476b6ede9ebd418b5f",
+      "bytes": 469,
+      "sha256": "f1551907335f2c3662e976b93c93872c15a88b579a0f0ab3a935b9f505efe2b7"
+    },
+    {
+      "path": "context/waves/transcontinental-railroad-integrations/pulses/pulse-03.md",
+      "mode": "100644",
+      "git_blob": "b2176fa39fce2cd0ceb52a61c5455f7081b757a8",
+      "bytes": 623,
+      "sha256": "2bdfb1e445fde4b5a1ec47aa1f5e2323a5e00d3b4f145f327874a7071b4b9dcb"
+    },
+    {
+      "path": "context/waves/transcontinental-railroad-integrations/pulses/pulse-04.md",
+      "mode": "100644",
+      "git_blob": "d71b71fa5c4704e82290b08f1de335df9cf3a56c",
+      "bytes": 847,
+      "sha256": "ccf24eb3a3a7ef89ed05c0278be3f90e430f04f14226cba0ff0bcbb10c27b692"
+    },
+    {
+      "path": "docs/browser-planner.md",
+      "mode": "100644",
+      "git_blob": "ecc92e2211774e227616f503f98de66290d64241",
+      "bytes": 1428,
+      "sha256": "671b2cf70d34ef7b10cb56e50c6f5a9218268655165ad1d54a9c27e3045cd4de"
+    },
+    {
+      "path": "docs/dashboard-schema.md",
+      "mode": "100644",
+      "git_blob": "88d090c14eb2b76c70f072ad0f296b62fa825832",
+      "bytes": 1280,
+      "sha256": "73637958ceb082408f2524be7c30f4c61860216371b2b17bd9c5a12d47995ac0"
+    },
+    {
+      "path": "docs/integration-fixtures.md",
+      "mode": "100644",
+      "git_blob": "a6053f78b94dae6dd36b7305cb3b509d38f99e12",
+      "bytes": 1483,
+      "sha256": "d004c4402b4dd816fe233afbb186adcfb27705459b2615ee7121341cdb23f309"
+    },
+    {
+      "path": "docs/scenarium-adoption.md",
+      "mode": "100644",
+      "git_blob": "ef039e8b3b1f2101140167a60488ce6076c84329",
+      "bytes": 2331,
+      "sha256": "f144bbc5ffe95a313c9eeb8e3c94f0d2be70ccb037396dc8ed91b406e9a07441"
+    },
+    {
+      "path": "docs/shared-kernel-inventory.md",
+      "mode": "100644",
+      "git_blob": "283e8f525daad150df82df3154c31e408e50f961",
+      "bytes": 2577,
+      "sha256": "369cee36884a37b15ffb640118003eef0374d4d942b99570f0c85fd9cf7cf7a0"
+    },
+    {
+      "path": "docs/site-graph-contract.md",
+      "mode": "100644",
+      "git_blob": "7aa935bc4e58102e35bbce5ed1ddc7fb3e726983",
+      "bytes": 7129,
+      "sha256": "422778ebdf3d62de66e1628c06e356c13e5a807561623c2b2bff13c4cfbcbfad"
+    },
+    {
+      "path": "docs/test-scenarios.md",
+      "mode": "100644",
+      "git_blob": "1a370e8727c525cc551d7036053ef308ca0950bb",
+      "bytes": 2158,
+      "sha256": "5a1a76f3adb88bb2ae5d31f511a03d2d071ee7912e250ecf676825940c469f49"
+    },
+    {
+      "path": "fixtures/messy-territories.csv",
+      "mode": "100644",
+      "git_blob": "b86b5d123a63d05ca2376616cbf086f69006ed3d",
+      "bytes": 283,
+      "sha256": "a7da27d65bd31bb9d96a98e91ff0b77767e3d64f781bc924dc0a242ddaf47509"
+    },
+    {
+      "path": "fixtures/sample-capacity.csv",
+      "mode": "100644",
+      "git_blob": "6bda0ad1068514bfbfabde6f8879118649763a29",
+      "bytes": 481,
+      "sha256": "95a43525b5ab360821ee7807bde183c3dcd0e83e4f330d04bf5d7c69530ba27d"
+    },
+    {
+      "path": "fixtures/sample-sites.csv",
+      "mode": "100644",
+      "git_blob": "c1a4d72bf3647a8ca021bffed5a663f78e8f77ab",
+      "bytes": 217,
+      "sha256": "19ddc2ea59fcfb72dceceb6737637b33a359ca3083921b1bdb91313a1742f6b3"
+    },
+    {
+      "path": "fixtures/sample-territories-proposed.csv",
+      "mode": "100644",
+      "git_blob": "f2953ca421239e5a8d8537466f3e29dd697d7ee9",
+      "bytes": 480,
+      "sha256": "21e6962a0eab675631dc53a686b3d5ea802efef181314ed4d4ce2d987e44a0b2"
+    },
+    {
+      "path": "fixtures/sample-territories.csv",
+      "mode": "100644",
+      "git_blob": "df6c8bf1517d247de1b5c9494557ba278123f8ee",
+      "bytes": 484,
+      "sha256": "024e263c21992010d6a304e4df31e57f079a39e4fa7d19a9923fd7ddd02dbfed"
+    },
+    {
+      "path": "fixtures/scenarios/growth-sites.csv",
+      "mode": "100644",
+      "git_blob": "67585de466ebf0272c5406b87bbda6aedd1af769",
+      "bytes": 596,
+      "sha256": "aaabc92adfec6e5ded38f4acfa5d6478e67e2c57278f39fe280f740070ff72ba"
+    },
+    {
+      "path": "fixtures/scenarios/risky-reassignment-territories.csv",
+      "mode": "100644",
+      "git_blob": "4e7637b7564503c21f692cd83804d77f84a20995",
+      "bytes": 851,
+      "sha256": "7d03933e563c5ddf4acc06f53ba847975944a38b9341ab7ec1ffad0086b13ead"
+    },
+    {
+      "path": "fixtures/scenarios/steady-state-capacity.csv",
+      "mode": "100644",
+      "git_blob": "2e108e9846a80d8450a0031d99eeb8789ff3a36f",
+      "bytes": 676,
+      "sha256": "8e191910746f14cd09de2dbd4ddf4375951625493fcbfa74ae527e2ced438963"
+    },
+    {
+      "path": "fixtures/scenarios/steady-state-territories.csv",
+      "mode": "100644",
+      "git_blob": "086716cda21e22edef88b78dda2b801df41f6974",
+      "bytes": 851,
+      "sha256": "6630fd73dd8962b71cfe1ad98d02a36b2e62cee2837a28c950f75dc9154bdb2f"
+    },
+    {
+      "path": "package-lock.json",
+      "mode": "100644",
+      "git_blob": "fa7c43cc8f6b0dd8167bb6d993424264a5f73e1c",
+      "bytes": 2178,
+      "sha256": "04011c7bf895044ba6ca3c00f015520cb42667abe6e27b423bd6e1ac627894a9"
+    },
+    {
+      "path": "package.json",
+      "mode": "100644",
+      "git_blob": "d58550dc830a30a61cb3b79f97a22f6c274ec071",
+      "bytes": 180,
+      "sha256": "bb2be4a6154ebee40aa5d05a79a46ddebc70e0e7a36d3f290cc7ebbb12dc12c3"
+    },
+    {
+      "path": "playwright.config.js",
+      "mode": "100644",
+      "git_blob": "514ce14cc4d28d1c56614b28ee52fdd004fd9372",
+      "bytes": 444,
+      "sha256": "630b611c90714f9f91ee9a33118744c20c37f6fd6599fdf6c655452f1f069326"
+    },
+    {
+      "path": "repo-map.toml",
+      "mode": "100644",
+      "git_blob": "662e773297563ba112c0bbd05f9ee324a076f5b6",
+      "bytes": 811,
+      "sha256": "92d7988c3e774595da66fcf3e2259221501b41a20cffa280f128b2b41288367d"
+    },
+    {
+      "path": "rust-toolchain.toml",
+      "mode": "100644",
+      "git_blob": "62ac40ab4205dc98bdab314e91970f848911c2fb",
+      "bytes": 123,
+      "sha256": "5b80f5d572322f87ec024fa217a17ff345a59e0ad63a090646b3dacade08587e"
+    },
+    {
+      "path": "terrain-cli/Cargo.toml",
+      "mode": "100644",
+      "git_blob": "111be40dde6ffc7b6bf71144774877fe0d54578c",
+      "bytes": 194,
+      "sha256": "88df3312fd54b0448db43dd98aa1495d940167f6d787e2f4b80ecc15275c7019"
+    },
+    {
+      "path": "terrain-cli/src/main.rs",
+      "mode": "100644",
+      "git_blob": "81d424e2491fa07282768d61e9a7ce31985d31d5",
+      "bytes": 67760,
+      "sha256": "ea9d8a2e61a779e7c26b96340000474571f0792721daf4e8519d336fb8bb0a46"
+    },
+    {
+      "path": "terrain-core/Cargo.toml",
+      "mode": "100644",
+      "git_blob": "8a5911975fddd81bfa4bed9c4a62d21eaac2193a",
+      "bytes": 343,
+      "sha256": "543e5baef07741d0885ebe3a311bf89b31372355268fa142dab961d81595ff50"
+    },
+    {
+      "path": "terrain-core/src/lib.rs",
+      "mode": "100644",
+      "git_blob": "aa4c15923c9c7bf9caa78feda8e22bda6560d250",
+      "bytes": 133989,
+      "sha256": "8e475172c3721adf7e3c12b3271b034089f36d448f8e19f58e335891083c112b"
+    },
+    {
+      "path": "terrain-web/Cargo.toml",
+      "mode": "100644",
+      "git_blob": "ff8b6e76ebbe38eb30467e20fd3118766733c81e",
+      "bytes": 368,
+      "sha256": "00451af34ad1074c2692f046b63010fabc29e532d91b70c4ba50bb383ded24f3"
+    },
+    {
+      "path": "terrain-web/src/lib.rs",
+      "mode": "100644",
+      "git_blob": "b76ce2e10f0273bd71e12c3958237b6ead33405a",
+      "bytes": 6928,
+      "sha256": "fa04ee180abe7c7c7349da270ee101e4cde53eee3a38dd1b545cdf270114ac4c"
+    },
+    {
+      "path": "tests/browser/planner.spec.js",
+      "mode": "100644",
+      "git_blob": "64d856e73522d27b1705f655ae4fa951cd864d25",
+      "bytes": 2994,
+      "sha256": "f62e0442eb919dacbfeab9d5ba79ffc7957354f464a88da06786dd118bcef6ff"
+    },
+    {
+      "path": "tools/build-pages.py",
+      "mode": "100644",
+      "git_blob": "66a8922706b60e964c50dec7a7b20fcc27726ec8",
+      "bytes": 1827,
+      "sha256": "30ece48ee449098e77846342ebc1294f4f139331922981fd3db59d5d76aa93dd"
+    },
+    {
+      "path": "tools/repo_map.py",
+      "mode": "100644",
+      "git_blob": "67a3e1c48d2ef1ac019f58c4659b7129d73cdb17",
+      "bytes": 8564,
+      "sha256": "c2deedd87e67a266b06667c9bcee7161540b9750947c2a458ae3668336659a88"
+    },
+    {
+      "path": "web/app.js",
+      "mode": "100644",
+      "git_blob": "26772f47e02fee8caa4a14ea4bacb7bc5eb86f68",
+      "bytes": 4850,
+      "sha256": "7dbb69ec1a899d3b1c17b4419c72a55395c7aeec48d9997ffb984b097f046c86"
+    },
+    {
+      "path": "web/index.html",
+      "mode": "100644",
+      "git_blob": "2d0899f15e21ba9d58e7dda279b5a81aa9f11779",
+      "bytes": 4338,
+      "sha256": "2de176aa9f11ac88cbe62526b71caa7ac62fcdeadc093989abc470437003e9ce"
+    },
+    {
+      "path": "web/sample.csv",
+      "mode": "100644",
+      "git_blob": "0d4a48afbbbe2a7af21b953d91de449be94a7e97",
+      "bytes": 523,
+      "sha256": "3748e0d5a144bf9e80380f5270e8102d1256d61125b00e39537ef904e8f51ecc"
+    },
+    {
+      "path": "web/style.css",
+      "mode": "100644",
+      "git_blob": "71ce4cc48b042662fd656276ad891258bc5a0540",
+      "bytes": 3429,
+      "sha256": "3aed3e89db78d3216e1ffe9bd06a8d6afda8afd9a4e9e029b8a2728a8151368b"
+    },
+    {
+      "path": "web/worker.js",
+      "mode": "100644",
+      "git_blob": "d8eabbb9098cc1ea9e8caa182a54f2ac750a7816",
+      "bytes": 487,
+      "sha256": "f99da064ff67d07eecccc4d30c4476a0d0210e4d1768d1cea36506d101efc612"
+    }
+  ],
+  "notice_paths": [
+    {
+      "path": "LICENSE",
+      "mode": "100644",
+      "git_blob": "e6ce15fa5c671fae9543e337fb2ab34d5f873e15",
+      "bytes": 1068,
+      "sha256": "54d865855854bb39b0803fa6df674004efdacc4599de22b5a28dd106e7685a5a"
+    }
+  ],
+  "raw_bytes": 361353,
+  "archive_bytes": 118121,
+  "archive_sha256": "2b0946927fd309aa8e5f2a17d4c5d233a84d0c758628ec5436e502c890d54357",
+  "scope": "Every original tracked blob/mode from the pinned complete Git tree; no export filters, checkout edits, extraction, execution or build qualification."
+}

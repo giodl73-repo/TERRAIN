@@ -1,0 +1,134 @@
+{
+  "checked_at": "2026-11-06T04:30:05.442978+00:00",
+  "source_head": "a245d608df45896846e9da104a16f7ddc768f170",
+  "kernel_source": "git+https://github.com/giodl73-repo/METIS-CORE.git?rev=0ad9f83d1ed41c1499d00233fefa0d4de6743aa8#0ad9f83d1ed41c1499d00233fefa0d4de6743aa8",
+  "kernel_files": 184,
+  "local_patch_absent": true,
+  "parity_controls": 69,
+  "full_stream_exact": true,
+  "original_native_bytes_preserved": true,
+  "browser_stats": {
+    "startTime": "2026-11-06T04:29:57.030Z",
+    "duration": 8233.621,
+    "expected": 4,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "site_bytes": 483296,
+  "commands": [
+    {
+      "name": "metadata",
+      "command": [
+        "cargo",
+        "metadata",
+        "--locked",
+        "--offline",
+        "--all-features",
+        "--format-version",
+        "1"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "fmt",
+      "command": [
+        "cargo",
+        "fmt",
+        "--check"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "native",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "--workspace"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "clippy",
+      "command": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--no-deps",
+        "-p",
+        "terrain-web",
+        "--all-targets",
+        "--all-features",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "sample-audit",
+      "command": [
+        "cargo",
+        "run",
+        "--locked",
+        "--offline",
+        "-p",
+        "terrain-cli",
+        "--",
+        "sample-audit"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "sample-svg",
+      "command": [
+        "cargo",
+        "run",
+        "--locked",
+        "--offline",
+        "-p",
+        "terrain-cli",
+        "--",
+        "sample-svg"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "site",
+      "command": [
+        "python",
+        "tools/build-pages.py",
+        "--output",
+        "C:\\src\\terrain-self-service-20261105\\dist\\pinned-candidate-20261105\\TERRAIN"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "parity",
+      "command": [
+        "python",
+        "tools/check-planner.py",
+        "--site",
+        "C:\\src\\terrain-self-service-20261105\\dist\\pinned-candidate-20261105\\TERRAIN",
+        "--output",
+        "C:\\src\\terrain-self-service-qualification-20261105\\pinned-parity-v1"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "browser",
+      "command": [
+        "node",
+        "C:\\src\\terrain-self-service-20261105\\node_modules\\@playwright\\test\\cli.js",
+        "test",
+        "--config",
+        "C:\\src\\terrain-self-service-qualification-20261105\\pinned-candidate-v1\\playwright.config.mjs"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "scope": "Clean source-bound immutable Git-pin native/WASM/original browser qualification only; existing installed cache/toolchain/shared target reused. No owned input/bootstrap/archive/receiver/worker recovery/default/live or complete5MB delivery qualification."
+}

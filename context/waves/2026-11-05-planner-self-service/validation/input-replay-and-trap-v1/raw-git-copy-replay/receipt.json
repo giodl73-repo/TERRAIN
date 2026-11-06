@@ -1,0 +1,119 @@
+{
+  "source": "b11b452b7b19ff0c51d32436f3f501dbece3c7da",
+  "source_files": 336,
+  "source_outside_git": true,
+  "new_source_home_inputs": true,
+  "target_initially_empty": true,
+  "all_runtime_notice_files_exact": true,
+  "differences": [],
+  "site_bytes": 1194225,
+  "files": [
+    {
+      "path": ".nojekyll",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "DEPENDENCY-NOTICES.txt",
+      "bytes": 278720,
+      "sha256": "acba0713f6d26ef17de87fca549d08fbd7d26e56695e3f2927f172370a1f7a2a"
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 1068,
+      "sha256": "54d865855854bb39b0803fa6df674004efdacc4599de22b5a28dd106e7685a5a"
+    },
+    {
+      "path": "RUST-RUNTIME-NOTICES.html",
+      "bytes": 425661,
+      "sha256": "90567e2718bf7fd65a71a3a43c5596488e80e5f51ed02bfea6fec54458b5f3d1"
+    },
+    {
+      "path": "app.js",
+      "bytes": 7655,
+      "sha256": "7a06cf436470a3b64e884e6ab80bee5099a454b2868e9e05439d0ce289d602f5"
+    },
+    {
+      "path": "index.html",
+      "bytes": 4590,
+      "sha256": "ee7d95579d738c153be4289c7b20780842074829224b9acc990fed7cd55f40d3"
+    },
+    {
+      "path": "pkg/terrain_web.d.ts",
+      "bytes": 1708,
+      "sha256": "15ab25e67d792f9488574e75d7b4f97ddf1bb0e844bd3535e425ff3861c531de"
+    },
+    {
+      "path": "pkg/terrain_web.js",
+      "bytes": 7436,
+      "sha256": "b846c89f500b4ff9131e04d077c75d4bef20990c0774b5ea5b818113cea2b4c1"
+    },
+    {
+      "path": "pkg/terrain_web_bg.wasm",
+      "bytes": 458141,
+      "sha256": "12f44df8ff5a6ef11ab12cbd14681634371602db09b441659278c9195adea055"
+    },
+    {
+      "path": "pkg/terrain_web_bg.wasm.d.ts",
+      "bytes": 598,
+      "sha256": "74f209bf525e328de6939308a56894d23e0e833f8f0e13bf2bf5d6ca9ebdb590"
+    },
+    {
+      "path": "planner-session.js",
+      "bytes": 4070,
+      "sha256": "70d50fc79890bd3daf8aaeb30d71f925c571e44c26a1700408103f87857055f3"
+    },
+    {
+      "path": "sample.csv",
+      "bytes": 523,
+      "sha256": "3748e0d5a144bf9e80380f5270e8102d1256d61125b00e39537ef904e8f51ecc"
+    },
+    {
+      "path": "style.css",
+      "bytes": 3429,
+      "sha256": "3aed3e89db78d3216e1ffe9bd06a8d6afda8afd9a4e9e029b8a2728a8151368b"
+    },
+    {
+      "path": "worker.js",
+      "bytes": 626,
+      "sha256": "a877527718dda7b7a5a179f0f4e521a9cb9ea036d6e2969accba181a7aca84b3"
+    }
+  ],
+  "commands": [
+    {
+      "name": "baseline",
+      "command": [
+        "python",
+        "-B",
+        "tools/build-pages.py",
+        "--inputs",
+        "C:\\src\\terrain-self-service-qualification-20261105\\owned-input-capsule-v1\\sources",
+        "--cargo-home",
+        "C:\\src\\terrain-self-service-qualification-20261105\\owned-input-capsule-v1\\cargo-home",
+        "--target",
+        "C:/src/.tracker-cargo-target",
+        "--output",
+        "C:\\src\\terrain-self-service-20261105\\dist\\notice-input-baseline-v1\\TERRAIN"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "outside-git",
+      "command": [
+        "python",
+        "-B",
+        "tools/build-pages.py",
+        "--inputs",
+        "C:\\src\\terrain-self-service-qualification-20261105\\nogit-empty-target-probe-v1\\inputs",
+        "--cargo-home",
+        "C:\\src\\terrain-self-service-qualification-20261105\\nogit-empty-target-probe-v1\\cargo-home",
+        "--target",
+        "C:\\src\\terrain-self-service-qualification-20261105\\nogit-empty-target-probe-v1\\target",
+        "--output",
+        "C:\\src\\terrain-self-service-qualification-20261105\\nogit-empty-target-probe-v1\\source\\dist\\TERRAIN"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "scope": "Tracked raw Git file-copy layout probe with fresh owned inputs/home and empty compiled target; complete current runtime/notice file bytes compared without normalization. Not generic source archive/receiver, full source5MB or default/live delivery qualification."
+}

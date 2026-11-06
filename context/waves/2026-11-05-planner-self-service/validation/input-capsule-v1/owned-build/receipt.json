@@ -1,0 +1,182 @@
+{
+  "checked_at": "2026-11-06T05:58:44.810681+00:00",
+  "source_head_at_observation": "3d9cff941de8e52a33593a41a985baa74a5a0c51",
+  "dirty_source": true,
+  "packages": 27,
+  "original_files": 1150,
+  "standalone_receiver_isolated_python": true,
+  "all_dependency_manifests_owned": true,
+  "source_readbacks_unchanged": true,
+  "typed_native_wasm_controls": 69,
+  "original_native_result_bytes_preserved": true,
+  "site_bytes": 489717,
+  "wasm_sha256": "12f44df8ff5a6ef11ab12cbd14681634371602db09b441659278c9195adea055",
+  "commands": [
+    {
+      "name": "restore",
+      "command": [
+        "python",
+        "-I",
+        "-B",
+        "C:\\src\\terrain-self-service-20261105\\tools\\input_custody.py",
+        "--sha256",
+        "a937b404bffb49b2433cbf8f6887dc45a238a64f44ef60be55a750fc682a83dc",
+        "--inputs",
+        "C:\\src\\terrain-self-service-qualification-20261105\\owned-input-capsule-v1\\sources",
+        "--cargo-home",
+        "C:\\src\\terrain-self-service-qualification-20261105\\owned-input-capsule-v1\\cargo-home",
+        "--protect-target",
+        "C:/src/.tracker-cargo-target"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "readback-before",
+      "command": [
+        "python",
+        "-I",
+        "-B",
+        "C:\\src\\terrain-self-service-20261105\\tools\\input_custody.py",
+        "--sha256",
+        "a937b404bffb49b2433cbf8f6887dc45a238a64f44ef60be55a750fc682a83dc",
+        "--inputs",
+        "C:\\src\\terrain-self-service-qualification-20261105\\owned-input-capsule-v1\\sources",
+        "--cargo-home",
+        "C:\\src\\terrain-self-service-qualification-20261105\\owned-input-capsule-v1\\cargo-home",
+        "--protect-target",
+        "C:/src/.tracker-cargo-target",
+        "--readback"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "metadata",
+      "command": [
+        "cargo",
+        "metadata",
+        "--locked",
+        "--offline",
+        "--all-features",
+        "--format-version",
+        "1"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "fmt",
+      "command": [
+        "cargo",
+        "fmt",
+        "--check"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "native",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "--workspace"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "clippy",
+      "command": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--no-deps",
+        "-p",
+        "terrain-web",
+        "--all-targets",
+        "--all-features",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "sample-audit",
+      "command": [
+        "cargo",
+        "run",
+        "--locked",
+        "--offline",
+        "-p",
+        "terrain-cli",
+        "--",
+        "sample-audit"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "sample-svg",
+      "command": [
+        "cargo",
+        "run",
+        "--locked",
+        "--offline",
+        "-p",
+        "terrain-cli",
+        "--",
+        "sample-svg"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "site",
+      "command": [
+        "python",
+        "-B",
+        "tools/build-pages.py",
+        "--inputs",
+        "C:\\src\\terrain-self-service-qualification-20261105\\owned-input-capsule-v1\\sources",
+        "--cargo-home",
+        "C:\\src\\terrain-self-service-qualification-20261105\\owned-input-capsule-v1\\cargo-home",
+        "--target",
+        "C:/src/.tracker-cargo-target",
+        "--output",
+        "C:\\src\\terrain-self-service-20261105\\dist\\owned-input-capsule-v1\\TERRAIN"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "parity",
+      "command": [
+        "python",
+        "-B",
+        "tools/check-planner.py",
+        "--site",
+        "C:\\src\\terrain-self-service-20261105\\dist\\owned-input-capsule-v1\\TERRAIN",
+        "--output",
+        "C:\\src\\terrain-self-service-qualification-20261105\\owned-input-parity-v1"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "readback-after",
+      "command": [
+        "python",
+        "-I",
+        "-B",
+        "C:\\src\\terrain-self-service-20261105\\tools\\input_custody.py",
+        "--sha256",
+        "a937b404bffb49b2433cbf8f6887dc45a238a64f44ef60be55a750fc682a83dc",
+        "--inputs",
+        "C:\\src\\terrain-self-service-qualification-20261105\\owned-input-capsule-v1\\sources",
+        "--cargo-home",
+        "C:\\src\\terrain-self-service-qualification-20261105\\owned-input-capsule-v1\\cargo-home",
+        "--protect-target",
+        "C:/src/.tracker-cargo-target",
+        "--readback"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "scope": "Actual authored input capsule restored by standalone stdlib receiver into fresh owned source/Cargo home; native tests/CLI/Clippy and remapped release WASM/full69 output parity. Source/config readback before/after; installed compiler/bindgen/Node and shared compiled target reused. Dirty development source, not full source/notice/archive/default/live delivery or complete5MB qualification."
+}

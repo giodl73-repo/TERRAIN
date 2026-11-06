@@ -1,0 +1,11 @@
+    Updating git repository `https://github.com/giodl73-repo/METIS-CORE.git`
+From https://github.com/giodl73-repo/METIS-CORE
+   6731f51..4b88dfc  HEAD       -> origin/HEAD
+    Updating git repository `https://github.com/giodl73-repo/METIS-CORE.git`
+From https://github.com/giodl73-repo/METIS-CORE
+ * [new ref]         0ad9f83d1ed41c1499d00233fefa0d4de6743aa8 -> refs/commit/0ad9f83d1ed41c1499d00233fefa0d4de6743aa8
+    Updating crates.io index
+     Locking 1 package to latest compatible version
+      Adding metis-core v0.1.0 (https://github.com/giodl73-repo/METIS-CORE.git?rev=0ad9f83d1ed41c1499d00233fefa0d4de6743aa8#0ad9f83d)
+    Removing metis-core v0.1.0 (https://github.com/giodl73-repo/METIS-CORE.git#78ae3409)
+note: pass `--verbose` to see 13 unchanged dependencies behind latest

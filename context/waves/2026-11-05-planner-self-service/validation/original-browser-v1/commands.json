@@ -1,0 +1,27 @@
+[
+  {
+    "name": "site",
+    "command": [
+      "C:\\Python314\\python.exe",
+      "tools/build-pages.py",
+      "--output",
+      "C:\\src\\terrain-self-service-20261105\\dist\\original-baseline-20261105\\TERRAIN"
+    ],
+    "exit_code": 0,
+    "started_at": "2026-11-06T02:45:33.730623+00:00",
+    "ended_at": "2026-11-06T02:45:56.615474+00:00"
+  },
+  {
+    "name": "browser",
+    "command": [
+      "node",
+      "C:\\src\\terrain-self-service-20261105\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "--config",
+      "C:\\src\\terrain-self-service-qualification-20261105\\original-browser-v1\\playwright.config.mjs"
+    ],
+    "exit_code": 0,
+    "started_at": "2026-11-06T02:45:57.374499+00:00",
+    "ended_at": "2026-11-06T02:46:11.932867+00:00"
+  }
+]

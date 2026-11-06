@@ -1,0 +1,185 @@
+{
+  "cases": [
+    {
+      "name": "sample-False-1",
+      "input_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "sample-False-2",
+      "input_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "sample-False-3",
+      "input_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "sample-False-4",
+      "input_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "sample-False-8",
+      "input_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "sample-False-18",
+      "input_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "limit-False-1.0",
+      "input_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "limit-False-1.25",
+      "input_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "limit-False-2.0",
+      "input_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "limit-False-10.0",
+      "input_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "invalid-limit-False-0.999",
+      "input_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "invalid-limit-False-10.001",
+      "input_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "invalid-limit-False-NaN",
+      "input_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "invalid-limit-False-Infinity",
+      "input_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "invalid-limit-False--Infinity",
+      "input_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "invalid-count-False-0",
+      "input_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "invalid-count-False-19",
+      "input_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "invalid-count-False-33",
+      "input_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "sample-True-1",
+      "input_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "sample-True-2",
+      "input_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "sample-True-3",
+      "input_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "sample-True-4",
+      "input_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "sample-True-8",
+      "input_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "sample-True-18",
+      "input_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "limit-True-1.0",
+      "input_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "limit-True-1.25",
+      "input_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "limit-True-2.0",
+      "input_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "limit-True-10.0",
+      "input_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "invalid-limit-True-0.999",
+      "input_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "invalid-limit-True-10.001",
+      "input_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "invalid-limit-True-NaN",
+      "input_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "invalid-limit-True-Infinity",
+      "input_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "invalid-limit-True--Infinity",
+      "input_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "invalid-count-True-0",
+      "input_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "invalid-count-True-19",
+      "input_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "invalid-count-True-33",
+      "input_exact": false,
+      "only_csv_line_endings": true
+    }
+  ],
+  "hosted_native_matches_original_windows_native": true
+}

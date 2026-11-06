@@ -1,0 +1,21 @@
+{
+  "predecessor_source": "b11b452b7b19ff0c51d32436f3f501dbece3c7da",
+  "predecessor": {
+    "startTime": "2026-11-06T06:52:17.007Z",
+    "duration": 7966.493999999999,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  },
+  "corrected": {
+    "startTime": "2026-11-06T06:52:32.075Z",
+    "duration": 69599.97,
+    "expected": 22,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "dirty_development_source": true,
+  "scope": "Actual executing Rust-WASM with injected WebAssembly.RuntimeError in worker before Rust planning call. Old source lacks explicit fatal-error retirement; current source exposes Retry and terminates it. All22 real browser cases execute, including actual2000site workload; not source/archive/default/live qualification."
+}

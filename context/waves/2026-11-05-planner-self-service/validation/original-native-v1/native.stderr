@@ -1,0 +1,28 @@
+   Compiling proc-macro2 v1.0.106
+   Compiling unicode-ident v1.0.24
+   Compiling quote v1.0.45
+   Compiling serde_core v1.0.229
+   Compiling zmij v1.0.23
+   Compiling serde_json v1.0.151
+   Compiling serde v1.0.229
+   Compiling rand_core v0.6.4
+   Compiling thiserror v2.0.18
+   Compiling itoa v1.0.18
+   Compiling memchr v2.8.3
+   Compiling rand v0.8.6
+   Compiling rand_pcg v0.3.1
+   Compiling syn v3.0.3
+   Compiling syn v2.0.117
+   Compiling thiserror-impl v2.0.18
+   Compiling serde_derive v1.0.229
+   Compiling metis-core v0.1.0 (https://github.com/giodl73-repo/METIS-CORE.git#78ae3409)
+   Compiling scenarium v0.1.0 (https://github.com/giodl73-repo/SCENARIUM.git?rev=f731ad4f99cc57479eafce6b68ea6521160c6853#f731ad4f)
+   Compiling terrain-core v0.1.0 (C:\src\terrain-self-service-20261105\terrain-core)
+   Compiling terrain-web v0.1.0 (C:\src\terrain-self-service-20261105\terrain-web)
+   Compiling terrain-cli v0.1.0 (C:\src\terrain-self-service-20261105\terrain-cli)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 18.41s
+     Running unittests src\main.rs (C:/src/.tracker-cargo-target\debug\deps\terrain_cli-5d14ce20e272cc5a.exe)
+     Running unittests src\lib.rs (C:/src/.tracker-cargo-target\debug\deps\terrain_core-084afefadcfdbedf.exe)
+     Running unittests src\lib.rs (C:/src/.tracker-cargo-target\debug\deps\terrain_web-911758af93ea5fd4.exe)
+   Doc-tests terrain_core
+   Doc-tests terrain_web

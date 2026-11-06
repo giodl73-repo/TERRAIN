@@ -1,0 +1,30 @@
+   Compiling unicode-ident v1.0.24
+   Compiling proc-macro2 v1.0.106
+   Compiling quote v1.0.45
+   Compiling wasm-bindgen-shared v0.2.127
+   Compiling serde_core v1.0.229
+   Compiling rustversion v1.0.23
+   Compiling zmij v1.0.23
+   Compiling serde v1.0.229
+   Compiling rand_core v0.6.4
+   Compiling serde_json v1.0.151
+   Compiling thiserror v2.0.18
+   Compiling memchr v2.8.3
+   Compiling itoa v1.0.18
+   Compiling bumpalo v3.20.3
+   Compiling cfg-if v1.0.5
+   Compiling once_cell v1.21.4
+   Compiling rand_pcg v0.3.1
+   Compiling rand v0.8.6
+   Compiling wasm-bindgen v0.2.127
+   Compiling syn v2.0.117
+   Compiling syn v3.0.3
+   Compiling serde_derive v1.0.229
+   Compiling wasm-bindgen-macro-support v0.2.127
+   Compiling thiserror-impl v2.0.18
+   Compiling metis-core v0.1.0 (https://github.com/giodl73-repo/METIS-CORE.git#78ae3409)
+   Compiling scenarium v0.1.0 (https://github.com/giodl73-repo/SCENARIUM.git?rev=f731ad4f99cc57479eafce6b68ea6521160c6853#f731ad4f)
+   Compiling wasm-bindgen-macro v0.2.127
+   Compiling terrain-core v0.1.0 (C:\src\terrain-self-service-20261105\terrain-core)
+   Compiling terrain-web v0.1.0 (C:\src\terrain-self-service-20261105\terrain-web)
+    Finished `release` profile [optimized] target(s) in 21.93s

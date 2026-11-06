@@ -1,0 +1,3 @@
+   Compiling terrain-cli v0.1.0 (C:\src\terrain-self-service-20261105\terrain-cli)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.87s
+     Running `C:/src/.tracker-cargo-target\debug\terrain-cli.exe sample-audit`

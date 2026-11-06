@@ -1,0 +1,23 @@
+# Keep original validation observations byte-exact, including Windows line ends.
+context/waves/2026-11-05-planner-self-service/validation/original-*/** -text whitespace=cr-at-eol
+context/waves/2026-11-05-planner-self-service/validation/original-native-v1/native.stdout whitespace=-blank-at-eof
+context/waves/2026-11-05-planner-self-service/validation/RAW-RECEIPTS.json text eol=lf
+context/waves/2026-11-05-planner-self-service/validation/BROWSER-RECEIPTS.json text eol=lf
+context/waves/2026-11-05-planner-self-service/validation/parity-v1/** -text whitespace=cr-at-eol
+context/waves/2026-11-05-planner-self-service/validation/pinned-*/** -text whitespace=cr-at-eol,-blank-at-eof
+
+# Keep shipped web inputs identical to their Git blobs on Windows and Unix.
+/web/** text eol=lf
+/LICENSE text eol=lf
+/cargo-inputs/*.zip -text
+/cargo-inputs/*.sha256 text eol=lf
+context/waves/2026-11-05-planner-self-service/validation/worker-*/** -text whitespace=cr-at-eol,-blank-at-eof
+
+# Preserve original dependency/runtime notice bytes, independently of checkout EOL.
+/DEPENDENCY-NOTICES.txt -text whitespace=cr-at-eol,-blank-at-eof
+/notices/*.html -text whitespace=cr-at-eol,-blank-at-eof
+context/waves/2026-11-05-planner-self-service/validation/input-*/** -text whitespace=cr-at-eol,-blank-at-eof
+/notices/rust-1.95.0-COPYRIGHT-library.html whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
+context/waves/2026-11-05-planner-self-service/validation/input-replay-*/** -text whitespace=cr-at-eol,-blank-at-eof
+
+context/waves/2026-11-05-planner-self-service/validation/complete-source-*/** -text whitespace=cr-at-eol,-blank-at-eof

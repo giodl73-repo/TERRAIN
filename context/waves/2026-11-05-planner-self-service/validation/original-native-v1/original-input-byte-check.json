@@ -1,0 +1,248 @@
+{
+  "packages": [
+    {
+      "name": "bumpalo",
+      "version": "3.20.3",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "root": "C:\\Users\\giodl\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\bumpalo-3.20.3",
+      "original_files": 20,
+      "original_bytes": 424349,
+      "all_original_file_bytes_equal": true
+    },
+    {
+      "name": "cfg-if",
+      "version": "1.0.5",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "root": "C:\\Users\\giodl\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\cfg-if-1.0.5",
+      "original_files": 14,
+      "original_bytes": 26434,
+      "all_original_file_bytes_equal": true
+    },
+    {
+      "name": "itoa",
+      "version": "1.0.18",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "root": "C:\\Users\\giodl\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\itoa-1.0.18",
+      "original_files": 14,
+      "original_bytes": 51096,
+      "all_original_file_bytes_equal": true
+    },
+    {
+      "name": "memchr",
+      "version": "2.8.3",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "root": "C:\\Users\\giodl\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\memchr-2.8.3",
+      "original_files": 59,
+      "original_bytes": 588682,
+      "all_original_file_bytes_equal": true
+    },
+    {
+      "name": "metis-core",
+      "version": "0.1.0",
+      "source": "git+https://github.com/giodl73-repo/METIS-CORE.git#78ae34090e043e79a206f2daffaa3889389b4790",
+      "root": "C:\\Users\\giodl\\.cargo\\git\\checkouts\\metis-core-070f052816969f06\\78ae340",
+      "original_files": 56,
+      "original_bytes": 380086,
+      "all_original_file_bytes_equal": true
+    },
+    {
+      "name": "once_cell",
+      "version": "1.21.4",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "root": "C:\\Users\\giodl\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\once_cell-1.21.4",
+      "original_files": 29,
+      "original_bytes": 151142,
+      "all_original_file_bytes_equal": true
+    },
+    {
+      "name": "proc-macro2",
+      "version": "1.0.106",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "root": "C:\\Users\\giodl\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\proc-macro2-1.0.106",
+      "original_files": 33,
+      "original_bytes": 270852,
+      "all_original_file_bytes_equal": true
+    },
+    {
+      "name": "quote",
+      "version": "1.0.45",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "root": "C:\\Users\\giodl\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\quote-1.0.45",
+      "original_files": 35,
+      "original_bytes": 138068,
+      "all_original_file_bytes_equal": true
+    },
+    {
+      "name": "rand",
+      "version": "0.8.6",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "root": "C:\\Users\\giodl\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\rand-0.8.6",
+      "original_files": 35,
+      "original_bytes": 331742,
+      "all_original_file_bytes_equal": true
+    },
+    {
+      "name": "rand_core",
+      "version": "0.6.4",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "root": "C:\\Users\\giodl\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\rand_core-0.6.4",
+      "original_files": 14,
+      "original_bytes": 78662,
+      "all_original_file_bytes_equal": true
+    },
+    {
+      "name": "rand_pcg",
+      "version": "0.3.1",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "root": "C:\\Users\\giodl\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\rand_pcg-0.3.1",
+      "original_files": 14,
+      "original_bytes": 41605,
+      "all_original_file_bytes_equal": true
+    },
+    {
+      "name": "rustversion",
+      "version": "1.0.23",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "root": "C:\\Users\\giodl\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\rustversion-1.0.23",
+      "original_files": 39,
+      "original_bytes": 78155,
+      "all_original_file_bytes_equal": true
+    },
+    {
+      "name": "scenarium",
+      "version": "0.1.0",
+      "source": "git+https://github.com/giodl73-repo/SCENARIUM.git?rev=f731ad4f99cc57479eafce6b68ea6521160c6853#f731ad4f99cc57479eafce6b68ea6521160c6853",
+      "root": "C:\\Users\\giodl\\.cargo\\git\\checkouts\\scenarium-8459ea074284bb04\\f731ad4",
+      "original_files": 41,
+      "original_bytes": 122374,
+      "all_original_file_bytes_equal": true
+    },
+    {
+      "name": "serde",
+      "version": "1.0.229",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "root": "C:\\Users\\giodl\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\serde-1.0.229",
+      "original_files": 33,
+      "original_bytes": 561555,
+      "all_original_file_bytes_equal": true
+    },
+    {
+      "name": "serde_core",
+      "version": "1.0.229",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "root": "C:\\Users\\giodl\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\serde_core-1.0.229",
+      "original_files": 27,
+      "original_bytes": 392878,
+      "all_original_file_bytes_equal": true
+    },
+    {
+      "name": "serde_derive",
+      "version": "1.0.229",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "root": "C:\\Users\\giodl\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\serde_derive-1.0.229",
+      "original_files": 36,
+      "original_bytes": 333931,
+      "all_original_file_bytes_equal": true
+    },
+    {
+      "name": "serde_json",
+      "version": "1.0.151",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "root": "C:\\Users\\giodl\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\serde_json-1.0.151",
+      "original_files": 89,
+      "original_bytes": 750028,
+      "all_original_file_bytes_equal": true
+    },
+    {
+      "name": "syn",
+      "version": "2.0.117",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "root": "C:\\Users\\giodl\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\syn-2.0.117",
+      "original_files": 105,
+      "original_bytes": 2293470,
+      "all_original_file_bytes_equal": true
+    },
+    {
+      "name": "syn",
+      "version": "3.0.3",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "root": "C:\\Users\\giodl\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\syn-3.0.3",
+      "original_files": 104,
+      "original_bytes": 2360752,
+      "all_original_file_bytes_equal": true
+    },
+    {
+      "name": "thiserror",
+      "version": "2.0.18",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "root": "C:\\Users\\giodl\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\thiserror-2.0.18",
+      "original_files": 105,
+      "original_bytes": 116829,
+      "all_original_file_bytes_equal": true
+    },
+    {
+      "name": "thiserror-impl",
+      "version": "2.0.18",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "root": "C:\\Users\\giodl\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\thiserror-impl-2.0.18",
+      "original_files": 17,
+      "original_bytes": 96181,
+      "all_original_file_bytes_equal": true
+    },
+    {
+      "name": "unicode-ident",
+      "version": "1.0.24",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "root": "C:\\Users\\giodl\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\unicode-ident-1.0.24",
+      "original_files": 26,
+      "original_bytes": 336823,
+      "all_original_file_bytes_equal": true
+    },
+    {
+      "name": "wasm-bindgen",
+      "version": "0.2.127",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "root": "C:\\Users\\giodl\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\wasm-bindgen-0.2.127",
+      "original_files": 26,
+      "original_bytes": 286104,
+      "all_original_file_bytes_equal": true
+    },
+    {
+      "name": "wasm-bindgen-macro",
+      "version": "0.2.127",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "root": "C:\\Users\\giodl\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\wasm-bindgen-macro-0.2.127",
+      "original_files": 9,
+      "original_bytes": 26174,
+      "all_original_file_bytes_equal": true
+    },
+    {
+      "name": "wasm-bindgen-macro-support",
+      "version": "0.2.127",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "root": "C:\\Users\\giodl\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\wasm-bindgen-macro-support-0.2.127",
+      "original_files": 14,
+      "original_bytes": 389471,
+      "all_original_file_bytes_equal": true
+    },
+    {
+      "name": "wasm-bindgen-shared",
+      "version": "0.2.127",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "root": "C:\\Users\\giodl\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\wasm-bindgen-shared-0.2.127",
+      "original_files": 11,
+      "original_bytes": 33109,
+      "all_original_file_bytes_equal": true
+    },
+    {
+      "name": "zmij",
+      "version": "1.0.23",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "root": "C:\\Users\\giodl\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\zmij-1.0.23",
+      "original_files": 17,
+      "original_bytes": 106132,
+      "all_original_file_bytes_equal": true
+    }
+  ],
+  "scope": "Every original regular file in all 25 registry and two Git dependencies equals the actual cache source used by Cargo metadata. Installed cache, config/toolchain and compiled-target reuse remain explicit; no hermetic owned input restore or unexpected-file closure claim."
+}

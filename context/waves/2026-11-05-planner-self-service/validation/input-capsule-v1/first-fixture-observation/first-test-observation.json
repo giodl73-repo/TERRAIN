@@ -1,0 +1,13 @@
+{
+  "exec_session": 91899,
+  "tests_run": 20,
+  "failed_subcases": 2,
+  "method": "test_unsafe_wire_paths_and_unsupported_zip_modes",
+  "failures": [
+    "a\\b",
+    "a\u0000tail"
+  ],
+  "cause": "Fixture author normalized Windows slash/NUL names before writing ZIP; the intended malicious wire names were absent. Corrected fixture explicitly preserves wire spelling. No source-verifier bypass was observed.",
+  "first_harness_sha256": "2f2b1492651398442121f9be41eb7bf2952c3bc91bffb19d9e5e3750c51864f0",
+  "scope": "Observation retained from exec output; not a full raw transcript."
+}

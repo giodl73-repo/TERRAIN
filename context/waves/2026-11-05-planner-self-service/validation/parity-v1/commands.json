@@ -1,0 +1,36 @@
+[
+  {
+    "name": "build-native",
+    "command": [
+      "cargo",
+      "build",
+      "--locked",
+      "--offline",
+      "--release",
+      "-p",
+      "terrain-web",
+      "--example",
+      "planner-control"
+    ],
+    "exit_code": 0
+  },
+  {
+    "name": "native",
+    "command": [
+      "C:\\src\\.tracker-cargo-target\\release\\examples\\planner-control.exe"
+    ],
+    "exit_code": 0
+  },
+  {
+    "name": "wasm",
+    "command": [
+      "node",
+      "C:\\src\\terrain-self-service-20261105\\tools\\check-planner.mjs",
+      "C:\\src\\terrain-self-service-20261105\\dist\\original-baseline-20261105\\TERRAIN",
+      "C:\\src\\terrain-self-service-qualification-20261105\\planner-parity-v1\\controls.jsonl",
+      "C:\\src\\terrain-self-service-qualification-20261105\\planner-parity-v1\\wasm.jsonl",
+      "C:\\src\\terrain-self-service-qualification-20261105\\planner-parity-v1\\raw-js-abi.json"
+    ],
+    "exit_code": 0
+  }
+]

@@ -1,0 +1,104 @@
+{
+  "original_archive_closure_pass": false,
+  "differences": [
+    {
+      "package": "bumpalo-3.20.3",
+      "missing_original_files": [
+        ".gitignore"
+      ],
+      "extra_files": [],
+      "changed_files": []
+    },
+    {
+      "package": "cfg-if-1.0.5",
+      "missing_original_files": [
+        ".gitignore"
+      ],
+      "extra_files": [],
+      "changed_files": []
+    },
+    {
+      "package": "itoa-1.0.18",
+      "missing_original_files": [
+        ".gitignore"
+      ],
+      "extra_files": [],
+      "changed_files": []
+    },
+    {
+      "package": "memchr-2.8.3",
+      "missing_original_files": [
+        ".gitignore"
+      ],
+      "extra_files": [],
+      "changed_files": []
+    },
+    {
+      "package": "once_cell-1.21.4",
+      "missing_original_files": [
+        ".gitignore"
+      ],
+      "extra_files": [],
+      "changed_files": []
+    },
+    {
+      "package": "proc-macro2-1.0.106",
+      "missing_original_files": [
+        ".gitignore"
+      ],
+      "extra_files": [],
+      "changed_files": []
+    },
+    {
+      "package": "quote-1.0.45",
+      "missing_original_files": [
+        ".gitignore"
+      ],
+      "extra_files": [],
+      "changed_files": []
+    },
+    {
+      "package": "rustversion-1.0.23",
+      "missing_original_files": [
+        ".gitignore"
+      ],
+      "extra_files": [],
+      "changed_files": []
+    },
+    {
+      "package": "serde_json-1.0.151",
+      "missing_original_files": [
+        ".gitignore"
+      ],
+      "extra_files": [],
+      "changed_files": []
+    },
+    {
+      "package": "thiserror-2.0.18",
+      "missing_original_files": [
+        ".gitignore"
+      ],
+      "extra_files": [],
+      "changed_files": []
+    },
+    {
+      "package": "unicode-ident-1.0.24",
+      "missing_original_files": [
+        ".gitattributes",
+        ".gitignore",
+        "tests/fst/.gitignore"
+      ],
+      "extra_files": [],
+      "changed_files": []
+    },
+    {
+      "package": "zmij-1.0.23",
+      "missing_original_files": [
+        ".gitignore"
+      ],
+      "extra_files": [],
+      "changed_files": []
+    }
+  ],
+  "scope": "Actual Cargo-vendor-derived registry subset omits original files; do not call the first successful compile a complete original-input restore. Full raw archives remain retained and drive the next probe."
+}

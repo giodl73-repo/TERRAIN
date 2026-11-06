@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Build and downloads · TERRAIN</title><link rel="stylesheet" href="@@RUNTIME@@/style.css"></head>
+<body><header><a class="brand" href="./">TERRAIN<small>BUILD AND DOWNLOADS</small></a></header><main>
+<h1>Keep the model.<br><em>Rebuild the workbench.</em></h1>
+<p>This page and these downloads work without JavaScript or WebAssembly. The planner uses synthetic example data and processes your CSV locally. It is not a road travel optimizer.</p>
+<h2>Exact release</h2>
+<p>Source commit <code>@@COMMIT@@</code>. The <a href="BUILD-MANIFEST.json">build manifest</a> records the source tree, input kit, diagnostic path policy and SHA-256/length of every other published file. The manifest does not hash itself. Hashes establish byte identity, not authorship; obtain your expected hash through a channel you trust.</p>
+<p><a href="source.tar.xz" download>Complete committed source (tar.xz)</a> · <a href="receiver.zip" download>Small Python receiver bundle</a> · <a href="@@RUNTIME@@/pkg/terrain_web_bg.wasm" download>Compiled WASM</a> · <a href="@@RUNTIME@@/pkg/terrain_web.js" download>JavaScript adapter</a> · <a href="@@RUNTIME@@/sample.csv" download>Sample CSV</a></p>
+<p>Source SHA-256: <code>@@SOURCE_SHA@@</code><br>Receiver SHA-256: <code>@@RECEIVER_SHA@@</code></p>
+<h2>Receive without Git</h2>
+<p>Prerequisite: Python 3.11+ with its standard library including lzma. Inspect and trust the receiver bundle first, then unpack its three Python modules into a new helper directory. It uses no pip packages, Git, Cargo or network during receipt. From that directory:</p>
+<pre>python -I -S -B receive-source.py --archive /downloads/source.tar.xz --sha256 @@SOURCE_SHA@@ --output /new/TERRAIN --protect /your/compiled-target</pre>
+<p>Choose a new source directory outside the helper, download and compiled-target directories. Verification bounds archive resources, checks the full Git tree/commit/file/mode inventory, rejects links and unsafe paths, and preserves existing destinations. POSIX disk executable modes are checked on POSIX; Windows preserves the archived mode inventory without claiming equivalent ACLs.</p>
+<h2>Build offline from original inputs</h2>
+<p>Install Rust 1.95.0 (including wasm32-unknown-unknown), wasm-bindgen CLI 0.2.127 and Python 3.11+ separately. These tools are external prerequisites, not included installers. The archive includes all committed application files, complete original locked dependency archives and their grants. Building executes the received Rust source: review it before building.</p>
+<p>From the restored TERRAIN directory, with three new directories outside the source for original inputs, Cargo home and compiled target:</p>
+<pre>python tools/build-pages.py --inputs /new/terrain-inputs --cargo-home /new/terrain-cargo-home --target /new/terrain-target</pre>
+<p>The builder restores and reads back the offline input kit, requires the locked sources, remaps source/dependency/target diagnostic paths, and writes a new <code>dist/TERRAIN</code>. It checks the complete published package is below 5,000,000 bytes. Serve it with <code>python -m http.server 8767 --directory dist</code> and open <code>http://localhost:8767/TERRAIN/</code>. Opening the HTML directly as a file is not supported.</p>
+<p>For validation, Node 22 and the locked npm development dependencies plus Playwright Chromium are additional external prerequisites. Run the documented <code>tools/check-planner.py</code> comparison and <code>npm test</code>. A new empty target tests compilation independently of an existing compiled cache. Same-platform, same-toolchain byte comparison is a separate qualification; cross-platform compiler identity is not promised.</p>
+<h2>Licenses and original notices</h2>
+<p><a href="LICENSE">Application license</a> · <a href="DEPENDENCY-NOTICES.txt">Complete dependency notices</a> · <a href="RUST-RUNTIME-NOTICES.html">Original Rust library runtime notices</a>. These grants retain their own scopes; the application license does not relicense dependencies or third-party material.</p>
+</main><footer><a href="./">Return to the planner</a> · <a href="https://github.com/giodl73-repo/TERRAIN">Source repository</a></footer></body></html>

@@ -1,0 +1,17 @@
+{
+  "browser": "145.0.7632.6",
+  "desktop": {
+    "overflow": false,
+    "status": "18 sites · 3 territories · 3.7 ms · processing stays on your device"
+  },
+  "mobile": {
+    "overflow": false,
+    "status": "18 sites · 3 territories · 3.7 ms · processing stays on your device"
+  },
+  "stopped": {
+    "overflow": false,
+    "status": "Planning stopped. Your CSV and settings are kept. Choose Retry planner to resume."
+  },
+  "errors": [],
+  "scope": "Actual built planner desktop/mobile viewport capture; stopped state uses deliberately stalled initialization. Viewport sizes are not physical-device performance evidence."
+}

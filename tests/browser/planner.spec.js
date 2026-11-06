@@ -33,7 +33,7 @@ test('malformed CSV recovers and mobile view fits',async({page})=>{
 
 test('sample failure gives a readable fallback',async({page})=>{
  await page.route('**/sample.csv',route=>route.fulfill({status:503,body:'unavailable'}));
- await page.goto('/TERRAIN/');await expect(page.locator('#status')).toContainText('Reload to retry');
+ await page.goto('/TERRAIN/');await expect(page.locator('#status')).toContainText('Choose Load sample to retry');
  await expect(page.getByRole('link',{name:'Source & research'})).toBeVisible();
 });
 
@@ -45,4 +45,30 @@ test('oversized file invalidates pending plans and exports',async({page})=>{
  await page.waitForTimeout(400);
  await expect(page.locator('#status')).toContainText('up to 500 KB');
  await expect(page.locator('#export')).toBeDisabled();
+});
+
+test('runtime files stay within one immutable source revision',async({page})=>{
+ const responses=[];page.on('response',r=>responses.push(r.url()));
+ await page.goto('/TERRAIN/');await expect(page.locator('#export')).toBeEnabled();
+ const manifest=await (await page.request.get('/TERRAIN/BUILD-MANIFEST.json')).json();
+ expect(manifest.runtime).toBe(`assets/${manifest.commit}`);
+ const script=await page.locator('script[type="module"]').getAttribute('src');
+ expect(script).toBe(`${manifest.runtime}/app.js`);
+ for(const name of ['app.js','planner-session.js','worker.js','terrain_web.js','terrain_web_bg.wasm','sample.csv']){
+  const seen=responses.filter(url=>url.endsWith('/'+name));expect(seen.length,name).toBeGreaterThan(0);
+  expect(seen.every(url=>url.includes(`/TERRAIN/${manifest.runtime}/`)),name).toBeTruthy();
+ }
+});
+
+test('source and build guide remain accessible with JavaScript disabled',async({browser,baseURL})=>{
+ const context=await browser.newContext({javaScriptEnabled:false,baseURL});const page=await context.newPage();
+ try{
+  await page.goto('/TERRAIN/');
+  await page.getByRole('link',{name:'Build guide & downloads'}).click();
+  await expect(page.getByRole('heading',{name:'Receive without Git'})).toBeVisible();
+  const link=page.getByRole('link',{name:'Complete committed source (tar.xz)'});
+  await expect(link).toHaveAttribute('href','source.tar.xz');
+  const response=await page.request.get('/TERRAIN/source.tar.xz');
+  expect(response.ok()).toBeTruthy();expect((await response.body()).length).toBeLessThan(5_000_000);
+ }finally{await context.close();}
 });

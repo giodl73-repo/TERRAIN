@@ -1,0 +1,142 @@
+{
+  "files": [
+    {
+      "path": "raw-git-copy-replay/receipt.json",
+      "bytes": 4028,
+      "sha256": "2a460811f84421959dfa229e80d77a9306c4f689f384d47c601068b22d9a2115",
+      "original_bytes": 4028,
+      "original_sha256": "2a460811f84421959dfa229e80d77a9306c4f689f384d47c601068b22d9a2115",
+      "compression": "none"
+    },
+    {
+      "path": "raw-git-copy-replay/commands.json",
+      "bytes": 1195,
+      "sha256": "73c62599d53e1af69c3dc347fdd77d59cb88ac348fdb186428d344db9b9bc7d8",
+      "original_bytes": 1195,
+      "original_sha256": "73c62599d53e1af69c3dc347fdd77d59cb88ac348fdb186428d344db9b9bc7d8",
+      "compression": "none"
+    },
+    {
+      "path": "raw-git-copy-replay/baseline.stdout.gz",
+      "bytes": 124,
+      "sha256": "c08add86effbed836d588db003a113057c601b9108a818803a44ed1a62e6a5c0",
+      "original_bytes": 110,
+      "original_sha256": "7cde85d20cfca1a618d1c6748f8d62bcc6cde18521242ec7276b2967cdea9b0d",
+      "compression": "lossless-gzip"
+    },
+    {
+      "path": "raw-git-copy-replay/baseline.stderr.gz",
+      "bytes": 82,
+      "sha256": "fe34acd8791f822e7427cfac576aaaa00bcd635a1ea5c7ece378d74709b895d9",
+      "original_bytes": 62,
+      "original_sha256": "c2d2116446791553408a09e8cadeebd1e53aa8a7fd805ccaa890086701778fa2",
+      "compression": "lossless-gzip"
+    },
+    {
+      "path": "raw-git-copy-replay/outside-git.stdout.gz",
+      "bytes": 142,
+      "sha256": "e960035b2ad83053e16a921c2c3c8b62f083e88f3ab23ecde5c4ffcaef63c275",
+      "original_bytes": 134,
+      "original_sha256": "662e5ccaf7160e52b61970e3a1a2fb39b5d2b8625214b074e32dbf25a0ed626c",
+      "compression": "lossless-gzip"
+    },
+    {
+      "path": "raw-git-copy-replay/outside-git.stderr.gz",
+      "bytes": 561,
+      "sha256": "c4484e946adff57d4ac5ab9cbf3b56eba501871ca8fcde18e586289bfb5d734e",
+      "original_bytes": 1387,
+      "original_sha256": "0888fed8d4b420ea8deeb70bb86263e7b9d76a2a0897a93c28780b3b945bf805",
+      "compression": "lossless-gzip"
+    },
+    {
+      "path": "raw-git-copy-replay/source-snapshot.json.gz",
+      "bytes": 24265,
+      "sha256": "31014e1a604c7b8060532d09c50b854b6e377633054ee631910bb96b66e0908a",
+      "original_bytes": 101399,
+      "original_sha256": "fa4f9541148e9a34b69fb10ad54272eedf67a56f9e2219c919b4b226013f8d3b",
+      "compression": "lossless-gzip"
+    },
+    {
+      "path": "archive-size/receipt.json",
+      "bytes": 411,
+      "sha256": "ae07905ef3bc35287c847c80e5a2df44718fa5fc80577ad86e08f005db53229f",
+      "original_bytes": 411,
+      "original_sha256": "ae07905ef3bc35287c847c80e5a2df44718fa5fc80577ad86e08f005db53229f",
+      "compression": "none"
+    },
+    {
+      "path": "trap/receipt.json",
+      "bytes": 803,
+      "sha256": "ee4846e4316c62b1b50c150344ea0180a59928989fa2eeede94393ca1206d05e",
+      "original_bytes": 803,
+      "original_sha256": "ee4846e4316c62b1b50c150344ea0180a59928989fa2eeede94393ca1206d05e",
+      "compression": "none"
+    },
+    {
+      "path": "trap/commands.json",
+      "bytes": 1276,
+      "sha256": "56c20f9cfe146a167786547731310311ca92adbf32962f10f0985ef99ed69e8d",
+      "original_bytes": 1276,
+      "original_sha256": "56c20f9cfe146a167786547731310311ca92adbf32962f10f0985ef99ed69e8d",
+      "compression": "none"
+    },
+    {
+      "path": "trap/predecessor-report.json.gz",
+      "bytes": 1822,
+      "sha256": "52cca314065e101659bb364158376b2ea84e690e91a4f46149a3efd6f0cc7c09",
+      "original_bytes": 8819,
+      "original_sha256": "b12cc22fba25da9103555708cb9c6ba57281898f22895a2f0edbd842ddab0430",
+      "compression": "lossless-gzip"
+    },
+    {
+      "path": "trap/predecessor.stdout.gz",
+      "bytes": 932,
+      "sha256": "092dd48b4053eb45f9e76e1fc615f71cf8c69aaf5c32ace0ebd4dea5d3639aa5",
+      "original_bytes": 3566,
+      "original_sha256": "8e0f748002f87b4c9da2680b342e127c603b2a4d5097deb04e78c61e8bd98f89",
+      "compression": "lossless-gzip"
+    },
+    {
+      "path": "trap/predecessor.stderr.gz",
+      "bytes": 164,
+      "sha256": "a80bfe4aec54bce10a10815d5d21042ef7779851737ccedd88377b0d7b7305b9",
+      "original_bytes": 344,
+      "original_sha256": "b2d32b5f5c9432903c382c15e6d5066cba0edcad3ec5d85e9d35125fcd16594e",
+      "compression": "lossless-gzip"
+    },
+    {
+      "path": "trap/corrected-report.json.gz",
+      "bytes": 2515,
+      "sha256": "f2b5a51123b4f978157cf40a1b608fbdcddcaa5c3b295908cce65fa17478af00",
+      "original_bytes": 25029,
+      "original_sha256": "eef6855b47a325615babb95f97bc99beca104091a7a594cdd25f10a3c92aacae",
+      "compression": "lossless-gzip"
+    },
+    {
+      "path": "trap/corrected.stdout.gz",
+      "bytes": 941,
+      "sha256": "b55ede38bbdeac63f68457d480e0c8fba5d8bd2ee170c5c3238001ca91e80e8e",
+      "original_bytes": 2715,
+      "original_sha256": "87c717fb9c2230c01a1aec1394015433adcb9297b7380a1b28494b0071e41215",
+      "compression": "lossless-gzip"
+    },
+    {
+      "path": "trap/corrected.stderr.gz",
+      "bytes": 179,
+      "sha256": "1ed8279380fcf268fc1a768d9d98da697f1cf445037cdc7ae340a87f963b7b5a",
+      "original_bytes": 688,
+      "original_sha256": "f2a242ceeab2fa1086bc8fce5eee2e294bb51691c3fd6ce03aa15edf85807f30",
+      "compression": "lossless-gzip"
+    }
+  ],
+  "source": "b11b452b7b19ff0c51d32436f3f501dbece3c7da",
+  "all14_runtime_notice_files_exact": true,
+  "empty_target": true,
+  "raw_git_copy_without_git": true,
+  "trap_regression": {
+    "predecessor_failed": 1,
+    "current_browser_passed": 22,
+    "scope": "Explicit injected WebAssembly.RuntimeError before the real Rust call; positive cases initialize and execute actual Rust/WASM, including2000 sites."
+  },
+  "scope": "Raw Git file-copy rebuild and archive-size probe, not yet general source archive/receiver or complete5MB/default/live qualification. Current trap fix is dirty development source; immutable current hosted verification follows commit."
+}

@@ -1,0 +1,111 @@
+[
+  {
+    "name": "receive-without-git-cargo-path",
+    "command": [
+      "C:\\Python314\\python.exe",
+      "-I",
+      "-S",
+      "-B",
+      "C:\\src\\terrain-self-service-qualification-20261105\\complete-source-candidate-v1\\replay\\trusted-receiver\\receive-source.py",
+      "--archive",
+      "C:\\src\\terrain-self-service-20261105\\dist\\complete-source-candidate-v1\\TERRAIN\\source.tar.xz",
+      "--sha256",
+      "dca11096cb73d12690b5f5ba9b8684d1eabbed42e1533c9e8f0ef1acc48be199",
+      "--output",
+      "C:\\src\\terrain-self-service-qualification-20261105\\complete-source-candidate-v1\\replay\\source",
+      "--protect",
+      "C:\\src\\terrain-self-service-qualification-20261105\\complete-source-candidate-v1\\replay\\empty-target"
+    ],
+    "exit_code": 0
+  },
+  {
+    "name": "build-empty-target",
+    "command": [
+      "C:\\Python314\\python.exe",
+      "-B",
+      "C:\\src\\terrain-self-service-qualification-20261105\\complete-source-candidate-v1\\replay\\source\\tools\\build-pages.py",
+      "--inputs",
+      "C:\\src\\terrain-self-service-qualification-20261105\\complete-source-candidate-v1\\replay\\inputs",
+      "--cargo-home",
+      "C:\\src\\terrain-self-service-qualification-20261105\\complete-source-candidate-v1\\replay\\cargo-home",
+      "--target",
+      "C:\\src\\terrain-self-service-qualification-20261105\\complete-source-candidate-v1\\replay\\empty-target"
+    ],
+    "exit_code": 0
+  },
+  {
+    "name": "native-tests",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--workspace"
+    ],
+    "exit_code": 0
+  },
+  {
+    "name": "native-format",
+    "command": [
+      "cargo",
+      "fmt",
+      "--check"
+    ],
+    "exit_code": 0
+  },
+  {
+    "name": "native-clippy",
+    "command": [
+      "cargo",
+      "clippy",
+      "--locked",
+      "--no-deps",
+      "-p",
+      "terrain-web",
+      "--all-targets",
+      "--all-features",
+      "--",
+      "-D",
+      "warnings"
+    ],
+    "exit_code": 0
+  },
+  {
+    "name": "full-native-wasm",
+    "command": [
+      "C:\\Python314\\python.exe",
+      "-B",
+      "C:\\src\\terrain-self-service-qualification-20261105\\complete-source-candidate-v1\\replay\\source\\tools\\check-planner.py",
+      "--site",
+      "C:\\src\\terrain-self-service-qualification-20261105\\complete-source-candidate-v1\\replay\\source\\dist\\TERRAIN",
+      "--output",
+      "C:\\src\\terrain-self-service-qualification-20261105\\complete-source-candidate-v1\\replay\\planner-parity"
+    ],
+    "exit_code": 0
+  },
+  {
+    "name": "browser",
+    "command": [
+      "npm.cmd",
+      "test"
+    ],
+    "exit_code": 0
+  },
+  {
+    "name": "input-readback",
+    "command": [
+      "C:\\Python314\\python.exe",
+      "-I",
+      "-S",
+      "-B",
+      "C:\\src\\terrain-self-service-qualification-20261105\\complete-source-candidate-v1\\replay\\source\\tools\\input_custody.py",
+      "--sha256",
+      "a937b404bffb49b2433cbf8f6887dc45a238a64f44ef60be55a750fc682a83dc",
+      "--inputs",
+      "C:\\src\\terrain-self-service-qualification-20261105\\complete-source-candidate-v1\\replay\\inputs",
+      "--cargo-home",
+      "C:\\src\\terrain-self-service-qualification-20261105\\complete-source-candidate-v1\\replay\\cargo-home",
+      "--readback"
+    ],
+    "exit_code": 0
+  }
+]

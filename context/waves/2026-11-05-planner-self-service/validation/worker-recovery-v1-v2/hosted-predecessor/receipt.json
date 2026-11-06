@@ -1,0 +1,273 @@
+{
+  "schema": "terrain.hosted-parity-custody.v1",
+  "run": "https://github.com/giodl73-repo/TERRAIN/actions/runs/42164129952",
+  "pr_head": "56b38a8a48c784d24a60fc463a27fae563d974dc",
+  "actual_checkout_commit": "dbc38cae6acc33bd8855402af9aa1d934d453f49",
+  "checkout_tree": "140a4acd72fcec0a9a25102bb3df8b630600c8c6",
+  "checkout_tree_matches_pr_head": true,
+  "artifacts": [
+    {
+      "name": "terrain-planner-parity",
+      "id": 13478586660,
+      "bytes": 358928,
+      "digest": "sha256:750bbc240d3c903554726cf63c7fa4ac4efdd287a43b66cccbe04a80b0b147c7"
+    },
+    {
+      "name": "github-pages",
+      "id": 13478511859,
+      "bytes": 165408,
+      "digest": "sha256:de4a170b12b69b1abf536a49a3bc199d2fbc7dd67ac380ef9d6f147b5c970947"
+    }
+  ],
+  "controls": 69,
+  "complete_native_wasm_stream_exact": true,
+  "controls_match_original": false,
+  "input_differences": [
+    {
+      "name": "sample-False-1",
+      "input_bytes_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "sample-False-2",
+      "input_bytes_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "sample-False-3",
+      "input_bytes_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "sample-False-4",
+      "input_bytes_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "sample-False-8",
+      "input_bytes_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "sample-False-18",
+      "input_bytes_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "limit-False-1.0",
+      "input_bytes_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "limit-False-1.25",
+      "input_bytes_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "limit-False-2.0",
+      "input_bytes_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "limit-False-10.0",
+      "input_bytes_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "invalid-limit-False-0.999",
+      "input_bytes_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "invalid-limit-False-10.001",
+      "input_bytes_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "invalid-limit-False-NaN",
+      "input_bytes_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "invalid-limit-False-Infinity",
+      "input_bytes_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "invalid-limit-False--Infinity",
+      "input_bytes_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "invalid-count-False-0",
+      "input_bytes_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "invalid-count-False-19",
+      "input_bytes_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "invalid-count-False-33",
+      "input_bytes_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "sample-True-1",
+      "input_bytes_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "sample-True-2",
+      "input_bytes_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "sample-True-3",
+      "input_bytes_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "sample-True-4",
+      "input_bytes_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "sample-True-8",
+      "input_bytes_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "sample-True-18",
+      "input_bytes_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "limit-True-1.0",
+      "input_bytes_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "limit-True-1.25",
+      "input_bytes_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "limit-True-2.0",
+      "input_bytes_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "limit-True-10.0",
+      "input_bytes_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "invalid-limit-True-0.999",
+      "input_bytes_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "invalid-limit-True-10.001",
+      "input_bytes_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "invalid-limit-True-NaN",
+      "input_bytes_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "invalid-limit-True-Infinity",
+      "input_bytes_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "invalid-limit-True--Infinity",
+      "input_bytes_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "invalid-count-True-0",
+      "input_bytes_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "invalid-count-True-19",
+      "input_bytes_exact": false,
+      "only_csv_line_endings": true
+    },
+    {
+      "name": "invalid-count-True-33",
+      "input_bytes_exact": false,
+      "only_csv_line_endings": true
+    }
+  ],
+  "hosted_linux_result_matches_original_windows_native": true,
+  "site_bytes": 483218,
+  "site_files": [
+    {
+      "path": ".nojekyll",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 1068,
+      "sha256": "54d865855854bb39b0803fa6df674004efdacc4599de22b5a28dd106e7685a5a"
+    },
+    {
+      "path": "app.js",
+      "bytes": 4850,
+      "sha256": "7dbb69ec1a899d3b1c17b4419c72a55395c7aeec48d9997ffb984b097f046c86"
+    },
+    {
+      "path": "index.html",
+      "bytes": 4338,
+      "sha256": "2de176aa9f11ac88cbe62526b71caa7ac62fcdeadc093989abc470437003e9ce"
+    },
+    {
+      "path": "pkg/terrain_web.d.ts",
+      "bytes": 1708,
+      "sha256": "15ab25e67d792f9488574e75d7b4f97ddf1bb0e844bd3535e425ff3861c531de"
+    },
+    {
+      "path": "pkg/terrain_web.js",
+      "bytes": 7436,
+      "sha256": "b846c89f500b4ff9131e04d077c75d4bef20990c0774b5ea5b818113cea2b4c1"
+    },
+    {
+      "path": "pkg/terrain_web_bg.wasm",
+      "bytes": 458781,
+      "sha256": "04b6e2f50ea444984e3eda64a34f80f32d8824d92dc86f737351d487b226b531"
+    },
+    {
+      "path": "pkg/terrain_web_bg.wasm.d.ts",
+      "bytes": 598,
+      "sha256": "74f209bf525e328de6939308a56894d23e0e833f8f0e13bf2bf5d6ca9ebdb590"
+    },
+    {
+      "path": "sample.csv",
+      "bytes": 523,
+      "sha256": "3748e0d5a144bf9e80380f5270e8102d1256d61125b00e39537ef904e8f51ecc"
+    },
+    {
+      "path": "style.css",
+      "bytes": 3429,
+      "sha256": "3aed3e89db78d3216e1ffe9bd06a8d6afda8afd9a4e9e029b8a2728a8151368b"
+    },
+    {
+      "path": "worker.js",
+      "bytes": 487,
+      "sha256": "f99da064ff67d07eecccc4d30c4476a0d0210e4d1768d1cea36506d101efc612"
+    }
+  ],
+  "wasm_observation": {
+    "controls": 69,
+    "raw_abi_observations": 5,
+    "wasm_bytes": 458781,
+    "wasm_sha256": "04b6e2f50ea444984e3eda64a34f80f32d8824d92dc86f737351d487b226b531"
+  },
+  "scope": "Actual successful PR workflow and API-digest-verified artifacts; five web files, sample/license and executing-WASM identity checked. Actual checkout merge commit and PR head are distinct with matching trees. Thirty-six input cases differ only in CSV line endings; inputs are not called byte-exact. Whole output streams match without normalization. Not new worker/source/input/archive/default/live delivery qualification."
+}

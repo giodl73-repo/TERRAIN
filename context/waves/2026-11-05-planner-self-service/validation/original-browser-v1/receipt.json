@@ -1,0 +1,117 @@
+{
+  "checked_at": "2026-11-06T02:46:12.057851+00:00",
+  "actual_source_head": "967410f4d6b5fffbccbded5494689f05cc89a7ea",
+  "unchanged_original_runtime_source": "bfa81f8a0d6f3aa369c3689ae5c393b458554214",
+  "original_runtime_paths": [
+    "Cargo.toml",
+    "Cargo.lock",
+    "rust-toolchain.toml",
+    "terrain-core",
+    "terrain-cli",
+    "terrain-web",
+    "web",
+    "tools/build-pages.py",
+    "tests/browser",
+    "package.json",
+    "package-lock.json",
+    "LICENSE"
+  ],
+  "original_runtime_paths_byte_unchanged": true,
+  "site": "C:\\src\\terrain-self-service-20261105\\dist\\original-baseline-20261105\\TERRAIN",
+  "total_bytes": 483301,
+  "files": [
+    {
+      "path": ".nojekyll",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "app.js",
+      "bytes": 4879,
+      "sha256": "0ec3ce3ce2a8ca5b5896a031a2abbab11e11b79f91d589533795cf22bd7e9dfb"
+    },
+    {
+      "path": "index.html",
+      "bytes": 4339,
+      "sha256": "8fb1453382c21975197ba4e30c2584fb38c3bb9d65ea7ff2aea4578e9451d758"
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 1089,
+      "sha256": "d678abeb4c65e283f76e4dc3b7c83d86a8ce7f501450a4bef6630b0b4bc4cafa"
+    },
+    {
+      "path": "pkg/terrain_web.d.ts",
+      "bytes": 1708,
+      "sha256": "15ab25e67d792f9488574e75d7b4f97ddf1bb0e844bd3535e425ff3861c531de"
+    },
+    {
+      "path": "pkg/terrain_web.js",
+      "bytes": 7436,
+      "sha256": "b846c89f500b4ff9131e04d077c75d4bef20990c0774b5ea5b818113cea2b4c1"
+    },
+    {
+      "path": "pkg/terrain_web_bg.wasm",
+      "bytes": 458786,
+      "sha256": "6ac372ee91727cb6dad4b33ce8d63159b0b800aff39f559fe2ab65b25a7dd525"
+    },
+    {
+      "path": "pkg/terrain_web_bg.wasm.d.ts",
+      "bytes": 598,
+      "sha256": "74f209bf525e328de6939308a56894d23e0e833f8f0e13bf2bf5d6ca9ebdb590"
+    },
+    {
+      "path": "sample.csv",
+      "bytes": 542,
+      "sha256": "2748532320fa45a6eb92e63db83b211155829123773052aa37a4bbcd53f1eee0"
+    },
+    {
+      "path": "style.css",
+      "bytes": 3430,
+      "sha256": "329300eaca1508a0fd13ff3b4d6903f17814fcf5f55aad9d5ff07b201a6b6a1d"
+    },
+    {
+      "path": "worker.js",
+      "bytes": 494,
+      "sha256": "b6c5b7ff85d1827310cc14f660f532e6558f3c1eed3677b8300ffbb7d7772a9a"
+    }
+  ],
+  "browser_stats": {
+    "startTime": "2026-11-06T02:46:03.489Z",
+    "duration": 8407.455999999998,
+    "expected": 4,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "commands": [
+    {
+      "name": "site",
+      "command": [
+        "C:\\Python314\\python.exe",
+        "tools/build-pages.py",
+        "--output",
+        "C:\\src\\terrain-self-service-20261105\\dist\\original-baseline-20261105\\TERRAIN"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-11-06T02:45:33.730623+00:00",
+      "ended_at": "2026-11-06T02:45:56.615474+00:00"
+    },
+    {
+      "name": "browser",
+      "command": [
+        "node",
+        "C:\\src\\terrain-self-service-20261105\\node_modules\\@playwright\\test\\cli.js",
+        "test",
+        "--config",
+        "C:\\src\\terrain-self-service-qualification-20261105\\original-browser-v1\\playwright.config.mjs"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-11-06T02:45:57.374499+00:00",
+      "ended_at": "2026-11-06T02:46:11.932867+00:00"
+    }
+  ],
+  "compiled_target_reused": true,
+  "installed_test_prerequisite": "Existing locked-version Playwright1.58.2 Node packages copied from installed MAXIM test prerequisite; installed Chromium reused. No NPM re-resolution or product dependency.",
+  "scope": "Actual original Rust/WASM planner and four original real-browser smoke cases in an isolated checkout under /TERRAIN/. Documentation-only source head remains distinct from originalbfa runtime source. Existing original Cargo cache/shared compiled target/toolchain/bindgen/Python/Node/browser prerequisites explicit. Not full native/WASM output parity, owned input restore, source/receiver/archive/default/live delivery or5MB complete delivery qualification."
+}

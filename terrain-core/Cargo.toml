@@ -6,5 +6,5 @@ license.workspace = true
 repository.workspace = true
 
 [dependencies]
-metis-core = { git = "https://github.com/giodl73-repo/METIS-CORE.git" }
+metis-core = { git = "https://github.com/giodl73-repo/METIS-CORE.git", rev = "0ad9f83d1ed41c1499d00233fefa0d4de6743aa8", features = ["portable-seed-replay"] }
 scenarium = { git = "https://github.com/giodl73-repo/SCENARIUM.git", rev = "f731ad4f99cc57479eafce6b68ea6521160c6853" }

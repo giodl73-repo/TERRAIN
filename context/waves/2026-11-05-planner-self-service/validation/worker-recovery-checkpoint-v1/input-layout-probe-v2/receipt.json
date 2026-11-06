@@ -1,0 +1,38 @@
+{
+  "packages": 27,
+  "all_external_manifests_under_new_owned_vendor": true,
+  "original_git_manifests_preserved": true,
+  "original_registry_and_git_files": 1150,
+  "managed_checksum_files": 27,
+  "before_after_source_inventory_exact": true,
+  "managed_config_unchanged": true,
+  "source_local_override_absent": true,
+  "commands": [
+    {
+      "name": "metadata",
+      "command": [
+        "cargo",
+        "metadata",
+        "--locked",
+        "--offline",
+        "--all-features",
+        "--format-version",
+        "1"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "native",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "--workspace"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "scope": "Machine-local layout experiment: all27 exact locked packages resolve through a new owned offline source/home layout; all1150 original registry/Git source bytes plus27 managed checksum files and source config remain unchanged before/after46 native tests. Existing compiler/shared target reused. Not yet a generic negative-tested capsule/receiver, complete Cargo-home/toolchain closure, empty-target archive or release qualification.",
+  "native_passed": 46
+}

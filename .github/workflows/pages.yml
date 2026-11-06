@@ -11,7 +11,10 @@ concurrency:
   cancel-in-progress: true
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      CARGO_TARGET_DIR: ${{ github.workspace }}/target/terrain-build
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -22,27 +25,67 @@ jobs:
           node-version: '22'
           cache: npm
       - name: Install tools
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           rustup show
-          cargo install wasm-bindgen-cli --version 0.2.127 --locked
+          archive="wasm-bindgen-0.2.127-x86_64-unknown-linux-musl.tar.gz"
+          install_dir="${RUNNER_TEMP}/wasm-bindgen-0.2.127"
+          gh release download 0.2.127 --repo wasm-bindgen/wasm-bindgen --pattern "${archive}" --dir "${RUNNER_TEMP}"
+          echo "61d4a7dc85acfa0d2354ccc0b8361928c7e52a746d17f28ebaa795ed3dc1614a  ${RUNNER_TEMP}/${archive}" | sha256sum --check
+          mkdir -p "${install_dir}"
+          tar --extract --gzip --file "${RUNNER_TEMP}/${archive}" --directory "${install_dir}" --strip-components=1
+          echo "${install_dir}" >> "${GITHUB_PATH}"
           npm ci
           npx playwright install --with-deps chromium
+      - name: Verify input receiver and restore original offline sources
+        run: |
+          python -B -m unittest discover -s tools -p 'test_*custody.py' -v
+          python -B -m unittest discover -s tools -p 'test_rust_build.py' -v
+          sha="$(cut -d' ' -f1 cargo-inputs/inputs.sha256)"
+          python -I -S -B tools/input_custody.py --sha256 "${sha}" --inputs "${RUNNER_TEMP}/terrain-inputs" --cargo-home "${RUNNER_TEMP}/terrain-cargo-home" --protect-target "${CARGO_TARGET_DIR}"
+          echo "CARGO_HOME=${RUNNER_TEMP}/terrain-cargo-home" >> "${GITHUB_ENV}"
+          echo "TERRAIN_INPUTS=${RUNNER_TEMP}/terrain-inputs" >> "${GITHUB_ENV}"
+          echo "CARGO_NET_OFFLINE=true" >> "${GITHUB_ENV}"
       - name: Validate Rust
         run: |
-          cargo fmt -p terrain-web --check
+          cargo fmt --check
           cargo test --locked --workspace
           cargo clippy --locked --no-deps -p terrain-web --all-targets --all-features -- -D warnings
       - name: Build Pages and test browser
         run: |
-          python tools/build-pages.py
+          python tools/build-pages.py --inputs "${TERRAIN_INPUTS}" --cargo-home "${CARGO_HOME}" --target "${CARGO_TARGET_DIR}"
+          python tools/check-planner.py --site dist/TERRAIN --output "${RUNNER_TEMP}/terrain-planner-parity"
           npm test
+          sha="$(cut -d' ' -f1 cargo-inputs/inputs.sha256)"
+          python -I -S -B tools/input_custody.py --sha256 "${sha}" --inputs "${TERRAIN_INPUTS}" --cargo-home "${CARGO_HOME}" --readback
+      - name: Rebuild complete source archive outside Git with an empty target
+        run: python -B tools/check-source-replay.py --site dist/TERRAIN --output "${RUNNER_TEMP}/terrain-source-replay" --browser
+      - name: Retain source replay observations
+        if: always() && !cancelled()
+        uses: actions/upload-artifact@v4
+        with:
+          name: terrain-source-replay
+          path: |
+            ${{ runner.temp }}/terrain-source-replay/*.json
+            ${{ runner.temp }}/terrain-source-replay/*.stdout
+            ${{ runner.temp }}/terrain-source-replay/*.stderr
+            ${{ runner.temp }}/terrain-source-replay/planner-parity
+          if-no-files-found: warn
+      - name: Retain full planner comparisons
+        if: always() && !cancelled()
+        uses: actions/upload-artifact@v4
+        with:
+          name: terrain-planner-parity
+          path: ${{ runner.temp }}/terrain-planner-parity
+          if-no-files-found: warn
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist/TERRAIN
   deploy:
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       pages: write
       id-token: write
