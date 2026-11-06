@@ -29,7 +29,7 @@ checksum = "cf8baf1c55e62ffcace7a9f06f4bd9cd3f0c4beb022d3b367256b91b87513d98"
 [[package]]
 name = "metis-core"
 version = "0.1.0"
-source = "git+https://github.com/giodl73-repo/METIS-CORE.git#78ae34090e043e79a206f2daffaa3889389b4790"
+source = "git+https://github.com/giodl73-repo/METIS-CORE.git?rev=0ad9f83d1ed41c1499d00233fefa0d4de6743aa8#0ad9f83d1ed41c1499d00233fefa0d4de6743aa8"
 dependencies = [
  "rand",
  "rand_pcg",

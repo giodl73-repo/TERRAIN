@@ -174,3 +174,22 @@ or dependency-pin change is qualified or adopted yet. Preserve all 69 controls
 and full outputs; sorting/relabeling or dropping cases cannot close this gap.
 Kernel changes must follow its compatibility/role/ROUTE rehearsal gates, without
 claiming gpmetis quality, operational readiness or independent human approval.
+
+## Explicit candidate pin for source-bound replay
+
+The controlled METIS experiment preserves all original legacy native/WASM
+bytes, and opt-in WASM matches every original native result across all 69
+controls. METIS draft PR3 retains the raw evidence, both-mode internal tests,
+strict Clippy/docs, and both required ROUTE fixtures in both modes. Its broad
+external gpmetis run remains an explicitly retained executable failure, not
+quality evidence.
+
+This draft now explicitly pins `0ad9f83d1ed41c1499d00233fefa0d4de6743aa8`
+with `portable-seed-replay`, retaining all other locked dependency records.
+No TRACKER-relative Cargo patch is present in this isolated source. Cargo
+feature unification applies to all uses of the resolved METIS package.
+The pin includes governing Apache-2.0 and upstream NOTICE; original historical
+source bytes remain preserved separately. Fresh source-bound native/WASM
+qualification is required next. Neither canonical source nor deployment is
+advanced by this draft, and full owned input/source/worker/archive/live delivery
+remains open.
