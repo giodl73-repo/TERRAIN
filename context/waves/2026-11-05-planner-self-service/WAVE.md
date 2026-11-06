@@ -1,13 +1,16 @@
 # Reproducible TERRAIN planner delivery
 
-Status: source draft pins the opt-in METIS candidate. Clean source
-`a245d608df45896846e9da104a16f7ddc768f170` passes all 69 complete native/WASM
-comparisons, preserving original native bytes, plus 46 native tests and four
-original browser cases. Dependency/feature adoption is explicit below; the
-canonical source and deployment stay at their prior release. Owned input/source
-restoration, bounded worker recovery, archive/receiver, complete 5 MB budget,
-and actual default/live delivery remain open. The initial unchanged-baseline
-pulse below is historical evidence, not the current implementation state.
+Status: source draft pins the opt-in METIS candidate and implements worker
+stop/retry, initialization/computation/sample deadlines, bounded current work,
+and immediate stale-result invalidation. The first worker probe retained three
+failures (startup resurrection race and a test-clock setup error); the corrected
+dirty-source probe passes all 21 actual browser cases, including the 2,000-site
+graph workload. A clean-source replay follows the code commit. Prior pinned
+source/hosted checks pass all 69 complete native/WASM comparisons and preserve
+original native bytes. Canonical source and deployment stay at their prior
+release. Owned input/source restoration, archive/receiver, complete 5 MB budget,
+and actual default/live delivery remain open. Baseline sections below are
+historical evidence, not the current implementation state.
 
 ## Original baseline contract
 
@@ -249,3 +252,61 @@ by METIS's successful workflow, instead of compiling the CLI's dependency tree.
 The build job has a 30-minute bound. This changes CI provisioning only; it does
 not change the adapter/runtime or make the installed compiler/bindgen/browser
 part of the eventual owned-input package. New hosted success remains pending.
+
+## Worker recovery implementation and first probes
+
+The UI owns one current worker and at most one current/pending input snapshot.
+Editing CSV/settings immediately clears the map, metrics, totals and export.
+Active superseded work is terminated; retired generation/request replies cannot
+publish ready, error or result state. Stop retains CSV/settings; Retry creates a
+fresh worker. A main-thread 15-second initialization bound and two-minute
+computation bound work even if the worker CPU is blocked. Public sample loading
+has an independent 10-second abort and 500,000-byte streamed body bound. Sample
+failure leaves local CSV usable; late sample/file reads cannot overwrite newer
+input or current status. Shared settings still omit private CSV.
+
+Actual immutable-pin WASM at the admitted 2,000-site ceiling takes about 33 ms
+(greedy) and 37,263 ms (graph) under installed Node on the observing Windows
+laptop. The real browser graph/export case also completes, retaining all 2,008
+features. These are scoped observations, not mobile/universal speed guarantees.
+
+Worker probe v1 passes 14 cases and fails three: a clock-pause setup error and
+an actual startup resurrection race affecting initialization deadline/failure.
+A queued automatic sample plan could restart a failed worker. The fix cancels
+queued UI submission on worker error and forbids automatic sample restart of a
+failed engine. Corrected probe v2 passes all 21 cases without retries/skips or
+flaky outcomes. Stalls/crashes/network failures are explicit fault injection;
+positive planning and the 2,000-site case execute the real Rust WASM. V1 raw
+failure data is retained rather than relabeled. No Rust model/schema/algorithm
+change accompanies the lifecycle work.
+
+## Hosted predecessor and checkout-byte discrepancy
+
+Hosted run `42164129952` succeeds for PR head `56b38a8`; its actual temporary
+merge checkout is `dbc38cae6acc33bd8855402af9aa1d934d453f49`, with the exact same
+complete tree as the PR head. Downloaded parity and Pages ZIPs match their API
+SHA-256 digests. All 69 full Linux native/WASM output bytes match each other
+and the original Windows native stream, without normalization. Thirty-six
+control inputs differ only in sample CSV LF/CRLF bytes; those inputs are not
+called identical. The artifact's web/sample/license bytes match committed blobs,
+and its actual WASM hash matches the parity observation. This predecessor has
+the old worker; it is not qualification of the new recovery UI.
+
+Pin web files and LICENSE to LF checkout bytes matching their existing raw Git
+blobs. Original blob contents/grants are unchanged; prior Windows CRLF runtime
+and controls stay preserved as historical observations. This removes the known
+checkout/source-archive discrepancy for shipped static files. Whole archive
+rebuild/source/runtime byte identity still requires its own complete gate.
+
+## Recovery pulse role review
+
+Implementing-agent review through the existing five TERRAIN lenses:
+Kernel Boundary keeps all policy/calculation in unchanged Rust crates; Fairness
+and Capacity keeps existing ratios/zero semantics and no feasibility claims;
+Data Binding checks immutable submission identity, stale worker/file/sample
+fences and private CSV/settings separation; Report Contract checks immediate
+clearing of every prior map/metric/table/export; Field Manager checks readable
+Stop/Retry/error states, preserved inputs, keyboard/mobile behavior and the
+actual full admitted workload. These are scoped code/test findings, not
+independent human approval or operational certification. Original Rust/Cargo/
+lock/toolchain paths remain unchanged from the measured pinned predecessor.

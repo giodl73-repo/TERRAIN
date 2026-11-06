@@ -1,0 +1,331 @@
+{
+  "schema": "terrain.worker-recovery-custody.v1",
+  "files": [
+    {
+      "path": "worker-recovery-v1/commands.json",
+      "bytes": 559,
+      "sha256": "5cb59e56aec2bb2e0dcd9320c9503591f304dd989e4bbfed3d56e425208c148a",
+      "original_bytes": 559,
+      "original_sha256": "5cb59e56aec2bb2e0dcd9320c9503591f304dd989e4bbfed3d56e425208c148a",
+      "compression": "none"
+    },
+    {
+      "path": "worker-recovery-v1/browser-report.json.gz",
+      "bytes": 3699,
+      "sha256": "e6a3af2dcfc4fbe2ee0be7042f55b96c0a1a9804e1777a861c27c88204b5b859",
+      "original_bytes": 31814,
+      "original_sha256": "b2d34eec73dec54f3a80f1683b1cd93fe7df9de688c7c9f379b4e1d4dcd8d8fc",
+      "compression": "lossless-gzip"
+    },
+    {
+      "path": "worker-recovery-v1/browser.stdout.gz",
+      "bytes": 2150,
+      "sha256": "6e66f57e51ab8f675a43964e11e138580a6161cfab6a1bdf94b622eea0be2adf",
+      "original_bytes": 11409,
+      "original_sha256": "864732ea20e74c9e950b6fbaa31a72d848e5b4cfd9fb120e8a5c895db37d8444",
+      "compression": "lossless-gzip"
+    },
+    {
+      "path": "worker-recovery-v1/browser.stderr",
+      "bytes": 1712,
+      "sha256": "fd2318a11b57172d932e71bf1642111fe01c4f831ba61ce1a4c164d37a87cd8d",
+      "original_bytes": 1712,
+      "original_sha256": "fd2318a11b57172d932e71bf1642111fe01c4f831ba61ce1a4c164d37a87cd8d",
+      "compression": "none"
+    },
+    {
+      "path": "worker-recovery-v1/build.stdout.gz",
+      "bytes": 119,
+      "sha256": "624bea1016c74b41fc57955bc3a135d85b94651a784df53f823d75415733adca",
+      "original_bytes": 102,
+      "original_sha256": "6b5cf2710019dc046280490680c391567c9a12dee56ccb7b80ca7d338c42d844",
+      "compression": "lossless-gzip"
+    },
+    {
+      "path": "worker-recovery-v1/build.stderr",
+      "bytes": 62,
+      "sha256": "0f66cf9f65c0374195d473acd6d3931362f6bad2042d47c6f4dc6373c161c638",
+      "original_bytes": 62,
+      "original_sha256": "0f66cf9f65c0374195d473acd6d3931362f6bad2042d47c6f4dc6373c161c638",
+      "compression": "none"
+    },
+    {
+      "path": "worker-recovery-v1/harness-source/tests/browser/planner.spec.js",
+      "bytes": 3006,
+      "sha256": "abfaa5c875f9aec337100167faf6ca68184138d68fd821cc1053ad47cd630077",
+      "original_bytes": 3006,
+      "original_sha256": "abfaa5c875f9aec337100167faf6ca68184138d68fd821cc1053ad47cd630077",
+      "compression": "none"
+    },
+    {
+      "path": "worker-recovery-v1/harness-source/tests/browser/recovery.spec.js",
+      "bytes": 11497,
+      "sha256": "6e70cc22329d261911e3c3737ddf834fb89d8ca4e05e63f4e579001f9bcba8a4",
+      "original_bytes": 11497,
+      "original_sha256": "6e70cc22329d261911e3c3737ddf834fb89d8ca4e05e63f4e579001f9bcba8a4",
+      "compression": "none"
+    },
+    {
+      "path": "worker-recovery-v2/commands.json",
+      "bytes": 559,
+      "sha256": "f015e9eb9d09f9d80cc61120ec97d9f813d409c5ac2a85e0bb5ffe7cc599d8b6",
+      "original_bytes": 559,
+      "original_sha256": "f015e9eb9d09f9d80cc61120ec97d9f813d409c5ac2a85e0bb5ffe7cc599d8b6",
+      "compression": "none"
+    },
+    {
+      "path": "worker-recovery-v2/browser-report.json.gz",
+      "bytes": 2434,
+      "sha256": "00141c54536f8281ad512616527f974eb1f7d7e9f341c4c1c1e02696f6d52391",
+      "original_bytes": 23950,
+      "original_sha256": "be5efe269369fa808456757fc37b48aa99ba01102080090e4d7b7bc6138544d9",
+      "compression": "lossless-gzip"
+    },
+    {
+      "path": "worker-recovery-v2/browser.stdout.gz",
+      "bytes": 906,
+      "sha256": "91a52443ea1bb8769e5823f5e563e6c4269ff42976e77dc7b36beed5fa364b0b",
+      "original_bytes": 2589,
+      "original_sha256": "4536cf201cb3808889f66a2450917efa333342df2ff9fa5ada2d03b2c27ef9ba",
+      "compression": "lossless-gzip"
+    },
+    {
+      "path": "worker-recovery-v2/browser.stderr",
+      "bytes": 688,
+      "sha256": "0a70f5dc8c670bff57c764dc24d877561cb8695a5a768441371909a42626c798",
+      "original_bytes": 688,
+      "original_sha256": "0a70f5dc8c670bff57c764dc24d877561cb8695a5a768441371909a42626c798",
+      "compression": "none"
+    },
+    {
+      "path": "worker-recovery-v2/build.stdout.gz",
+      "bytes": 119,
+      "sha256": "de83682113b17e6aa68b68fd002af33e1e2918931075139ec469cbc3291d2dca",
+      "original_bytes": 102,
+      "original_sha256": "d81aabd8f7f2005b2dd5110e650fa113e7511e3ed0fc4fb1f488b049f107e9b8",
+      "compression": "lossless-gzip"
+    },
+    {
+      "path": "worker-recovery-v2/build.stderr",
+      "bytes": 62,
+      "sha256": "a50f4a953f17e887d3844be51c0df233623b83d4462c96d5392c2671458d7fef",
+      "original_bytes": 62,
+      "original_sha256": "a50f4a953f17e887d3844be51c0df233623b83d4462c96d5392c2671458d7fef",
+      "compression": "none"
+    },
+    {
+      "path": "worker-recovery-v2/receipt.json",
+      "bytes": 3324,
+      "sha256": "885bc19da43267beb6d69a49c62832ded4ac9eca8a127920fdb06169c88ec4e7",
+      "original_bytes": 3324,
+      "original_sha256": "885bc19da43267beb6d69a49c62832ded4ac9eca8a127920fdb06169c88ec4e7",
+      "compression": "none"
+    },
+    {
+      "path": "worker-recovery-v2/source-observation.json",
+      "bytes": 1546,
+      "sha256": "aabe4025ef83474f9d8f1bc9ff419540146490e746e41ad9c96be0e23a602f28",
+      "original_bytes": 1546,
+      "original_sha256": "aabe4025ef83474f9d8f1bc9ff419540146490e746e41ad9c96be0e23a602f28",
+      "compression": "none"
+    },
+    {
+      "path": "worker-recovery-v2/harness-source/tools/build-pages.py",
+      "bytes": 1849,
+      "sha256": "8ca9ffed1ea31a1e95c12425ca33c77e953627e6406881534311d9b6aaf7bbcf",
+      "original_bytes": 1849,
+      "original_sha256": "8ca9ffed1ea31a1e95c12425ca33c77e953627e6406881534311d9b6aaf7bbcf",
+      "compression": "none"
+    },
+    {
+      "path": "worker-recovery-v2/harness-source/web/app.js",
+      "bytes": 7655,
+      "sha256": "7a06cf436470a3b64e884e6ab80bee5099a454b2868e9e05439d0ce289d602f5",
+      "original_bytes": 7655,
+      "original_sha256": "7a06cf436470a3b64e884e6ab80bee5099a454b2868e9e05439d0ce289d602f5",
+      "compression": "none"
+    },
+    {
+      "path": "worker-recovery-v2/harness-source/web/index.html",
+      "bytes": 4462,
+      "sha256": "8b95e0c842b8553e26771a16ce80a3782ae196b6da97a1575259840184c07584",
+      "original_bytes": 4462,
+      "original_sha256": "8b95e0c842b8553e26771a16ce80a3782ae196b6da97a1575259840184c07584",
+      "compression": "none"
+    },
+    {
+      "path": "worker-recovery-v2/harness-source/web/planner-session.js",
+      "bytes": 4070,
+      "sha256": "70d50fc79890bd3daf8aaeb30d71f925c571e44c26a1700408103f87857055f3",
+      "original_bytes": 4070,
+      "original_sha256": "70d50fc79890bd3daf8aaeb30d71f925c571e44c26a1700408103f87857055f3",
+      "compression": "none"
+    },
+    {
+      "path": "worker-recovery-v2/harness-source/web/style.css",
+      "bytes": 3430,
+      "sha256": "329300eaca1508a0fd13ff3b4d6903f17814fcf5f55aad9d5ff07b201a6b6a1d",
+      "original_bytes": 3430,
+      "original_sha256": "329300eaca1508a0fd13ff3b4d6903f17814fcf5f55aad9d5ff07b201a6b6a1d",
+      "compression": "none"
+    },
+    {
+      "path": "worker-recovery-v2/harness-source/web/worker.js",
+      "bytes": 626,
+      "sha256": "a877527718dda7b7a5a179f0f4e521a9cb9ea036d6e2969accba181a7aca84b3",
+      "original_bytes": 626,
+      "original_sha256": "a877527718dda7b7a5a179f0f4e521a9cb9ea036d6e2969accba181a7aca84b3",
+      "compression": "none"
+    },
+    {
+      "path": "worker-recovery-v2/harness-source/tests/browser/planner.spec.js",
+      "bytes": 3006,
+      "sha256": "abfaa5c875f9aec337100167faf6ca68184138d68fd821cc1053ad47cd630077",
+      "original_bytes": 3006,
+      "original_sha256": "abfaa5c875f9aec337100167faf6ca68184138d68fd821cc1053ad47cd630077",
+      "compression": "none"
+    },
+    {
+      "path": "worker-recovery-v2/harness-source/tests/browser/recovery.spec.js",
+      "bytes": 15488,
+      "sha256": "6a3812bd9c543b0873a6c1700836ca6ee535c7f8f17a287d41138e014553b1fd",
+      "original_bytes": 15488,
+      "original_sha256": "6a3812bd9c543b0873a6c1700836ca6ee535c7f8f17a287d41138e014553b1fd",
+      "compression": "none"
+    },
+    {
+      "path": "planner-ceiling-timing.json",
+      "bytes": 461,
+      "sha256": "f0ea56aad7db72347eaebc8439388e2aca3eca57ada536d28146ce27def86023",
+      "original_bytes": 461,
+      "original_sha256": "f0ea56aad7db72347eaebc8439388e2aca3eca57ada536d28146ce27def86023",
+      "compression": "none"
+    },
+    {
+      "path": "hosted-predecessor/receipt.json",
+      "bytes": 7825,
+      "sha256": "061395608da6302edbbd112051c12a6ffe28908583db0dd0e9d3438bc7337b2b",
+      "original_bytes": 7825,
+      "original_sha256": "061395608da6302edbbd112051c12a6ffe28908583db0dd0e9d3438bc7337b2b",
+      "compression": "none"
+    },
+    {
+      "path": "hosted-predecessor/run.json",
+      "bytes": 14657,
+      "sha256": "897ec8959349d6a91a8c2a618185bae4bb35f57bd461bccebca8c5bbe86747ee",
+      "original_bytes": 14657,
+      "original_sha256": "897ec8959349d6a91a8c2a618185bae4bb35f57bd461bccebca8c5bbe86747ee",
+      "compression": "none"
+    },
+    {
+      "path": "hosted-predecessor/parity-receipt.json",
+      "bytes": 22240,
+      "sha256": "8f71468fe1c4d553c87eabbb4166542871deb0559a3b6bb768aebbd7b3645432",
+      "original_bytes": 22240,
+      "original_sha256": "8f71468fe1c4d553c87eabbb4166542871deb0559a3b6bb768aebbd7b3645432",
+      "compression": "none"
+    },
+    {
+      "path": "hosted-predecessor/parity-commands.json",
+      "bytes": 819,
+      "sha256": "87a342c85b8e3cfa734f6cc91a89b747bbde74e4a775dde61f4765dd4d900e60",
+      "original_bytes": 819,
+      "original_sha256": "87a342c85b8e3cfa734f6cc91a89b747bbde74e4a775dde61f4765dd4d900e60",
+      "compression": "none"
+    },
+    {
+      "path": "hosted-predecessor/parity-wasm.stdout",
+      "bytes": 142,
+      "sha256": "90a72e0d2f23b38a2a5ec6b2d5488ddeef9dd1e31b630a4df971e5dccbd04b1a",
+      "original_bytes": 142,
+      "original_sha256": "90a72e0d2f23b38a2a5ec6b2d5488ddeef9dd1e31b630a4df971e5dccbd04b1a",
+      "compression": "none"
+    },
+    {
+      "path": "hosted-predecessor/parity-wasm.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_bytes": 0,
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compression": "none"
+    },
+    {
+      "path": "hosted-predecessor/input-line-ending-observation.json",
+      "bytes": 4350,
+      "sha256": "fd76aee26afc6cc14da284a795a830fd4a4185c8d0f4effca762cfb0f09b8526",
+      "original_bytes": 4350,
+      "original_sha256": "fd76aee26afc6cc14da284a795a830fd4a4185c8d0f4effca762cfb0f09b8526",
+      "compression": "none"
+    },
+    {
+      "path": "hosted-predecessor/run.stdout.gz",
+      "bytes": 15791,
+      "sha256": "767f0ebb223b7c44c871c29e018e69ad6ebb9fa4f398826050a7e3b68eb6ad55",
+      "original_bytes": 92262,
+      "original_sha256": "b95b3801a2214370adbbf156f11395d995d1d236778167700f0c7d2e7770051a",
+      "compression": "lossless-gzip"
+    },
+    {
+      "path": "first-runtime/app.js",
+      "bytes": 7520,
+      "sha256": "199247439b13cee5f0ef9c323c2f47b10623f9e1aada6a46ec3f484a70953fe4",
+      "original_bytes": 7520,
+      "original_sha256": "199247439b13cee5f0ef9c323c2f47b10623f9e1aada6a46ec3f484a70953fe4",
+      "compression": "none"
+    },
+    {
+      "path": "first-runtime/worker.js",
+      "bytes": 626,
+      "sha256": "a877527718dda7b7a5a179f0f4e521a9cb9ea036d6e2969accba181a7aca84b3",
+      "original_bytes": 626,
+      "original_sha256": "a877527718dda7b7a5a179f0f4e521a9cb9ea036d6e2969accba181a7aca84b3",
+      "compression": "none"
+    },
+    {
+      "path": "first-runtime/planner-session.js",
+      "bytes": 4070,
+      "sha256": "70d50fc79890bd3daf8aaeb30d71f925c571e44c26a1700408103f87857055f3",
+      "original_bytes": 4070,
+      "original_sha256": "70d50fc79890bd3daf8aaeb30d71f925c571e44c26a1700408103f87857055f3",
+      "compression": "none"
+    },
+    {
+      "path": "first-runtime/index.html",
+      "bytes": 4462,
+      "sha256": "8b95e0c842b8553e26771a16ce80a3782ae196b6da97a1575259840184c07584",
+      "original_bytes": 4462,
+      "original_sha256": "8b95e0c842b8553e26771a16ce80a3782ae196b6da97a1575259840184c07584",
+      "compression": "none"
+    },
+    {
+      "path": "first-runtime/sample.csv",
+      "bytes": 542,
+      "sha256": "2748532320fa45a6eb92e63db83b211155829123773052aa37a4bbcd53f1eee0",
+      "original_bytes": 542,
+      "original_sha256": "2748532320fa45a6eb92e63db83b211155829123773052aa37a4bbcd53f1eee0",
+      "compression": "none"
+    },
+    {
+      "path": "first-runtime/style.css",
+      "bytes": 3430,
+      "sha256": "329300eaca1508a0fd13ff3b4d6903f17814fcf5f55aad9d5ff07b201a6b6a1d",
+      "original_bytes": 3430,
+      "original_sha256": "329300eaca1508a0fd13ff3b4d6903f17814fcf5f55aad9d5ff07b201a6b6a1d",
+      "compression": "none"
+    }
+  ],
+  "first_probe": {
+    "passed": 14,
+    "failed": 3,
+    "retries": 0,
+    "skips": 0
+  },
+  "corrected_probe": {
+    "passed": 21,
+    "failed": 0,
+    "retries": 0,
+    "skips": 0,
+    "dirty_source": true
+  },
+  "scope": "Preserved actual dirty-source development probes, including all failures and strengthened controls. Predecessor hosted parity retains distinct input-line-ending evidence and exact whole output equality. Later clean-source/owned input/archive/default/live gates are separate."
+}

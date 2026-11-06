@@ -1,0 +1,102 @@
+{
+  "checked_at": "2026-11-06T04:57:15.761716+00:00",
+  "source_head": "56b38a8a48c784d24a60fc463a27fae563d974dc",
+  "dirty_source": true,
+  "source_observation": "source-observation.json",
+  "browser_stats": {
+    "startTime": "2026-11-06T04:56:13.428Z",
+    "duration": 62242.534,
+    "expected": 21,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "commands": [
+    {
+      "name": "build",
+      "command": [
+        "python",
+        "tools/build-pages.py",
+        "--output",
+        "C:\\src\\terrain-self-service-20261105\\dist\\worker-recovery-v2\\TERRAIN"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "browser",
+      "command": [
+        "node",
+        "C:\\src\\terrain-self-service-20261105\\node_modules\\@playwright\\test\\cli.js",
+        "test",
+        "--config",
+        "C:\\src\\terrain-self-service-qualification-20261105\\worker-recovery-v2\\playwright.config.mjs"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "site_files": [
+    {
+      "path": ".nojekyll",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "app.js",
+      "bytes": 7655,
+      "sha256": "7a06cf436470a3b64e884e6ab80bee5099a454b2868e9e05439d0ce289d602f5"
+    },
+    {
+      "path": "index.html",
+      "bytes": 4462,
+      "sha256": "8b95e0c842b8553e26771a16ce80a3782ae196b6da97a1575259840184c07584"
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 1089,
+      "sha256": "d678abeb4c65e283f76e4dc3b7c83d86a8ce7f501450a4bef6630b0b4bc4cafa"
+    },
+    {
+      "path": "pkg/terrain_web.d.ts",
+      "bytes": 1708,
+      "sha256": "15ab25e67d792f9488574e75d7b4f97ddf1bb0e844bd3535e425ff3861c531de"
+    },
+    {
+      "path": "pkg/terrain_web.js",
+      "bytes": 7436,
+      "sha256": "b846c89f500b4ff9131e04d077c75d4bef20990c0774b5ea5b818113cea2b4c1"
+    },
+    {
+      "path": "pkg/terrain_web_bg.wasm",
+      "bytes": 458781,
+      "sha256": "04f809179ab9db6d9a1f98b48fd76d7e4a7a0d73e5c7c7121ece42a22b158702"
+    },
+    {
+      "path": "pkg/terrain_web_bg.wasm.d.ts",
+      "bytes": 598,
+      "sha256": "74f209bf525e328de6939308a56894d23e0e833f8f0e13bf2bf5d6ca9ebdb590"
+    },
+    {
+      "path": "planner-session.js",
+      "bytes": 4070,
+      "sha256": "70d50fc79890bd3daf8aaeb30d71f925c571e44c26a1700408103f87857055f3"
+    },
+    {
+      "path": "sample.csv",
+      "bytes": 542,
+      "sha256": "2748532320fa45a6eb92e63db83b211155829123773052aa37a4bbcd53f1eee0"
+    },
+    {
+      "path": "style.css",
+      "bytes": 3430,
+      "sha256": "329300eaca1508a0fd13ff3b4d6903f17814fcf5f55aad9d5ff07b201a6b6a1d"
+    },
+    {
+      "path": "worker.js",
+      "bytes": 626,
+      "sha256": "a877527718dda7b7a5a179f0f4e521a9cb9ea036d6e2969accba181a7aca84b3"
+    }
+  ],
+  "site_bytes": 490397,
+  "wasm_identical_to_pinned_candidate": true,
+  "scope": "Actual built Rust/WASM with UI/worker lifecycle and deliberate worker/network failures. Virtual time only accelerates deadline controls; actual CPU stall/termination and actual2000site Rust workload still execute. Existing installed matching Playwright/browser/toolchain/cache/shared target reused. Not owned input/source/archive/default/live/full5MB delivery qualification."
+}

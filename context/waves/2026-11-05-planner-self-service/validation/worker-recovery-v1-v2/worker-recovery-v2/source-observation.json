@@ -1,0 +1,46 @@
+{
+  "head": "56b38a8a48c784d24a60fc463a27fae563d974dc",
+  "dirty_status": " M tests/browser/planner.spec.js\n M tools/build-pages.py\n M web/app.js\n M web/index.html\n M web/worker.js\n?? tests/browser/recovery.spec.js\n?? web/planner-session.js\n",
+  "files": [
+    {
+      "path": "web/app.js",
+      "bytes": 7655,
+      "sha256": "7a06cf436470a3b64e884e6ab80bee5099a454b2868e9e05439d0ce289d602f5"
+    },
+    {
+      "path": "web/planner-session.js",
+      "bytes": 4070,
+      "sha256": "70d50fc79890bd3daf8aaeb30d71f925c571e44c26a1700408103f87857055f3"
+    },
+    {
+      "path": "web/worker.js",
+      "bytes": 626,
+      "sha256": "a877527718dda7b7a5a179f0f4e521a9cb9ea036d6e2969accba181a7aca84b3"
+    },
+    {
+      "path": "web/index.html",
+      "bytes": 4462,
+      "sha256": "8b95e0c842b8553e26771a16ce80a3782ae196b6da97a1575259840184c07584"
+    },
+    {
+      "path": "web/style.css",
+      "bytes": 3430,
+      "sha256": "329300eaca1508a0fd13ff3b4d6903f17814fcf5f55aad9d5ff07b201a6b6a1d"
+    },
+    {
+      "path": "tools/build-pages.py",
+      "bytes": 1849,
+      "sha256": "8ca9ffed1ea31a1e95c12425ca33c77e953627e6406881534311d9b6aaf7bbcf"
+    },
+    {
+      "path": "tests/browser/planner.spec.js",
+      "bytes": 3006,
+      "sha256": "abfaa5c875f9aec337100167faf6ca68184138d68fd821cc1053ad47cd630077"
+    },
+    {
+      "path": "tests/browser/recovery.spec.js",
+      "bytes": 15488,
+      "sha256": "6a3812bd9c543b0873a6c1700836ca6ee535c7f8f17a287d41138e014553b1fd"
+    }
+  ]
+}

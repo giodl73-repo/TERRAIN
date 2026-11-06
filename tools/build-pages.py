@@ -27,7 +27,7 @@ def main():
     wasm = Path(metadata["target_directory"]) / "wasm32-unknown-unknown/release/terrain_web.wasm"
     output.mkdir(parents=True, exist_ok=True)
     run("wasm-bindgen", str(wasm), "--target", "web", "--out-dir", str(output / "pkg"))
-    for name in ("index.html", "style.css", "app.js", "worker.js", "sample.csv"):
+    for name in ("index.html", "style.css", "app.js", "planner-session.js", "worker.js", "sample.csv"):
         shutil.copy2(ROOT / "web" / name, output / name)
     shutil.copy2(ROOT / "LICENSE", output / "LICENSE")
     (output / ".nojekyll").touch()

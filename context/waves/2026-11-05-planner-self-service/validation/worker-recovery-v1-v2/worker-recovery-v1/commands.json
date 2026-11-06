@@ -1,0 +1,23 @@
+[
+  {
+    "name": "build",
+    "command": [
+      "python",
+      "tools/build-pages.py",
+      "--output",
+      "C:\\src\\terrain-self-service-20261105\\dist\\worker-recovery-v1\\TERRAIN"
+    ],
+    "exit_code": 0
+  },
+  {
+    "name": "browser",
+    "command": [
+      "node",
+      "C:\\src\\terrain-self-service-20261105\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "--config",
+      "C:\\src\\terrain-self-service-qualification-20261105\\worker-recovery-v1\\playwright.config.mjs"
+    ],
+    "exit_code": 1
+  }
+]

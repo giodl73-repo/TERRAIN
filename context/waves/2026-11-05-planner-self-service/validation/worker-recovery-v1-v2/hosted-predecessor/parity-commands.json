@@ -1,0 +1,36 @@
+[
+  {
+    "name": "build-native",
+    "command": [
+      "cargo",
+      "build",
+      "--locked",
+      "--offline",
+      "--release",
+      "-p",
+      "terrain-web",
+      "--example",
+      "planner-control"
+    ],
+    "exit_code": 0
+  },
+  {
+    "name": "native",
+    "command": [
+      "/home/runner/work/TERRAIN/TERRAIN/target/release/examples/planner-control"
+    ],
+    "exit_code": 0
+  },
+  {
+    "name": "wasm",
+    "command": [
+      "node",
+      "/home/runner/work/TERRAIN/TERRAIN/tools/check-planner.mjs",
+      "/home/runner/work/TERRAIN/TERRAIN/dist/TERRAIN",
+      "/home/runner/work/_temp/terrain-planner-parity/controls.jsonl",
+      "/home/runner/work/_temp/terrain-planner-parity/wasm.jsonl",
+      "/home/runner/work/_temp/terrain-planner-parity/raw-js-abi.json"
+    ],
+    "exit_code": 0
+  }
+]

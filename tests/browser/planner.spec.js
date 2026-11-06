@@ -33,7 +33,7 @@ test('malformed CSV recovers and mobile view fits',async({page})=>{
 
 test('sample failure gives a readable fallback',async({page})=>{
  await page.route('**/sample.csv',route=>route.fulfill({status:503,body:'unavailable'}));
- await page.goto('/TERRAIN/');await expect(page.locator('#status')).toContainText('Reload to retry');
+ await page.goto('/TERRAIN/');await expect(page.locator('#status')).toContainText('Choose Load sample to retry');
  await expect(page.getByRole('link',{name:'Source & research'})).toBeVisible();
 });
 

@@ -1,0 +1,18 @@
+{
+  "runtime": "v22.23.4",
+  "platform": "win32",
+  "architecture": "x64",
+  "records": [
+    {
+      "name": "sites2000-False",
+      "ms": 32.94409999999999,
+      "result_bytes": 1061896
+    },
+    {
+      "name": "sites2000-True",
+      "ms": 37262.54259999999,
+      "result_bytes": 1074010
+    }
+  ],
+  "scope": "Actual original immutable-pin WASM under installed Node on this Windows machine; not physical mobile or universal response-time guarantee."
+}
