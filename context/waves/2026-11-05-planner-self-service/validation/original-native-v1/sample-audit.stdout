@@ -1,0 +1,5 @@
+TERRAIN balance audit
+status=pass demand_spread=0.000 revenue_spread=0.007 max_radius_deg=0.063
+territory,sites,demand,revenue,centroid_lat,centroid_lon,assignees
+north,3,31.0,290000,47.6233,-122.3167,Avery;Morgan;Sam
+south,3,31.0,292000,47.4967,-122.3267,Jordan;Riley

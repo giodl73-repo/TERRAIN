@@ -1,0 +1,112 @@
+[
+  {
+    "name": "fmt",
+    "command": [
+      "cargo",
+      "+1.95.0",
+      "fmt",
+      "--check"
+    ],
+    "exit_code": 0,
+    "started_at": "2026-11-06T02:23:20.288497+00:00",
+    "ended_at": "2026-11-06T02:23:21.076697+00:00",
+    "stdout_bytes": 0,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "native",
+    "command": [
+      "cargo",
+      "+1.95.0",
+      "test",
+      "--locked",
+      "--offline",
+      "--workspace"
+    ],
+    "exit_code": 0,
+    "started_at": "2026-11-06T02:23:21.077742+00:00",
+    "ended_at": "2026-11-06T02:23:41.128919+00:00",
+    "stdout_bytes": 3362,
+    "stdout_sha256": "911e9c7c3be9fd881ad79de9482a92ce42fe501caab814d22e51e90fcd9c4890",
+    "stderr_sha256": "781c345c0b5cc7d4ab91a12de721395c2fd2ee10b6cd96b572d6630239a43e93"
+  },
+  {
+    "name": "clippy-web",
+    "command": [
+      "cargo",
+      "+1.95.0",
+      "clippy",
+      "--locked",
+      "--offline",
+      "--no-deps",
+      "-p",
+      "terrain-web",
+      "--all-targets",
+      "--all-features",
+      "--",
+      "-D",
+      "warnings"
+    ],
+    "exit_code": 0,
+    "started_at": "2026-11-06T02:23:41.130290+00:00",
+    "ended_at": "2026-11-06T02:23:53.000015+00:00",
+    "stdout_bytes": 0,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "12c16a5c26b99ee02d252da4ec97f6e7ca08e13794d08a8dc1e594f12e5d8b5c"
+  },
+  {
+    "name": "sample-audit",
+    "command": [
+      "cargo",
+      "+1.95.0",
+      "run",
+      "--locked",
+      "--offline",
+      "-p",
+      "terrain-cli",
+      "--",
+      "sample-audit"
+    ],
+    "exit_code": 0,
+    "started_at": "2026-11-06T02:23:53.001248+00:00",
+    "ended_at": "2026-11-06T02:23:55.798820+00:00",
+    "stdout_bytes": 269,
+    "stdout_sha256": "a03f22f48f34550edcd2de4ebe772931471f828873cb013f2334149806f465da",
+    "stderr_sha256": "ea0177495507f9b8b356619a3c83d22ff638fc49d40722b13a297ce131d1da61"
+  },
+  {
+    "name": "sample-svg",
+    "command": [
+      "cargo",
+      "+1.95.0",
+      "run",
+      "--locked",
+      "--offline",
+      "-p",
+      "terrain-cli",
+      "--",
+      "sample-svg"
+    ],
+    "exit_code": 0,
+    "started_at": "2026-11-06T02:23:55.799658+00:00",
+    "ended_at": "2026-11-06T02:23:56.043119+00:00",
+    "stdout_bytes": 3270,
+    "stdout_sha256": "4d16f3df9a4e67748139e4cfcca298c7a04ee0016301b0f5a03a215368a38a81",
+    "stderr_sha256": "5dc3a1a1f9758a80702f038459dabc653fda88fb65888784a97d7c99fb43ed1d"
+  },
+  {
+    "name": "diff",
+    "command": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exit_code": 0,
+    "started_at": "2026-11-06T02:23:56.044229+00:00",
+    "ended_at": "2026-11-06T02:23:56.128138+00:00",
+    "stdout_bytes": 0,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+]

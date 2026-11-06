@@ -1,0 +1,126 @@
+{
+  "source_head": "bfa81f8a0d6f3aa369c3689ae5c393b458554214",
+  "files": [
+    {
+      "path": "original-source-v1/readback.json",
+      "bytes": 1513,
+      "sha256": "d62d74225f9025947d33c07fb1899e88534403ec9a42b82d65023cc3c0958744",
+      "original_observation": "C:\\src\\terrain-self-service-qualification-20261105\\original-source-v1\\readback.json"
+    },
+    {
+      "path": "original-source-v1/terrain.manifest.json",
+      "bytes": 34325,
+      "sha256": "a40ddd83b63a5434cf919aedde94261403c22c14d6db839667ad9e8e582669a7",
+      "original_observation": "C:\\src\\terrain-self-service-qualification-20261105\\original-source-v1\\terrain.manifest.json"
+    },
+    {
+      "path": "original-metadata-v1/metadata.stdout",
+      "bytes": 121920,
+      "sha256": "120194599ee89e430b2faef2eb1684ab117f8a85854a6235a127d9138a4f20bc",
+      "original_observation": "C:\\src\\terrain-self-service-qualification-20261105\\original-metadata-v1\\metadata.stdout"
+    },
+    {
+      "path": "original-metadata-v1/metadata.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_observation": "C:\\src\\terrain-self-service-qualification-20261105\\original-metadata-v1\\metadata.stderr"
+    },
+    {
+      "path": "original-metadata-v1/receipt.json",
+      "bytes": 8415,
+      "sha256": "7f77c396011c30d7729a2ccbf7d8aa514b5d9d5001ac73121f4f2c870c9941df",
+      "original_observation": "C:\\src\\terrain-self-service-qualification-20261105\\original-metadata-v1\\receipt.json"
+    },
+    {
+      "path": "original-native-v1/clippy-web.stderr",
+      "bytes": 1134,
+      "sha256": "12c16a5c26b99ee02d252da4ec97f6e7ca08e13794d08a8dc1e594f12e5d8b5c",
+      "original_observation": "C:\\src\\terrain-self-service-qualification-20261105\\original-native-v1\\clippy-web.stderr"
+    },
+    {
+      "path": "original-native-v1/clippy-web.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_observation": "C:\\src\\terrain-self-service-qualification-20261105\\original-native-v1\\clippy-web.stdout"
+    },
+    {
+      "path": "original-native-v1/commands.json",
+      "bytes": 3144,
+      "sha256": "a18eb5a085fc47fa4b08a86419b0ac8899db55ffb95458a2d909eca75c06de7d",
+      "original_observation": "C:\\src\\terrain-self-service-qualification-20261105\\original-native-v1\\commands.json"
+    },
+    {
+      "path": "original-native-v1/diff.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_observation": "C:\\src\\terrain-self-service-qualification-20261105\\original-native-v1\\diff.stderr"
+    },
+    {
+      "path": "original-native-v1/diff.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_observation": "C:\\src\\terrain-self-service-qualification-20261105\\original-native-v1\\diff.stdout"
+    },
+    {
+      "path": "original-native-v1/fmt.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_observation": "C:\\src\\terrain-self-service-qualification-20261105\\original-native-v1\\fmt.stderr"
+    },
+    {
+      "path": "original-native-v1/fmt.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_observation": "C:\\src\\terrain-self-service-qualification-20261105\\original-native-v1\\fmt.stdout"
+    },
+    {
+      "path": "original-native-v1/native.stderr",
+      "bytes": 1431,
+      "sha256": "781c345c0b5cc7d4ab91a12de721395c2fd2ee10b6cd96b572d6630239a43e93",
+      "original_observation": "C:\\src\\terrain-self-service-qualification-20261105\\original-native-v1\\native.stderr"
+    },
+    {
+      "path": "original-native-v1/native.stdout",
+      "bytes": 3362,
+      "sha256": "911e9c7c3be9fd881ad79de9482a92ce42fe501caab814d22e51e90fcd9c4890",
+      "original_observation": "C:\\src\\terrain-self-service-qualification-20261105\\original-native-v1\\native.stdout"
+    },
+    {
+      "path": "original-native-v1/original-input-byte-check.json",
+      "bytes": 10208,
+      "sha256": "c0b46bdd732e2203c8e75566ff136c8ef1850f0fc5d6c8fd7765149f2e0632ee",
+      "original_observation": "C:\\src\\terrain-self-service-qualification-20261105\\original-native-v1\\original-input-byte-check.json"
+    },
+    {
+      "path": "original-native-v1/receipt.json",
+      "bytes": 4198,
+      "sha256": "e1d20dc3edeb690b5723bc506ad80fe1df0300e0bf6dbd9415f433cf1a2b30ca",
+      "original_observation": "C:\\src\\terrain-self-service-qualification-20261105\\original-native-v1\\receipt.json"
+    },
+    {
+      "path": "original-native-v1/sample-audit.stderr",
+      "bytes": 234,
+      "sha256": "ea0177495507f9b8b356619a3c83d22ff638fc49d40722b13a297ce131d1da61",
+      "original_observation": "C:\\src\\terrain-self-service-qualification-20261105\\original-native-v1\\sample-audit.stderr"
+    },
+    {
+      "path": "original-native-v1/sample-audit.stdout",
+      "bytes": 269,
+      "sha256": "a03f22f48f34550edcd2de4ebe772931471f828873cb013f2334149806f465da",
+      "original_observation": "C:\\src\\terrain-self-service-qualification-20261105\\original-native-v1\\sample-audit.stdout"
+    },
+    {
+      "path": "original-native-v1/sample-svg.stderr",
+      "bytes": 149,
+      "sha256": "5dc3a1a1f9758a80702f038459dabc653fda88fb65888784a97d7c99fb43ed1d",
+      "original_observation": "C:\\src\\terrain-self-service-qualification-20261105\\original-native-v1\\sample-svg.stderr"
+    },
+    {
+      "path": "original-native-v1/sample-svg.stdout",
+      "bytes": 3270,
+      "sha256": "4d16f3df9a4e67748139e4cfcca298c7a04ee0016301b0f5a03a215368a38a81",
+      "original_observation": "C:\\src\\terrain-self-service-qualification-20261105\\original-native-v1\\sample-svg.stdout"
+    }
+  ],
+  "scope": "Unmodified original observations; machine-specific paths describe the observing prerequisite environment and are not build dependencies. Native baseline only; full WASM, owned input restore, source/archive/receiver/Pages delivery remain open."
+}

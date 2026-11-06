@@ -1,0 +1,36 @@
+{
+  "checked_at": "2026-11-06T01:56:12.252010+00:00",
+  "original_source_head": "bfa81f8a0d6f3aa369c3689ae5c393b458554214",
+  "git_sources": [
+    {
+      "repository": "giodl73-repo/TERRAIN",
+      "commit": "bfa81f8a0d6f3aa369c3689ae5c393b458554214",
+      "tree": "dd716ef9e2f79ba9fe70c4bf94d90fe87be41f17",
+      "files": 116,
+      "raw_bytes": 361353,
+      "archive_bytes": 118121
+    },
+    {
+      "repository": "giodl73-repo/METIS-CORE",
+      "commit": "78ae34090e043e79a206f2daffaa3889389b4790",
+      "tree": "c447d8609613b5b7b4e275cfaa3185c5f6d9f404",
+      "files": 56,
+      "raw_bytes": 380086,
+      "archive_bytes": 108376
+    },
+    {
+      "repository": "giodl73-repo/SCENARIUM",
+      "commit": "f731ad4f99cc57479eafce6b68ea6521160c6853",
+      "tree": "c190e1a8b47b657b6f598c3759187e47e7893718",
+      "files": 41,
+      "raw_bytes": 122374,
+      "archive_bytes": 49821
+    }
+  ],
+  "git_source_zip_crc_original_blob_mode_commit_tree_verified": true,
+  "registry_archives": 25,
+  "registry_archive_bytes": 1773123,
+  "all_original_registry_checksums_verified": true,
+  "approximate_preserved_container_bytes": 2049441,
+  "scope": "Independent read-back of every captured original Git blob/mode/commit/tree and raw locked registry archive. Original notice bytes remain in those complete inputs. This is baseline preservation, not a Cargo vendor/bootstrap/build, final source-package size, complete Pages budget/receiver test or release qualification."
+}

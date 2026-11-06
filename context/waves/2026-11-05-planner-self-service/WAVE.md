@@ -1,0 +1,123 @@
+# Reproducible TERRAIN planner delivery
+
+Status: original source/input preservation and the isolated native baseline are
+qualified at `bfa81f8a0d6f3aa369c3689ae5c393b458554214`. This first pulse contains
+documentation and unmodified baseline evidence. No planner, adapter, worker,
+dependency, schema, deployment or canonical snapshot has changed. Full original
+native/WASM parity, owned offline input restoration, source/archive/receiver,
+worker recovery, actual hosted/default/live delivery and budget gates remain open.
+
+## Original contract
+
+Preserve the existing local CSV task: original parser, deterministic greedy and
+fixed-seed METIS partitioning, native audit summaries, SVG and GeoJSON. Preserve
+the three native crates, Cargo manifests/lock/toolchain, original Git dependency
+revisions, sample, fixtures, field names, units and existing grants. Do not fork
+the model into JavaScript or introduce new shared-kernel APIs.
+
+The sample's 18 sites are synthetic. Private CSV stays local; shared links carry
+settings and load the public sample. Keep the 500,000-byte / 2,000-site adapter
+bounds, native 1–32 territory bounds, browser 1–8 bounds, maximum/minimum balance
+ratios and explicit zero-total behavior. Degree radius is a coordinate proxy,
+not road travel time, route optimization or an operating service boundary.
+Balance does not certify staffing capacity, fairness or real-world feasibility.
+Richer native capacity/edge/manager packets retain their own scope and ownership.
+
+SCENARIUM remains the existing neutral evidence projection; territory policy
+stays in TERRAIN. Its stop gate in `docs/scenarium-adoption.md` remains in force.
+METIS-CORE owns reusable graph partitioning. Preserve both original locked pins:
+
+- METIS-CORE: `78ae34090e043e79a206f2daffaa3889389b4790`.
+- SCENARIUM: `f731ad4f99cc57479eafce6b68ea6521160c6853`.
+
+## Preserved original evidence
+
+The source baseline preserves every raw Git blob and mode in the original
+TERRAIN tree (116 files), METIS-CORE tree (56) and SCENARIUM tree (41), with their
+original commit objects and tree identities. All 25 original registry archives
+match the unchanged Cargo.lock checksums. Independent ZIP/blob/mode/commit/tree
+and registry-archive read-back passed. Complete original source/archive/notice
+bytes are retained in the machine-local qualification store; input delivery
+packaging is still pending. The captured containers total 2,049,441 bytes,
+which is not the final source package or published-site size.
+
+An ignored config in the canonical checkout patches METIS to another local
+checkout. That config is preserved. This isolated checkout excludes it and
+resolves all 27 original external package identities offline. Before the native
+run, every one of the 1,022 original dependency files matches its actual cached
+source bytes. Existing installed toolchain/cache and the shared compiled target
+are explicit prerequisites; this is not a new owned input restore or complete
+before/after cache-closure proof.
+
+Unmodified receipts and raw command outputs live under `validation/`:
+
+- `cargo +1.95.0 fmt --check`: pass.
+- `cargo +1.95.0 test --locked --offline --workspace`: 43 core and 3 adapter
+  tests pass; no failures or ignored tests.
+- `cargo +1.95.0 clippy --locked --offline --no-deps -p terrain-web --all-targets
+  --all-features -- -D warnings`: pass.
+- Original CLI `sample-audit` and `sample-svg`: pass; full stdout/stderr retained.
+- `git diff --check`: pass; the source checkout remains clean after the run.
+
+Receipt paths identify the observing Windows machine. They are historical
+evidence, never Cargo dependencies or portable build prerequisites. Original
+observations are preserved byte-for-byte; no normalized output is called exact.
+Narrow raw-evidence attributes recognize their original CRLF and final blank
+line; the authored receipt index is ordinary LF text. Source-code checks remain
+unchanged.
+The initial native proof remains bound to its original source commit after
+these later documentation/evidence files are added.
+
+## Delivery gates
+
+1. Exercise the actual original Rust adapter natively and as executing WASM over
+   the same inputs. Compare complete result/error data, summaries, IDs, SVG and
+   GeoJSON, both methods, original sample/fixtures and meaningful boundary and
+   malformed controls. Record raw JavaScript ABI coercion separately from the
+   native typed contract. Preserve actual original failures and diagnostics.
+2. Preserve complete original locked registry/Git inputs and notices with
+   negative-tested, bounded, link-safe receivers. Restore into a new owned Cargo
+   home/source directory offline, prove original bytes/config before and after,
+   and keep installed compiler/linker/target/bindgen/Node/browser prerequisites
+   explicit. Rust build correctness must not depend on TRACKER-relative paths.
+3. Keep the existing planner and add real worker initialization/computation
+   bounds, stop/termination/retry and request/generation fencing. Invalidate
+   stale visible plans/exports when inputs change. Preserve the completed
+   input/result identity and all existing private-CSV/settings-link boundaries.
+4. Publish discoverable exact source, WASM, adapter, sample, manifest and complete
+   original dependency/runtime notices, including useful source routes during
+   unavailable WASM or JavaScript. Bind the complete source tree/commit/blob/mode
+   to the artifacts. Integrity is separate from authorship or operational truth.
+5. Measure all required runtime/source/input/notice bytes against the existing
+   5,000,000-byte site budget before choosing the package design. Do not trim
+   source/notices, weaken the task or silently relax the budget. Protect source,
+   existing outputs, lexical link/junction paths and configured compiled caches.
+6. Rebuild the complete verified source outside Git with new owned inputs/Cargo
+   home and an explicitly empty or declared reused target. Run native, full
+   release WASM/site, full parity and real browser controls; compare all
+   same-platform published files and manifest bytes without normalization.
+7. Qualify exact PR/default hosted source/archive/artifacts and actual anonymous
+   live files/downloads/behavior. Record sizes and scoped startup/query/layout
+   observations. Commit/push child work first; an explicit separate TRACKER
+   snapshot follows actual default/live verification.
+
+## Review lenses
+
+Single implementing-agent application of the repository roles below; no
+independent human or operational certification is implied.
+
+- Kernel Boundary Engineer: preserve the original core and pinned dependencies;
+  no new SCENARIUM/METIS/shared glue or territory-policy extraction is justified.
+- Fairness & Capacity Auditor: demand/revenue balance and geometry remain
+  distinct from assigned-person capacity and fairness. Do not promote the
+  bounded browser surface into the richer native packet contract.
+- Data Binding Auditor: preserve IDs and complete machine-readable SVG/GeoJSON
+  outputs. Screenshots alone cannot prove export/native/WASM equivalence.
+- Report Contract Editor: preserve original field names, units and error/result
+  semantics; source/input/artifact identities require their own exact receipts.
+- Field Manager: retain a useful synthetic start, private local CSV, explainable
+  limits and exports; busy, changed-input and failure states must not show an
+  older plan as current or suggest travel/operational feasibility is certified.
+
+This pulse freezes the baseline. The next pulse implements and verifies the
+native/WASM contract and owned input/source delivery before release promotion.
