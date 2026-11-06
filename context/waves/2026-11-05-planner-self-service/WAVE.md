@@ -1,13 +1,15 @@
 # Reproducible TERRAIN planner delivery
 
-Status: original source/input preservation and the isolated native baseline are
-qualified at `bfa81f8a0d6f3aa369c3689ae5c393b458554214`. This first pulse contains
-documentation and unmodified baseline evidence. No planner, adapter, worker,
-dependency, schema, deployment or canonical snapshot has changed. Full original
-native/WASM parity, owned offline input restoration, source/archive/receiver,
-worker recovery, actual hosted/default/live delivery and budget gates remain open.
+Status: source draft pins the opt-in METIS candidate. Clean source
+`a245d608df45896846e9da104a16f7ddc768f170` passes all 69 complete native/WASM
+comparisons, preserving original native bytes, plus 46 native tests and four
+original browser cases. Dependency/feature adoption is explicit below; the
+canonical source and deployment stay at their prior release. Owned input/source
+restoration, bounded worker recovery, archive/receiver, complete 5 MB budget,
+and actual default/live delivery remain open. The initial unchanged-baseline
+pulse below is historical evidence, not the current implementation state.
 
-## Original contract
+## Original baseline contract
 
 Preserve the existing local CSV task: original parser, deterministic greedy and
 fixed-seed METIS partitioning, native audit summaries, SVG and GeoJSON. Preserve
@@ -25,7 +27,9 @@ Richer native capacity/edge/manager packets retain their own scope and ownership
 
 SCENARIUM remains the existing neutral evidence projection; territory policy
 stays in TERRAIN. Its stop gate in `docs/scenarium-adoption.md` remains in force.
-METIS-CORE owns reusable graph partitioning. Preserve both original locked pins:
+METIS-CORE owns reusable graph partitioning. Preserve the original locked pins
+and bytes as baseline evidence; the later opt-in candidate transition is
+explicitly scoped below:
 
 - METIS-CORE: `78ae34090e043e79a206f2daffaa3889389b4790`.
 - SCENARIUM: `f731ad4f99cc57479eafce6b68ea6521160c6853`.
@@ -218,3 +222,30 @@ now pins Ubuntu 24.04, adds the full 69-case comparison and retains its raw
 outputs as a CI artifact. These are workflow-only changes after the measured
 source. Hosted success remains pending the new run; the initial failure is
 preserved, not relabeled.
+
+## New pinned dependency custody and remaining size work
+
+The new immutable METIS dependency is captured from all 184 original Git blobs
+and modes, with independent ZIP CRC and per-file hash readback. Its complete
+archive is 717,286 bytes. Together with all 25 original checksum-matching registry
+archives (1,773,123 bytes) and unchanged SCENARIUM source (49,821 bytes), captured
+dependency containers total 2,540,230 bytes. The machine-local source archive
+retains governing Apache-2.0/NOTICE and all original files; its manifest and
+hashes are retained here. This is not yet an owned input capsule/restore and
+does not close the 5,000,000-byte complete source/input/runtime/notice/helper
+budget. Measure that complete package before selecting its final layout.
+
+## Hosted tool-install follow-up
+
+METIS corrected hosted run `42163405047` passes at `f5752c1`, including the
+explicit transition guard, feature-mode checks, complete legacy-browser package
+and outside-Git source/browser replay. Linux/Windows/macOS native CI also passes;
+Kani is skipped. This remains distinct from TERRAIN's immutable `0ad9f83` pin.
+
+TERRAIN corrected run `42163419158` remained in tool installation at the recorded
+observation, before Rust/planner validation. It is superseded by using the same
+pinned wasm-bindgen 0.2.127 official release binary and SHA-256 already exercised
+by METIS's successful workflow, instead of compiling the CLI's dependency tree.
+The build job has a 30-minute bound. This changes CI provisioning only; it does
+not change the adapter/runtime or make the installed compiler/bindgen/browser
+part of the eventual owned-input package. New hosted success remains pending.
