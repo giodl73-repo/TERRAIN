@@ -1,0 +1,12 @@
+
+Running 4 tests using 1 worker
+
+
+
+
+
+[1A[2K[1/4] tests\browser\planner.spec.js:3:1 › real WASM partitions sample sites, changes method, and exports
+[1A[2K[2/4] tests\browser\planner.spec.js:24:1 › malformed CSV recovers and mobile view fits
+[1A[2K[3/4] tests\browser\planner.spec.js:34:1 › sample failure gives a readable fallback
+[1A[2K[4/4] tests\browser\planner.spec.js:40:1 › oversized file invalidates pending plans and exports
+[1A[2K  4 passed (8.2s)

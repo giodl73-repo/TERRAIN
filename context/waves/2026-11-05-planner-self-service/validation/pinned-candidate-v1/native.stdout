@@ -1,0 +1,71 @@
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 43 tests
+test tests::audits_balance_spread ... ok
+test tests::exposes_dashboard_schema_contract ... ok
+test tests::exposes_integration_fixture_manifest ... ok
+test tests::audits_multi_product_demand_balance ... ok
+test tests::parses_assignee_capacity_csv ... ok
+test tests::audits_territory_edges_for_disconnected_territories ... ok
+test tests::audits_territory_edges_for_cut_edges_and_disconnected_components ... ok
+test tests::partitions_sites_by_demand_deterministically ... ok
+test tests::emits_metis_core_csr_handoff ... ok
+test tests::compares_baseline_and_proposed_plans ... ok
+test tests::diagnoses_invalid_edge_evidence ... ok
+test tests::diagnoses_messy_territory_csv_with_row_context ... ok
+test tests::compares_graph_partition_to_greedy_baseline ... ok
+test tests::emits_metis_core_handoff_from_edge_evidence ... ok
+test tests::flags_capacity_overloads ... ok
+test tests::builds_site_graph_from_explicit_edge_evidence ... ok
+test tests::parses_csv_into_territories_with_assignees ... ok
+test tests::builds_manager_exception_register_across_review_surfaces ... ok
+test tests::audits_territory_edges_for_unknown_sites ... ok
+test tests::parses_unassigned_site_csv ... ok
+test tests::blocks_field_review_when_edge_inputs_reference_unknown_sites ... ok
+test tests::builds_deterministic_site_graph_contract ... ok
+test tests::partitions_sites_with_github_metis_core_dependency ... ok
+test tests::csv_reports_line_numbers_for_bad_numbers ... ok
+test tests::renders_data_bound_geojson_for_dashboards ... ok
+test tests::partitions_sites_with_graph_seed_baseline ... ok
+test tests::parses_site_edge_evidence_csv ... ok
+test tests::renders_data_bound_svg_for_dashboards ... ok
+test tests::projects_real_risky_reassignment_into_scenarium_evidence ... ok
+test tests::renders_site_graph_geojson_with_edge_features ... ok
+test tests::renders_ownership_visual_bindings ... ok
+test tests::reports_compactness_exceptions ... ok
+test tests::renders_site_graph_svg_with_edge_bindings ... ok
+test tests::reports_disconnected_site_graph_components ... ok
+test tests::reports_graph_diagnostics_with_stable_ordering ... ok
+test tests::reports_isolated_sites_for_empty_edge_sets ... ok
+test tests::reports_site_graph_input_diagnostics ... ok
+test tests::reports_site_movements_between_plans ... ok
+test tests::summarizes_territory_totals_and_centroid ... ok
+test tests::sums_multiple_capacity_lanes_per_assignee ... ok
+test tests::sweeps_partition_counts_deterministically ... ok
+test tests::translates_edge_audit_to_field_review_actions ... ok
+test tests::partitions_sites_with_metis_core_edge_evidence ... ok
+
+test result: ok. 43 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+
+running 3 tests
+test tests::malformed_and_unbounded_inputs_are_rejected ... ok
+test tests::balance_uses_maximum_minimum_and_handles_zero_totals ... ok
+test tests::partitions_preserve_sites_and_totals_in_both_modes ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

@@ -4,3 +4,4 @@ context/waves/2026-11-05-planner-self-service/validation/original-native-v1/nati
 context/waves/2026-11-05-planner-self-service/validation/RAW-RECEIPTS.json text eol=lf
 context/waves/2026-11-05-planner-self-service/validation/BROWSER-RECEIPTS.json text eol=lf
 context/waves/2026-11-05-planner-self-service/validation/parity-v1/** -text whitespace=cr-at-eol
+context/waves/2026-11-05-planner-self-service/validation/pinned-*/** -text whitespace=cr-at-eol,-blank-at-eof

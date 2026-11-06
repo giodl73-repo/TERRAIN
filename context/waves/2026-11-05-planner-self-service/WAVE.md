@@ -193,3 +193,28 @@ source bytes remain preserved separately. Fresh source-bound native/WASM
 qualification is required next. Neither canonical source nor deployment is
 advanced by this draft, and full owned input/source/worker/archive/live delivery
 remains open.
+
+## Clean immutable-pin comparison passes
+
+Clean source `a245d608df45896846e9da104a16f7ddc768f170` uses the explicit
+METIS Git revision, without a local Cargo patch. All 184 files of that fetched
+Git input match committed blob bytes/modes before compilation. All other locked
+package records are unchanged. Original 46 native tests, formatting, strict web
+Clippy and both sample commands pass. The actual WASM runtime site is 483,296
+bytes. All 69 complete native/WASM result streams match byte for byte and retain
+all original native bytes; all declared outcome/boundary expectations pass.
+All four original real-browser cases pass once, with no retries/skips/flakiness.
+Full commands, input readback, browser report and losslessly compressed full
+controls/results are retained under `validation/pinned-candidate-v1/`.
+
+Installed Cargo cache/toolchain/bindgen/Python/Node/browser and shared compiled
+target are explicit prerequisites. This is native/WASM/original-browser
+qualification only, not owned input restore, archive/receiver, new worker
+recovery, default/live release or complete 5 MB delivery qualification.
+
+The preceding hosted run `42161123654` failed before Rust/browser validation:
+Playwright 1.58.2 does not support the runner's new Ubuntu 26.04. The workflow
+now pins Ubuntu 24.04, adds the full 69-case comparison and retains its raw
+outputs as a CI artifact. These are workflow-only changes after the measured
+source. Hosted success remains pending the new run; the initial failure is
+preserved, not relabeled.

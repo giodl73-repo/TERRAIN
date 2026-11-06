@@ -1,0 +1,10 @@
+   Compiling metis-core v0.1.0 (https://github.com/giodl73-repo/METIS-CORE.git?rev=0ad9f83d1ed41c1499d00233fefa0d4de6743aa8#0ad9f83d)
+   Compiling terrain-core v0.1.0 (C:\src\terrain-self-service-20261105\terrain-core)
+   Compiling terrain-web v0.1.0 (C:\src\terrain-self-service-20261105\terrain-web)
+   Compiling terrain-cli v0.1.0 (C:\src\terrain-self-service-20261105\terrain-cli)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.10s
+     Running unittests src\main.rs (C:/src/.tracker-cargo-target\debug\deps\terrain_cli-8f9f7019a7c4788d.exe)
+     Running unittests src\lib.rs (C:/src/.tracker-cargo-target\debug\deps\terrain_core-7e5969842a87c940.exe)
+     Running unittests src\lib.rs (C:/src/.tracker-cargo-target\debug\deps\terrain_web-359fe6bfc73d4479.exe)
+   Doc-tests terrain_core
+   Doc-tests terrain_web
