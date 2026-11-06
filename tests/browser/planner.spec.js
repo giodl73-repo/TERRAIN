@@ -60,15 +60,15 @@ test('runtime files stay within one immutable source revision',async({page})=>{
  }
 });
 
-test('source and build guide remain accessible with JavaScript disabled',async({browser})=>{
- const context=await browser.newContext({javaScriptEnabled:false});const page=await context.newPage();
+test('source and build guide remain accessible with JavaScript disabled',async({browser,baseURL})=>{
+ const context=await browser.newContext({javaScriptEnabled:false,baseURL});const page=await context.newPage();
  try{
-  await page.goto('http://127.0.0.1:8767/TERRAIN/');
+  await page.goto('/TERRAIN/');
   await page.getByRole('link',{name:'Build guide & downloads'}).click();
   await expect(page.getByRole('heading',{name:'Receive without Git'})).toBeVisible();
   const link=page.getByRole('link',{name:'Complete committed source (tar.xz)'});
   await expect(link).toHaveAttribute('href','source.tar.xz');
-  const response=await page.request.get('http://127.0.0.1:8767/TERRAIN/source.tar.xz');
+  const response=await page.request.get('/TERRAIN/source.tar.xz');
   expect(response.ok()).toBeTruthy();expect((await response.body()).length).toBeLessThan(5_000_000);
  }finally{await context.close();}
 });

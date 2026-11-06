@@ -76,3 +76,9 @@ from the original checkout, but receives source without Git and uses new owned
 inputs/home and an initially absent compiled target. It retains failures and raw
 logs. Same-platform complete file/manifest equality is required; cross-platform
 compiler-byte equality is not promised. Do not run another server on port 8767.
+
+To run the same committed browser cases against the anonymous live release, set
+TERRAIN_SITE_URL=https://giodl73-repo.github.io before npm test. This skips the
+local test server; the /TERRAIN/ project path and no-JavaScript download check use
+the configured origin. The source-replay runner explicitly clears that override
+to ensure it tests the received local build.

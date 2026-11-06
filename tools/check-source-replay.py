@@ -42,6 +42,7 @@ def main():
     env = os.environ.copy()
     env.pop('RUSTFLAGS', None)
     env.pop('CARGO_ENCODED_RUSTFLAGS', None)
+    env.pop('TERRAIN_SITE_URL', None)
     env['CARGO_INCREMENTAL'] = '0'
     commands = []
     source = output/'source'
