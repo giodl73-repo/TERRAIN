@@ -21,6 +21,7 @@ def run(*args):
 def receiver_bundle(files):
     entries = {name:files['tools/'+name][0] for name in (
         'receive-source.py', 'source_custody.py', 'input_custody.py')}
+    entries['LICENSE'] = files['LICENSE'][0]
     entries['README.txt'] = (
         'TERRAIN trusted source receiver: Python 3.11+ standard library only.\n'
         'Inspect/trust these modules before use. Obtain the archive expected SHA-256\n'
@@ -28,6 +29,7 @@ def receiver_bundle(files):
         'python -I -S -B receive-source.py --archive /downloads/source.tar.xz '
         '--sha256 EXPECTED --output /new/TERRAIN --protect /compiled-target\n'
         'Use a new output outside the helper/download/compiled-target directories.\n'
+        'The included LICENSE is the complete original MIT grant for these helpers.\n'
         'This does not install Python, Rust, wasm-bindgen or any npm packages.\n').encode()
     data = io.BytesIO()
     with zipfile.ZipFile(data, 'w', compression=zipfile.ZIP_DEFLATED, compresslevel=9) as bundle:

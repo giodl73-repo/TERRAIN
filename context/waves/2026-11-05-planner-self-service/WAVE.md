@@ -527,3 +527,13 @@ successful Retry using retained private CSV. No Rust/model/lock/grant changes.
 
 Repair source must pass the25-case suite, full source/archive/default gates and
 fresh anonymous live25 before any canonical pointer or delivery-count promotion.
+
+## Standalone receiver license packaging
+
+The complete site/source already retain the application MIT license. Include
+the same exact grant inside receiver.zip as well, so the trusted helper bundle
+remains complete when copied or reused independently of the site. Keep the
+three Python modules, original source/input/grant inventories and all native
+outputs unchanged. The README and build guide name the included license.
+This is a packaging change; actual source/archive/default/live qualification
+will bind the resulting receiver hash and package before snapshot advancement.
