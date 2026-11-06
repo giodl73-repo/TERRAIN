@@ -1,0 +1,36 @@
+[
+  {
+    "name": "baseline",
+    "command": [
+      "python",
+      "-B",
+      "tools/build-pages.py",
+      "--inputs",
+      "C:\\src\\terrain-self-service-qualification-20261105\\owned-input-capsule-v1\\sources",
+      "--cargo-home",
+      "C:\\src\\terrain-self-service-qualification-20261105\\owned-input-capsule-v1\\cargo-home",
+      "--target",
+      "C:/src/.tracker-cargo-target",
+      "--output",
+      "C:\\src\\terrain-self-service-20261105\\dist\\notice-input-baseline-v1\\TERRAIN"
+    ],
+    "exit_code": 0
+  },
+  {
+    "name": "outside-git",
+    "command": [
+      "python",
+      "-B",
+      "tools/build-pages.py",
+      "--inputs",
+      "C:\\src\\terrain-self-service-qualification-20261105\\nogit-empty-target-probe-v1\\inputs",
+      "--cargo-home",
+      "C:\\src\\terrain-self-service-qualification-20261105\\nogit-empty-target-probe-v1\\cargo-home",
+      "--target",
+      "C:\\src\\terrain-self-service-qualification-20261105\\nogit-empty-target-probe-v1\\target",
+      "--output",
+      "C:\\src\\terrain-self-service-qualification-20261105\\nogit-empty-target-probe-v1\\source\\dist\\TERRAIN"
+    ],
+    "exit_code": 0
+  }
+]

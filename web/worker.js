@@ -11,6 +11,8 @@ self.onmessage = async ({data}) => {
       self.postMessage({type:'result', id, generation, result, ms:performance.now()-started});
     }
   } catch (error) {
-    self.postMessage({type:'error', id, generation, message:String(error)});
+    // Rust validation failures are thrown strings. A trap/JS failure may leave
+    // the engine unusable and needs a new worker rather than a warm retry.
+    self.postMessage({type:'error', id, generation, message:String(error), fatal:typeof error !== 'string'});
   }
 };

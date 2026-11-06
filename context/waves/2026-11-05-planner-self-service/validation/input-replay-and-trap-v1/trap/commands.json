@@ -1,0 +1,43 @@
+[
+  {
+    "name": "predecessor",
+    "command": [
+      "node",
+      "C:\\src\\terrain-self-service-20261105\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "--config",
+      "C:\\src\\terrain-self-service-qualification-20261105\\wasm-trap-recovery-v1\\predecessor\\playwright.config.mjs",
+      "--grep",
+      "WASM runtime trap"
+    ],
+    "exit_code": 1
+  },
+  {
+    "name": "build",
+    "command": [
+      "python",
+      "-B",
+      "tools/build-pages.py",
+      "--inputs",
+      "C:\\src\\terrain-self-service-qualification-20261105\\owned-input-capsule-v1\\sources",
+      "--cargo-home",
+      "C:\\src\\terrain-self-service-qualification-20261105\\owned-input-capsule-v1\\cargo-home",
+      "--target",
+      "C:/src/.tracker-cargo-target",
+      "--output",
+      "C:\\src\\terrain-self-service-20261105\\dist\\wasm-trap-recovery-v1\\TERRAIN"
+    ],
+    "exit_code": 0
+  },
+  {
+    "name": "corrected",
+    "command": [
+      "node",
+      "C:\\src\\terrain-self-service-20261105\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "--config",
+      "C:\\src\\terrain-self-service-qualification-20261105\\wasm-trap-recovery-v1\\corrected\\playwright.config.mjs"
+    ],
+    "exit_code": 0
+  }
+]

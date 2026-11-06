@@ -64,6 +64,10 @@ export class PlannerSession {
           this.fail('Planner could not load. Choose Retry planner, or inspect the source.');
         } else if (this.active && data.id === this.active.id && this.state === 'planning') {
           if (data.type !== 'result' && data.type !== 'error') return;
+          if (data.type === 'error' && data.fatal) {
+            this.fail('The planning engine stopped. Choose Retry planner, or use fewer sites.');
+            return;
+          }
           clearTimeout(this.timer);
           this.timer = null;
           const input = this.active.input;

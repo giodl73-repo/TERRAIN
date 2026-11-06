@@ -205,3 +205,18 @@ test('private CSV stays out of requests and shared settings reload the public sa
   expect(requests.every(r=>r.method==='GET'&&r.body===null&&!r.url.includes(marker))).toBe(true);
   await page.reload();await expect(page.locator('#status')).toContainText('18 sites · 1 territories');expect(await page.locator('#csv').inputValue()).not.toContain(marker);
 });
+
+test('WASM runtime trap retires the engine and retries with the same input',async({page})=>{
+  await observeWorkers(page);
+  await page.route('**/worker.js',async route=>{
+    const response=await route.fetch();
+    const body=(await response.text()).replace('const started = performance.now();',"throw new WebAssembly.RuntimeError('injected trap');\n      const started = performance.now();");
+    await route.fulfill({response,body});
+  });
+  await page.goto('/TERRAIN/');await expect(page.locator('#status')).toContainText('planning engine stopped');
+  const csv=await page.locator('#csv').inputValue();await noResult(page);
+  expect(await page.evaluate(()=>window.__terrainWorkers[0].retired)).toBe(true);
+  await page.unroute('**/worker.js');await page.locator('#retry').click();
+  await expect(page.locator('#export')).toBeEnabled();await expect(page.locator('#csv')).toHaveValue(csv);
+  await expect(page.locator('#status')).toContainText('18 sites · 3 territories');await liveWorkerBound(page);
+});

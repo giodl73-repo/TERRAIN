@@ -5,8 +5,8 @@ original-input kit, a standalone standard-library receiver, 23 archive/path
 controls and two compiler-policy controls. Its isolated owned restore passes
 46 native tests and 69 full native/WASM comparisons with unchanged original
 source/config bytes; stable compiler path remaps prepare cross-directory replay.
-Complete original dependency/runtime notices are retained and linked. Current
-immutable hosted execution follows commit. Prior recovery source passes 69
+Complete original dependency/runtime notices are retained and linked. Owned-input source b11b452 passes hosted execution; the later runtime-trap
+recovery fix and source-copy evidence are a separate checkpoint. Prior recovery source passes 69
 controls and 21 browser cases in hosted CI. Full source/archive receivers,
 complete all-in 5 MB budget, empty-target replay and default/live qualification
 remain open. Canonical source/deployment stay at their prior release; earlier
@@ -414,3 +414,32 @@ The original Rust runtime HTML has whitespace-only lines. Retain its original
 425,661 bytes and SHA; record the initial staged whitespace failure and apply
 an exception only to that exact original-notice path. No source-code whitespace
 checks are weakened and no original notice text is trimmed or normalized.
+
+## Raw Git file-copy / empty-target replay
+
+Immutable source `b11b452` is copied from all 336 original Git blobs/modes into
+a fresh folder without .git. With new owned input/Cargo-home directories and
+an explicitly empty compiled target, the real build reproduces all 14 current
+runtime/notice files exactly, totaling 1,194,225 bytes. No bytes are normalized.
+This validates the remap policy/layout; it is not a generic source archive
+receiver or the full source-package/manifest replay gate.
+
+A complete Git ZIP plus runtime/notices leaves only 73,156 bytes under 5 MB,
+before source metadata/receivers/guide. A whole-source tar.xz size probe retains
+every one of the same 336 blobs/modes and totals 2,939,500 bytes; together with
+current runtime/notices it leaves 866,275 bytes. Use that complete archive format
+for the next source-delivery slice; no original source/notice files are excluded
+or trimmed. Final combined delivery still requires an actual measured gate.
+
+## Runtime trap recovery regression
+
+The real Rust adapter throws validation errors as strings. A WASM runtime trap
+or JavaScript engine error is an object and may leave the engine unusable.
+The old worker treated both as ordinary input errors and hid Retry after a
+trap. A new explicit fatal flag retires that generation and shows a readable
+Retry/fewer-sites route, while normal Rust validation errors retain the warm
+engine. The new injected WebAssembly.RuntimeError control fails against frozen
+b11 source and passes against the fix. All 22 browser cases then pass without
+retries/skips/flakiness, including the actual 2,000-site Rust graph/export case.
+The injection happens before the Rust call and is not described as a naturally
+occurring Rust panic/OOM measurement. No Rust model or adapter changes occur.
