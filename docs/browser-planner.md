@@ -15,8 +15,10 @@ loads that sample; private CSV is neither placed in the URL nor transmitted.
 SVG is displayed as an inert image. Invalid inputs clear results and disable
 exports until a successful calculation. Inputs are capped at 500 KB / 2,000 sites.
 
-Build with `python tools/build-pages.py` after installing the Rust wasm target
-and wasm-bindgen-cli 0.2.127. `npm ci` and `npx playwright test` exercise real WASM,
+Build with `python tools/build-pages.py --inputs ../terrain-inputs --cargo-home ../terrain-cargo-home`
+after installing the Rust wasm target and wasm-bindgen-cli 0.2.127; the
+[verified input kit](../cargo-inputs/README.md) creates or verifies those new
+owned offline sources. `npm ci` and `npx playwright test` exercise real WASM,
 keyboard controls, both methods, CSV recovery, download, mobile width, and load
 failure. CI runs native workspace tests, adapter clippy, release WASM, browser
 checks, and a 5 MB output gate before deployment on main.

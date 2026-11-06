@@ -13,6 +13,8 @@ jobs:
   build:
     runs-on: ubuntu-24.04
     timeout-minutes: 30
+    env:
+      CARGO_TARGET_DIR: ${{ github.workspace }}/target/terrain-build
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -36,16 +38,27 @@ jobs:
           echo "${install_dir}" >> "${GITHUB_PATH}"
           npm ci
           npx playwright install --with-deps chromium
+      - name: Verify input receiver and restore original offline sources
+        run: |
+          python -B -m unittest discover -s tools -p 'test_*custody.py' -v
+          python -B -m unittest discover -s tools -p 'test_rust_build.py' -v
+          sha="$(cut -d' ' -f1 cargo-inputs/inputs.sha256)"
+          python -I -S -B tools/input_custody.py --sha256 "${sha}" --inputs "${RUNNER_TEMP}/terrain-inputs" --cargo-home "${RUNNER_TEMP}/terrain-cargo-home" --protect-target "${CARGO_TARGET_DIR}"
+          echo "CARGO_HOME=${RUNNER_TEMP}/terrain-cargo-home" >> "${GITHUB_ENV}"
+          echo "TERRAIN_INPUTS=${RUNNER_TEMP}/terrain-inputs" >> "${GITHUB_ENV}"
+          echo "CARGO_NET_OFFLINE=true" >> "${GITHUB_ENV}"
       - name: Validate Rust
         run: |
-          cargo fmt -p terrain-web --check
+          cargo fmt --check
           cargo test --locked --workspace
           cargo clippy --locked --no-deps -p terrain-web --all-targets --all-features -- -D warnings
       - name: Build Pages and test browser
         run: |
-          python tools/build-pages.py
+          python tools/build-pages.py --inputs "${TERRAIN_INPUTS}" --cargo-home "${CARGO_HOME}" --target "${CARGO_TARGET_DIR}"
           python tools/check-planner.py --site dist/TERRAIN --output "${RUNNER_TEMP}/terrain-planner-parity"
           npm test
+          sha="$(cut -d' ' -f1 cargo-inputs/inputs.sha256)"
+          python -I -S -B tools/input_custody.py --sha256 "${sha}" --inputs "${TERRAIN_INPUTS}" --cargo-home "${CARGO_HOME}" --readback
       - name: Retain full planner comparisons
         if: always() && !cancelled()
         uses: actions/upload-artifact@v4

@@ -1,0 +1,36 @@
+[
+  {
+    "command": [
+      "python",
+      "-X",
+      "utf8",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tools",
+      "-p",
+      "test_input_custody.py",
+      "-v"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "python",
+      "-X",
+      "utf8",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tools",
+      "-p",
+      "test_rust_build.py",
+      "-v"
+    ],
+    "exit_code": 0
+  }
+]

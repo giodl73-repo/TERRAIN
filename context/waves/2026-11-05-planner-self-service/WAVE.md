@@ -1,16 +1,16 @@
 # Reproducible TERRAIN planner delivery
 
-Status: worker recovery source `d82e26e30de450cb912b444c4eb32b188fd2b688`
-passes hosted qualification: all 69 full native/WASM controls and 21 browser
-cases. API-digest-verified artifacts match its actual source tree and executing
-module. Local browser probes preserve the initial failures, corrected 21-case
-passes and the audited stale LICENSE index flag. Later checkpoint/docs and one
-mobile whitespace byte are separate from that measured source. All 27 locked
-inputs also compile offline through a new owned source/Cargo-home layout, with
-1,150 original files unchanged before/after. This is a layout rehearsal, not a
-shipped input receiver. Owned input/source delivery, archive/receiver, complete
-5 MB budget, and actual default/live qualification remain open. Canonical source
-and deployment stay at their prior release; baseline sections are historical.
+Status: the source draft now contains an authored, independently verified
+original-input kit, a standalone standard-library receiver, 23 archive/path
+controls and two compiler-policy controls. Its isolated owned restore passes
+46 native tests and 69 full native/WASM comparisons with unchanged original
+source/config bytes; stable compiler path remaps prepare cross-directory replay.
+Complete original dependency/runtime notices are retained and linked. Current
+immutable hosted execution follows commit. Prior recovery source passes 69
+controls and 21 browser cases in hosted CI. Full source/archive receivers,
+complete all-in 5 MB budget, empty-target replay and default/live qualification
+remain open. Canonical source/deployment stay at their prior release; earlier
+baseline and development observations remain explicitly historical.
 
 ## Original baseline contract
 
@@ -357,3 +357,60 @@ before/after compilation. Full original Git manifests need no normalization for
 this dependency graph. Shared compiled target and installed compiler remain
 explicit; this is layout feasibility, not a shipped generic receiver or complete
 source/home/toolchain/archive qualification.
+
+## Authored original input kit and standalone receiver
+
+The first owned kit contains all 25 original registry archives and both complete
+immutable Git trees, with 1,150 original files. Its 2,581,467 bytes have SHA-256
+`a937b404bffb49b2433cbf8f6887dc45a238a64f44ef60be55a750fc682a83dc`.
+A standard-library-only receiver checks the external capsule SHA, full lock
+closure, registry checksums, original Git commit/tree/blob/modes, grant/file
+inventories, portable paths and resource bounds before writing new folders.
+It rejects existing/overlapping/source/target destinations and real Windows
+junctions, restores original manifests without Cargo vendor filtering, and
+checks all original files plus managed source config after compilation. Source
+archive modes are verified on all platforms; POSIX disk execute bits are checked
+where supported, not claimed as Windows ACL equivalence.
+
+The corrected receiver controls pass, including corruption/closure/grant cuts,
+unsafe wire names, links/devices, path aliases, resource limits and preservation
+of existing outputs. Initial ZIP-test fixtures normalized slash/NUL names before
+writing them; those two observed subcase failures and the corrected wire fixture
+are retained. They were not a source-verifier bypass. Compiler-policy tests also
+check encoded-flag precedence and stable source/dependency/target path mapping.
+
+Actual isolated Python restoration into fresh owned source/Cargo-home folders
+passes 46 native tests, strict web Clippy, formatting, both sample commands,
+remapped release WASM and all 69 full native/WASM comparisons. Original native
+result bytes remain identical. Readbacks before/after confirm every original
+file and source config unchanged, and all 27 external manifests resolve under
+the owned sources. Installed tools and the shared compiled target were reused;
+this remains dirty-source development evidence, not an archive/empty-target or
+new default/live release qualification.
+
+The builder now requires explicit new or verified owned source/home folders and
+checks source/target overlap and metadata before compilation. CI uses a fresh
+owned Cargo home, restored originals and a checkout-local compiled target; its
+new workflow is linted, with actual hosted execution still pending. Source and
+Cargo input paths are remapped to stable virtual names for later cross-directory
+replay. No first-party Rust, Cargo lock, SCENARIUM API or model changes are made.
+
+Complete original dependency notices total 278,720 bytes and the unmodified Rust
+1.95.0 library runtime notice totals 425,661 bytes. Both are retained in source,
+verified before copying, and linked from the generated site. Installed compiler/
+linker/bindgen/browser tools are separate prerequisites, not redistributed.
+The complete source download/receiver and full all-in 5,000,000-byte budget still
+remain open; the runtime-only total cannot close those gates.
+
+The final local receiver suite passes 23 tests, including a copied receiver
+outside the repository with PATH empty and Python site packages disabled.
+Two compiler-policy tests pass. Directory-prefix case/Unicode aliases,
+unsupported compression and decompressed tar/PAX container growth are bounded
+before restoration. Windows destination aliases and original disk/archive mode
+scope remain explicit. These strengthen the original data layout without
+rewriting any of the 1,150 files or their original manifests/grants.
+
+The original Rust runtime HTML has whitespace-only lines. Retain its original
+425,661 bytes and SHA; record the initial staged whitespace failure and apply
+an exception only to that exact original-notice path. No source-code whitespace
+checks are weakened and no original notice text is trimmed or normalized.

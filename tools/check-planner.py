@@ -9,6 +9,8 @@ from pathlib import Path
 import subprocess
 import sys
 
+from rust_build import configure_flags
+
 ROOT = Path(__file__).resolve().parents[1]
 HEADER = 'site_id,demand,revenue,latitude,longitude\n'
 
@@ -72,6 +74,8 @@ def main():
     target = Path(metadata['target_directory']).resolve()
     if output == target or output in target.parents or target in output.parents:raise ValueError('Output overlaps compiled target')
     output.mkdir(parents=True)
+    full_metadata = json.loads(subprocess.check_output(['cargo','metadata','--locked','--offline','--all-features','--format-version','1'],cwd=ROOT))
+    configure_flags(full_metadata)
     cases = controls()
     (output/'controls.json').write_text(json.dumps(cases,ensure_ascii=False,indent=2,allow_nan=False)+'\n',encoding='utf-8',newline='\n')
     control_file = output/'controls.jsonl'

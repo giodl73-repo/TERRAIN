@@ -8,3 +8,6 @@
 *.log
 *.tmp
 .cargo/config.toml
+
+# Derived Python bytecode is not source or build input.
+__pycache__/

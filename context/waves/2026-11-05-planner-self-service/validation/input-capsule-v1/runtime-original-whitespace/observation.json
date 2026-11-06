@@ -1,0 +1,4 @@
+{
+  "exit_code": 2,
+  "scope": "Original unmodified Rust runtime HTML contains whitespace-only lines; bytes retained, exact notice path receives a whitespace-audit exception. Source-code checks remain unchanged."
+}
