@@ -502,3 +502,28 @@ This review/evidence revision still requires its own hosted qualification.
 Default-branch deployment, anonymous live file/manifest readback, executing live
 WASM and explicit separate TRACKER snapshot remain open. The upstream opt-in
 METIS candidate remains a separate scoped draft; no other consumer adopts it.
+
+## Live sample/engine deadline race
+
+Source PR3 merged asd790b600becb209ad52f232ce32956a4ba58af48; actual default
+run42183187912 passes full archive/native/typed/browser qualification and deploys.
+All18 ordinary anonymous live URLs match the exact artifact (4,291,733bytes),
+including source/receiver/manifest/notices/runtime. The first live browser run
+passes23 of24 cases but exposes an overlapping asynchronous deadline race:
+accelerating the stalled engine clock can abort an in-flight sample request,
+whose delayed catch then overwrites the engine's more useful timeout message.
+Retry remains visible and retired results stay fenced, but the status is wrong.
+Do not call this release fully live-qualified; the raw failed run is retained.
+
+A deterministic new control stalls both sample and engine and fails against the
+actual d790 live predecessor with exactly that misleading sample error. Keep
+the engine failure message until the engine state changes; a late current sample
+error now restores that message. User edits, ordinary input errors, Stop and
+successful Retry retain their existing semantics. The original initialization
+control first settles its independent sample request before advancing the engine
+clock; all of its retirement/late-message/Retry assertions remain. The separate
+new combined-deadline control verifies the formerly missing interleaving and
+successful Retry using retained private CSV. No Rust/model/lock/grant changes.
+
+Repair source must pass the25-case suite, full source/archive/default gates and
+fresh anonymous live25 before any canonical pointer or delivery-count promotion.
