@@ -1,16 +1,16 @@
 # Reproducible TERRAIN planner delivery
 
-Status: source draft pins the opt-in METIS candidate and implements worker
-stop/retry, initialization/computation/sample deadlines, bounded current work,
-and immediate stale-result invalidation. The first worker probe retained three
-failures (startup resurrection race and a test-clock setup error); the corrected
-dirty-source probe passes all 21 actual browser cases, including the 2,000-site
-graph workload. A clean-source replay follows the code commit. Prior pinned
-source/hosted checks pass all 69 complete native/WASM comparisons and preserve
-original native bytes. Canonical source and deployment stay at their prior
-release. Owned input/source restoration, archive/receiver, complete 5 MB budget,
-and actual default/live delivery remain open. Baseline sections below are
-historical evidence, not the current implementation state.
+Status: worker recovery source `d82e26e30de450cb912b444c4eb32b188fd2b688`
+passes hosted qualification: all 69 full native/WASM controls and 21 browser
+cases. API-digest-verified artifacts match its actual source tree and executing
+module. Local browser probes preserve the initial failures, corrected 21-case
+passes and the audited stale LICENSE index flag. Later checkpoint/docs and one
+mobile whitespace byte are separate from that measured source. All 27 locked
+inputs also compile offline through a new owned source/Cargo-home layout, with
+1,150 original files unchanged before/after. This is a layout rehearsal, not a
+shipped input receiver. Owned input/source delivery, archive/receiver, complete
+5 MB budget, and actual default/live qualification remain open. Canonical source
+and deployment stay at their prior release; baseline sections are historical.
 
 ## Original baseline contract
 
@@ -310,3 +310,50 @@ Stop/Retry/error states, preserved inputs, keyboard/mobile behavior and the
 actual full admitted workload. These are scoped code/test findings, not
 independent human approval or operational certification. Original Rust/Cargo/
 lock/toolchain paths remain unchanged from the measured pinned predecessor.
+
+## Immutable recovery checkpoint
+
+Recovery source `d82e26e30de450cb912b444c4eb32b188fd2b688` passes hosted run
+`42166191392`: all 69 full typed native/WASM comparisons and all 21 browser cases.
+Its actual merge checkout `4521533725d0f73ef869b76218308f4833450abe` has the exact
+same tree as the PR head. Both downloaded artifact API digests verify, every
+shipped web/sample/license file matches its committed blob, and the real WASM
+hash matches the parity record. Full output streams also match the retained
+original Windows native bytes. Runtime-only site size is 490,356 bytes; this
+still does not close the complete source/input/notice budget.
+
+A second local 21-case replay passes without retries/skips/flakiness. Its
+pre-run status reported LICENSE modified after the EOL-attribute transition,
+but actual file, generated runtime and raw Git license bytes are identical and
+Git diffs are empty. Staging the identical file refreshes that stale index state
+without any source change. Retain this observation/audit rather than relabeling
+the original dirty-status receipt. Hosted source qualification is independent.
+
+Desktop completed and mobile completed/stopped states were visually inspected:
+controls/retry text fit without horizontal overflow or page errors. Original
+native SVG label overlap and small scaled mobile labels are retained model
+limitations. A mobile intro line-break joining two sentences is corrected by
+one HTML whitespace byte after this measured source. Generated PNGs remain
+outside Git as rebuildable QA output; their hashes and review are retained.
+
+## Original-input layout rehearsal
+
+A new owned Cargo home and source replacement resolve all 27 exact locked
+external packages offline, with every external manifest under the new source
+folder and no local Cargo patch. Complete original Git manifests work without
+Cargo's normalized Git manifests. The first probe's 46 native tests pass, but
+its Cargo-vendor-derived registry subset omits original .gitignore/.gitattributes
+files in 12 packages; it is not complete original-archive closure. Preserve
+that finding. The next probe restores directly from every raw original registry
+and complete Git archive and checks the full source/config inventory before
+and after native compilation. No generic negative-tested capsule receiver,
+empty-target archive replay or full source/input release is qualified yet.
+
+The second layout probe succeeds: all 27 exact locked external package manifests
+resolve under a new owned vendor directory and Cargo home offline, with no local
+patch. All 46 native tests pass. Every one of the 1,150 full original registry
+and Git files, 27 managed checksum files and source configuration is unchanged
+before/after compilation. Full original Git manifests need no normalization for
+this dependency graph. Shared compiled target and installed compiler remain
+explicit; this is layout feasibility, not a shipped generic receiver or complete
+source/home/toolchain/archive qualification.

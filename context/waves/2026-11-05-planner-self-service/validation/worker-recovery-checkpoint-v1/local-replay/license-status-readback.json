@@ -1,0 +1,8 @@
+{
+  "source_head": "d82e26e30de450cb912b444c4eb32b188fd2b688",
+  "initial_status": " M LICENSE",
+  "current_status": "",
+  "license_git_bytes_equal": true,
+  "license_sha256": "54d865855854bb39b0803fa6df674004efdacc4599de22b5a28dd106e7685a5a",
+  "scope": "Git initially reported LICENSE modified after EOL attribute transition; actual file and generated runtime LICENSE match the unchanged raw Git blob exactly. Staging that identical file refreshed the stale index state, producing no staged diff and a clean status. Original dirty source observation is retained, not relabeled."
+}

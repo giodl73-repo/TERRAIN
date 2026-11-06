@@ -1,0 +1,288 @@
+{
+  "files": [
+    {
+      "path": "local-replay/receipt.json",
+      "bytes": 3345,
+      "sha256": "8366cb9702ef503c8b47ea72853b39ff731284e2d253f69cccf2d258789b6bda",
+      "original_bytes": 3345,
+      "original_sha256": "8366cb9702ef503c8b47ea72853b39ff731284e2d253f69cccf2d258789b6bda",
+      "compression": "none"
+    },
+    {
+      "path": "local-replay/source-observation.json",
+      "bytes": 1385,
+      "sha256": "ed40f84d83aba1d52b4709d90ce788cd17a78b2e50696adc0916bcc2dbba5b79",
+      "original_bytes": 1385,
+      "original_sha256": "ed40f84d83aba1d52b4709d90ce788cd17a78b2e50696adc0916bcc2dbba5b79",
+      "compression": "none"
+    },
+    {
+      "path": "local-replay/commands.json",
+      "bytes": 571,
+      "sha256": "10e1ed38bb9d82a543c792f1d39713464cd2bf686d9cbe67394aebc2f2b398d7",
+      "original_bytes": 571,
+      "original_sha256": "10e1ed38bb9d82a543c792f1d39713464cd2bf686d9cbe67394aebc2f2b398d7",
+      "compression": "none"
+    },
+    {
+      "path": "local-replay/license-status-readback.json",
+      "bytes": 591,
+      "sha256": "6b20e7e7eb420cf7ac8d2295889a4a4a40947a8668d6caf461ac36c32888a0a2",
+      "original_bytes": 591,
+      "original_sha256": "6b20e7e7eb420cf7ac8d2295889a4a4a40947a8668d6caf461ac36c32888a0a2",
+      "compression": "none"
+    },
+    {
+      "path": "local-replay/build.stderr",
+      "bytes": 62,
+      "sha256": "370030c372e7dd91d84e93eab2ac4f541326d63672029419de7b62011bb668d1",
+      "original_bytes": 62,
+      "original_sha256": "370030c372e7dd91d84e93eab2ac4f541326d63672029419de7b62011bb668d1",
+      "compression": "none"
+    },
+    {
+      "path": "local-replay/browser.stderr",
+      "bytes": 688,
+      "sha256": "852c805f3eed7a2f0b468a096f349df32ca31a37b1a1157df9523d8e7764f7a2",
+      "original_bytes": 688,
+      "original_sha256": "852c805f3eed7a2f0b468a096f349df32ca31a37b1a1157df9523d8e7764f7a2",
+      "compression": "none"
+    },
+    {
+      "path": "local-replay/browser-report.json.gz",
+      "bytes": 2446,
+      "sha256": "166e21c77e2d8df48a9d7b94e62de221d9c2213a090a289fb77dce9c0a192e1a",
+      "original_bytes": 23978,
+      "original_sha256": "ce26c4131cd957cad5573f4ff41e340b937df100d4c1250fb825b616e4020bba",
+      "compression": "lossless-gzip"
+    },
+    {
+      "path": "local-replay/browser.stdout.gz",
+      "bytes": 907,
+      "sha256": "81ca7eb30cd47fec1b266db8e0f2eb1bd58b2eceef8b31d61b7a702ad7b81b73",
+      "original_bytes": 2590,
+      "original_sha256": "670d2f59321915e3017dd5b95952f505e51c8590522e8b23cdbb8e2b239e9052",
+      "compression": "lossless-gzip"
+    },
+    {
+      "path": "local-replay/build.stdout.gz",
+      "bytes": 125,
+      "sha256": "fdb001973cd5070e741df9ac694e2ca9fa31b50435ba09f1d79b2b447acf15c4",
+      "original_bytes": 108,
+      "original_sha256": "1c1bfcbd36e82e93754ee44fece0f1e8b105ca1d1e9641eb6dc84574c8f0f0cf",
+      "compression": "lossless-gzip"
+    },
+    {
+      "path": "hosted/receipt.json",
+      "bytes": 8274,
+      "sha256": "0f4f3ffd7f918106225a3cc5d20ea61ceff143ff46a674d5ced2510fa372c336",
+      "original_bytes": 8274,
+      "original_sha256": "0f4f3ffd7f918106225a3cc5d20ea61ceff143ff46a674d5ced2510fa372c336",
+      "compression": "none"
+    },
+    {
+      "path": "hosted/run.json",
+      "bytes": 14661,
+      "sha256": "6989b7400dd6ee6e7a39c1ee659a6752ca97a9f60280db29f87123190991675d",
+      "original_bytes": 14661,
+      "original_sha256": "6989b7400dd6ee6e7a39c1ee659a6752ca97a9f60280db29f87123190991675d",
+      "compression": "none"
+    },
+    {
+      "path": "hosted/parity-receipt.json",
+      "bytes": 22240,
+      "sha256": "8f71468fe1c4d553c87eabbb4166542871deb0559a3b6bb768aebbd7b3645432",
+      "original_bytes": 22240,
+      "original_sha256": "8f71468fe1c4d553c87eabbb4166542871deb0559a3b6bb768aebbd7b3645432",
+      "compression": "none"
+    },
+    {
+      "path": "hosted/parity-commands.json",
+      "bytes": 819,
+      "sha256": "87a342c85b8e3cfa734f6cc91a89b747bbde74e4a775dde61f4765dd4d900e60",
+      "original_bytes": 819,
+      "original_sha256": "87a342c85b8e3cfa734f6cc91a89b747bbde74e4a775dde61f4765dd4d900e60",
+      "compression": "none"
+    },
+    {
+      "path": "hosted/parity-wasm.stdout",
+      "bytes": 142,
+      "sha256": "90a72e0d2f23b38a2a5ec6b2d5488ddeef9dd1e31b630a4df971e5dccbd04b1a",
+      "original_bytes": 142,
+      "original_sha256": "90a72e0d2f23b38a2a5ec6b2d5488ddeef9dd1e31b630a4df971e5dccbd04b1a",
+      "compression": "none"
+    },
+    {
+      "path": "hosted/parity-wasm.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_bytes": 0,
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compression": "none"
+    },
+    {
+      "path": "hosted/run.stdout.gz",
+      "bytes": 17675,
+      "sha256": "fe710852d96225935105fa8dc4f6f70c923f7b1fe9663350d5ca64b66d1b370a",
+      "original_bytes": 115339,
+      "original_sha256": "21849d09715b7efcab5882e2589a1c75f29822609689b2335beea2402d28655b",
+      "compression": "lossless-gzip"
+    },
+    {
+      "path": "visual/receipt.json",
+      "bytes": 633,
+      "sha256": "9a2f45a77513ebceb36b2cf2d01aff983b89bb4a4fa74f0b24ad3690fc130598",
+      "original_bytes": 633,
+      "original_sha256": "9a2f45a77513ebceb36b2cf2d01aff983b89bb4a4fa74f0b24ad3690fc130598",
+      "compression": "none"
+    },
+    {
+      "path": "visual/visual-review.json",
+      "bytes": 1942,
+      "sha256": "d183b1bea23fb17931b8c99148163cd3e544c6e201bfde6ce4cba9a477db466c",
+      "original_bytes": 1942,
+      "original_sha256": "d183b1bea23fb17931b8c99148163cd3e544c6e201bfde6ce4cba9a477db466c",
+      "compression": "none"
+    },
+    {
+      "path": "input-layout-probe/receipt.json",
+      "bytes": 978,
+      "sha256": "d2a1027fd5b8a09f04ddf5375c56fa0c5d79a33c0f284ce5457973e51a2e06cb",
+      "original_bytes": 978,
+      "original_sha256": "d2a1027fd5b8a09f04ddf5375c56fa0c5d79a33c0f284ce5457973e51a2e06cb",
+      "compression": "none"
+    },
+    {
+      "path": "input-layout-probe/commands.json",
+      "bytes": 395,
+      "sha256": "e7423e2b138fdb9875ce273af7f00c65c3e449579d29555415e7a32e75586b75",
+      "original_bytes": 395,
+      "original_sha256": "e7423e2b138fdb9875ce273af7f00c65c3e449579d29555415e7a32e75586b75",
+      "compression": "none"
+    },
+    {
+      "path": "input-layout-probe/metadata.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_bytes": 0,
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compression": "none"
+    },
+    {
+      "path": "input-layout-probe/native.stderr",
+      "bytes": 1476,
+      "sha256": "16712459f50b1b32c5f346d0632edf9dc62a5947b3bc69509ef12c2795625d4d",
+      "original_bytes": 1476,
+      "original_sha256": "16712459f50b1b32c5f346d0632edf9dc62a5947b3bc69509ef12c2795625d4d",
+      "compression": "none"
+    },
+    {
+      "path": "input-layout-probe/native.stdout.gz",
+      "bytes": 939,
+      "sha256": "1ea778b25a75e74831fb456d4faa81301d1d165fc227ed7be66a6bce99755274",
+      "original_bytes": 3362,
+      "original_sha256": "b6350dd82619e78a22b1015b5dad2a2b249b312dae2b3181d971cc99d331160d",
+      "compression": "lossless-gzip"
+    },
+    {
+      "path": "input-layout-probe/original-archive-closure-discrepancy.json",
+      "bytes": 2413,
+      "sha256": "1d5e226d689fb5c1fa084b9bd2c3324e8a21c8120e9a36804d524a6b8bda1228",
+      "original_bytes": 2413,
+      "original_sha256": "1d5e226d689fb5c1fa084b9bd2c3324e8a21c8120e9a36804d524a6b8bda1228",
+      "compression": "none"
+    },
+    {
+      "path": "input-layout-probe-v2/receipt.json",
+      "bytes": 1261,
+      "sha256": "2276bc0adfd3a8177a86cae2d58900e61b3ae7361c96c833805f2f49eb3cd9c1",
+      "original_bytes": 1261,
+      "original_sha256": "2276bc0adfd3a8177a86cae2d58900e61b3ae7361c96c833805f2f49eb3cd9c1",
+      "compression": "none"
+    },
+    {
+      "path": "input-layout-probe-v2/commands.json",
+      "bytes": 395,
+      "sha256": "e7423e2b138fdb9875ce273af7f00c65c3e449579d29555415e7a32e75586b75",
+      "original_bytes": 395,
+      "original_sha256": "e7423e2b138fdb9875ce273af7f00c65c3e449579d29555415e7a32e75586b75",
+      "compression": "none"
+    },
+    {
+      "path": "input-layout-probe-v2/source-before.json.gz",
+      "bytes": 50775,
+      "sha256": "c2ff5f3f04b193cdef714c0fa86ae5900218f0fa989fa55f59d9040f551a368a",
+      "original_bytes": 135737,
+      "original_sha256": "0d3c11daf999ab0d2a9519074d691cb34554dec6633df69ec406ca3467e5d054",
+      "compression": "lossless-gzip"
+    },
+    {
+      "path": "input-layout-probe-v2/metadata.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_bytes": 0,
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compression": "none"
+    },
+    {
+      "path": "input-layout-probe-v2/native.stderr",
+      "bytes": 1476,
+      "sha256": "2fa0dd20d36ae2bdb8ecb2f111523c0d66d83e747b305d7880e61e2351bcd5da",
+      "original_bytes": 1476,
+      "original_sha256": "2fa0dd20d36ae2bdb8ecb2f111523c0d66d83e747b305d7880e61e2351bcd5da",
+      "compression": "none"
+    },
+    {
+      "path": "input-layout-probe-v2/native.stdout.gz",
+      "bytes": 937,
+      "sha256": "a35aa4653efb54c36d154ec79bd14dacbda375c967ab27f31de1d03eca4df730",
+      "original_bytes": 3362,
+      "original_sha256": "852f58455ab86c350b7759026fdf516b1dd5fb41e781996aff5d18002aeb29e0",
+      "compression": "lossless-gzip"
+    }
+  ],
+  "source": "d82e26e30de450cb912b444c4eb32b188fd2b688",
+  "hosted_run": "https://github.com/giodl73-repo/TERRAIN/actions/runs/42166191392",
+  "browser_cases": 21,
+  "typed_controls": 69,
+  "hosted_artifact_digests_verified": true,
+  "scope": "Recovery qualification only. Local pre-run Git status carried a stale LICENSE index flag; exact raw Git/file/runtime bytes and empty diffs are audited without relabeling the original observation. Hosted checkout/tree and artifacts independently qualify the immutable source. Generated visual PNGs stay machine-local, with hashes and human-visible review recorded. Owned input/source/archive/default/live/full5MB gates remain open.",
+  "original_source_layout_probe": {
+    "packages": 27,
+    "all_external_manifests_under_new_owned_vendor": true,
+    "original_git_manifests_preserved": true,
+    "original_registry_and_git_files": 1150,
+    "managed_checksum_files": 27,
+    "before_after_source_inventory_exact": true,
+    "managed_config_unchanged": true,
+    "source_local_override_absent": true,
+    "commands": [
+      {
+        "name": "metadata",
+        "command": [
+          "cargo",
+          "metadata",
+          "--locked",
+          "--offline",
+          "--all-features",
+          "--format-version",
+          "1"
+        ],
+        "exit_code": 0
+      },
+      {
+        "name": "native",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "--workspace"
+        ],
+        "exit_code": 0
+      }
+    ],
+    "scope": "Machine-local layout experiment: all27 exact locked packages resolve through a new owned offline source/home layout; all1150 original registry/Git source bytes plus27 managed checksum files and source config remain unchanged before/after46 native tests. Existing compiler/shared target reused. Not yet a generic negative-tested capsule/receiver, complete Cargo-home/toolchain closure, empty-target archive or release qualification.",
+    "native_passed": 46
+  }
+}

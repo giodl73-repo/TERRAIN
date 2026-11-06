@@ -1,0 +1,33 @@
+{
+  "packages": 27,
+  "all_external_manifests_under_new_owned_vendor": true,
+  "original_git_manifests_preserved": true,
+  "source_local_override_absent": true,
+  "commands": [
+    {
+      "name": "metadata",
+      "command": [
+        "cargo",
+        "metadata",
+        "--locked",
+        "--offline",
+        "--all-features",
+        "--format-version",
+        "1"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "native",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "--workspace"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "scope": "Machine-local layout experiment only: full original Git manifests/source work with source replacement and new Cargo home offline; registry files from explicit Cargo vendor probe, shared compiled target/toolchain reused. Not yet a negative-tested input capsule/receiver, complete before-after closure, archive or release qualification."
+}

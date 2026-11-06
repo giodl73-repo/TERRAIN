@@ -14,6 +14,9 @@ territory counts and balance limits, choose greedy or graph partitioning, and
 export GeoJSON. The native Rust engine runs locally as WebAssembly. CSV uploads
 stay on your device; shared links contain settings and load the public sample.
 See [browser architecture and validation](docs/browser-planner.md).
+The self-service source draft adds bounded Stop/Retry and current-input export
+handling; [rollout evidence and remaining delivery gates](context/waves/2026-11-05-planner-self-service/WAVE.md)
+distinguish tested source from the existing live release.
 
 ## First command
 
