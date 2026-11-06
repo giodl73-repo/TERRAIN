@@ -1,0 +1,47 @@
+{
+  "files": [
+    {
+      "path": "first-live-browser-command.json",
+      "bytes": 438,
+      "sha256": "f90bff4db7027361abd0098234fd38c72f00f69d6e6fcf5698266d09caf77508"
+    },
+    {
+      "path": "first-live-browser-report.json.gz",
+      "bytes": 3498,
+      "sha256": "6abd490669eed4d11b807f1d998641c81ff01d704017fc35ac7d24ecb6e6d210"
+    },
+    {
+      "path": "first-live-browser.stderr",
+      "bytes": 984,
+      "sha256": "ae529ae3bde6fa92545ed089fd886ccb1233f139b823648870d0b0be9f30ea52"
+    },
+    {
+      "path": "first-live-browser.stdout.gz",
+      "bytes": 1769,
+      "sha256": "543eeadd85e2a3b70a40bd9469ed7bf96f0ce008baac89bcfbc249c5f20acefc"
+    },
+    {
+      "path": "first-live-live-files.json.gz",
+      "bytes": 1646,
+      "sha256": "8401aed52036e9f25789d80ba47754c37d1d29c228ccd105d925e4df70a67ffe"
+    },
+    {
+      "path": "predecessor-predecessor-report.json.gz",
+      "bytes": 1697,
+      "sha256": "8d4a29a10fa11727ac2667cd10040cf0bf862cca96422e8f20a92d2d0df0b4e0"
+    },
+    {
+      "path": "predecessor-predecessor.stderr",
+      "bytes": 328,
+      "sha256": "97ab2e8799acde7e1b6c1c4d274d8b27fd48ab816ba5228dc08cb86011d83d91"
+    },
+    {
+      "path": "predecessor-predecessor.stdout",
+      "bytes": 2009,
+      "sha256": "99b4cbaf4b23b73da88194a9298bbe750e65400d4ae10b1227085872bb40d0c7"
+    }
+  ],
+  "live_predecessor": "d790b600becb209ad52f232ce32956a4ba58af48",
+  "source_control": "c485bf9",
+  "scope": "Exact stored raw or gzip-compressed browser/failure evidence; -text preserves raw line endings. No failed case is reclassified as a pass."
+}
