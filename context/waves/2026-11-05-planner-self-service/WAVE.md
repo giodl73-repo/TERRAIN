@@ -466,3 +466,39 @@ target, rebuilds and compares every published file and the manifest, then runs
 native validation, full native/WASM controls and optional browser tests. CI invokes
 this runner. These new end-to-end gates are pending; this candidate is not a
 qualified default/live release.
+
+## Complete archive qualification and role review
+
+Source 0008ecf qualifies on Windows: all 358 committed source files received with
+no Git/Cargo PATH, new original input/Cargo-home directories and an initially
+absent compiled target. All 18 published files including the manifest reproduce
+byte for byte, totaling 4,272,398 bytes. Native46, formatting, strict adapter
+Clippy, all69 complete native/WASM streams and all24 browser cases pass. The
+CLI sample-audit and parsed sample-svg also pass. Actual desktop/mobile planner
+and mobile build-guide screenshots were inspected: no page errors/horizontal
+overflow. Existing native SVG labels remain small/overlapping at mobile scale;
+no native rendering/model-quality promise is added.
+
+Hosted run42180194398 succeeds at actual checkout dd946533ab4da997e0cdb407f283cab39660291c,
+whose full tree matches PR head0008ecf. API-digest-verified artifacts prove complete
+original source identity, all-file manifest coverage and another new-input/home/
+empty-target archive rebuild. Both hosted builds pass69 full controls and24
+browser cases; receiver suites33 plus2 flag controls pass. The hosted package is
+4,272,797 bytes. Different platform/commit-stamped archives are distinct; only
+each same-platform replay is called byte-identical. All hosted full native output
+bytes also match historical original Windows native results. Historical input
+CSV line-ending differences remain explicit. See validation/complete-source-v1.
+
+Implementing-agent role lenses (not independent human approval): kernel boundary
+keeps domain policy/native output unchanged and opts TERRAIN into the documented
+METIS feature explicitly; data binding retains all full native SVG/GeoJSON/IDs;
+product editor keeps coordinate radius distinct from travel time and separates
+installed tools from the received original source kit; future-agent review finds
+exact commands, immutable source identity, source/source-input custody, failures
+and remaining gates recorded. Review also removes shell interpolation of the
+external test-server directory: a fixed Python server reads it as data.
+
+This review/evidence revision still requires its own hosted qualification.
+Default-branch deployment, anonymous live file/manifest readback, executing live
+WASM and explicit separate TRACKER snapshot remain open. The upstream opt-in
+METIS candidate remains a separate scoped draft; no other consumer adopts it.

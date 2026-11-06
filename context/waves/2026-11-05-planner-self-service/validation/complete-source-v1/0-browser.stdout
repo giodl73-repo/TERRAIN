@@ -1,0 +1,33 @@
+
+> test
+> playwright test
+
+
+Running 24 tests using 2 workers
+
+  ✓   2 tests\browser\recovery.spec.js:51:1 › editing CSV immediately clears every previous result and export (843ms)
+  ✓   3 tests\browser\recovery.spec.js:60:1 › changing settings clears the previous map before the debounce (571ms)
+  ✓   1 tests\browser\planner.spec.js:3:1 › real WASM partitions sample sites, changes method, and exports (3.0s)
+  ✓   5 tests\browser\planner.spec.js:24:1 › malformed CSV recovers and mobile view fits (705ms)
+  ✓   6 tests\browser\planner.spec.js:34:1 › sample failure gives a readable fallback (228ms)
+  ✓   7 tests\browser\planner.spec.js:40:1 › oversized file invalidates pending plans and exports (879ms)
+  ✓   4 tests\browser\recovery.spec.js:68:1 › stop terminates real executing WASM worker and retry preserves inputs (3.7s)
+  ✓   8 tests\browser\planner.spec.js:50:1 › runtime files stay within one immutable source revision (377ms)
+  ✓  10 tests\browser\planner.spec.js:63:1 › source and build guide remain accessible with JavaScript disabled (318ms)
+  ✓   9 tests\browser\recovery.spec.js:82:1 › initialization deadline retires hung worker and rejects its late ready (740ms)
+  ✓  11 tests\browser\recovery.spec.js:92:1 › computation deadline can terminate a blocked worker and retry (2.6s)
+  ✓  12 tests\browser\recovery.spec.js:101:1 › initialization WASM failure retries successfully without reload (664ms)
+  ✓  13 tests\browser\recovery.spec.js:107:1 › worker crash is recoverable without losing private CSV (962ms)
+  ✓  14 tests\browser\recovery.spec.js:116:1 › unreadable worker response retires current worker and ignores retired errors (798ms)
+  ✓  15 tests\browser\recovery.spec.js:123:1 › rapid new plans keep only one worker and the last input (761ms)
+  ✓  16 tests\browser\recovery.spec.js:132:1 › sample failure still permits private CSV and sample can retry (795ms)
+  ✓  17 tests\browser\recovery.spec.js:139:1 › late public sample cannot replace a private CSV or stopped state (416ms)
+  ✓  18 tests\browser\recovery.spec.js:147:1 › 500001 multibyte UTF8 bytes are rejected before worker admission (612ms)
+  ✓  19 tests\browser\recovery.spec.js:154:1 › real graph mode completes the admitted 2000-site workload and exports all features (35.5s)
+  ✓  20 tests\browser\recovery.spec.js:166:1 › oversized file retires active work and its late response cannot restore output (526ms)
+  ✓  21 tests\browser\recovery.spec.js:174:1 › late local file read cannot overwrite newer private input (514ms)
+  ✓  22 tests\browser\recovery.spec.js:191:1 › public sample timeout aborts its request and preserves later local work (522ms)
+  ✓  23 tests\browser\recovery.spec.js:200:1 › private CSV stays out of requests and shared settings reload the public sample (712ms)
+  ✓  24 tests\browser\recovery.spec.js:209:1 › WASM runtime trap retires the engine and retries with the same input (768ms)
+
+  24 passed (58.0s)

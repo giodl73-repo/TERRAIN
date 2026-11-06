@@ -1,0 +1,16 @@
+{
+  "command": [
+    "python",
+    "-B",
+    "tools/build-pages.py",
+    "--inputs",
+    "C:\\src\\terrain-self-service-qualification-20261105\\owned-input-capsule-v1\\sources",
+    "--cargo-home",
+    "C:\\src\\terrain-self-service-qualification-20261105\\owned-input-capsule-v1\\cargo-home",
+    "--target",
+    "C:/src/.tracker-cargo-target",
+    "--output",
+    "C:\\src\\terrain-self-service-20261105\\dist\\complete-source-candidate-v1\\TERRAIN"
+  ],
+  "exit_code": 0
+}

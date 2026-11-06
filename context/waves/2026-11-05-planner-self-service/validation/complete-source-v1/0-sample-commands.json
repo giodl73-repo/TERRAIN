@@ -1,0 +1,26 @@
+[
+  {
+    "command": [
+      "cargo",
+      "run",
+      "--locked",
+      "-p",
+      "terrain-cli",
+      "--",
+      "sample-audit"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "cargo",
+      "run",
+      "--locked",
+      "-p",
+      "terrain-cli",
+      "--",
+      "sample-svg"
+    ],
+    "exit_code": 0
+  }
+]

@@ -19,3 +19,5 @@ context/waves/2026-11-05-planner-self-service/validation/worker-*/** -text white
 context/waves/2026-11-05-planner-self-service/validation/input-*/** -text whitespace=cr-at-eol,-blank-at-eof
 /notices/rust-1.95.0-COPYRIGHT-library.html whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
 context/waves/2026-11-05-planner-self-service/validation/input-replay-*/** -text whitespace=cr-at-eol,-blank-at-eof
+
+context/waves/2026-11-05-planner-self-service/validation/complete-source-*/** -text whitespace=cr-at-eol,-blank-at-eof
