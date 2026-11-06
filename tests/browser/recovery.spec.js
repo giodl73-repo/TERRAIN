@@ -83,10 +83,30 @@ test('initialization deadline retires hung worker and rejects its late ready',as
   await observeWorkers(page);await page.clock.install();await stall(page,'init');
   await page.goto('/TERRAIN/');
   await expect.poll(()=>page.evaluate(()=>window.__terrainWorkers.length)).toBe(1);
+  // Settle the independent sample request before advancing only the engine clock.
+  await expect(page.locator('#csv')).not.toHaveValue('');
   await page.clock.fastForward(15001);await expect(page.locator('#status')).toContainText('loading timed out');
   expect(await page.evaluate(()=>window.__terrainWorkers.length)).toBe(1);expect(await page.evaluate(()=>window.__terrainWorkers[0].retired)).toBe(true);
   await noResult(page);await lateReply(page);await expect(page.locator('#status')).toContainText('loading timed out');
   await page.unroute('**/worker.js');await page.locator('#retry').click();await expect(page.locator('#export')).toBeEnabled();await liveWorkerBound(page);
+});
+
+test('late sample failure preserves the engine deadline message and Retry',async({page})=>{
+  await observeWorkers(page);await page.clock.install();await stall(page,'init');
+  let release;let started;const observed=new Promise(resolve=>started=resolve);
+  await page.route('**/sample.csv',async route=>{started();await new Promise(resolve=>release=resolve);try{await route.fulfill({status:503,body:'late sample failure'});}catch{}});
+  await page.goto('/TERRAIN/');await observed;
+  await expect.poll(()=>page.evaluate(()=>window.__terrainWorkers.length)).toBe(1);
+  await page.clock.fastForward(15001);
+  await expect(page.locator('#status')).toContainText('loading timed out');
+  await expect(page.locator('#retry')).toBeVisible();await noResult(page);
+  expect(await page.evaluate(()=>window.__terrainWorkers[0].retired)).toBe(true);
+  release();await lateReply(page);await expect(page.locator('#status')).toContainText('loading timed out');
+  await page.unroute('**/worker.js');
+  const csv='site_id,demand,revenue,latitude,longitude\nPRIVATE-A,1,1,0,0\nPRIVATE-B,1,1,1,1\nPRIVATE-C,1,1,2,2\n';
+  await page.locator('#csv').fill(csv);await page.locator('#retry').click();
+  await expect(page.locator('#export')).toBeEnabled();await expect(page.locator('#csv')).toHaveValue(csv);
+  await expect(page.locator('#status')).toContainText('3 sites · 3 territories');await liveWorkerBound(page);
 });
 
 test('computation deadline can terminate a blocked worker and retry',async({page})=>{

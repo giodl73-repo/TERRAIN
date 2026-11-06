@@ -21,3 +21,5 @@ context/waves/2026-11-05-planner-self-service/validation/input-*/** -text whites
 context/waves/2026-11-05-planner-self-service/validation/input-replay-*/** -text whitespace=cr-at-eol,-blank-at-eof
 
 context/waves/2026-11-05-planner-self-service/validation/complete-source-*/** -text whitespace=cr-at-eol,-blank-at-eof
+
+context/waves/2026-11-05-planner-self-service/validation/sample-engine-*/** -text whitespace=cr-at-eol,-blank-at-eof

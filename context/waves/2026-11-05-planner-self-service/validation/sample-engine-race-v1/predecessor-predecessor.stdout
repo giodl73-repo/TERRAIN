@@ -1,0 +1,39 @@
+
+> test
+> playwright test --grep late sample failure --reporter=list,json
+
+
+Running 1 test using 1 worker
+
+  ✘  1 tests\browser\recovery.spec.js:94:1 › late sample failure preserves the engine deadline message and Retry (5.9s)
+
+
+  1) tests\browser\recovery.spec.js:94:1 › late sample failure preserves the engine deadline message and Retry 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoContainText[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Locator: locator('#status')
+    Expected substring: [32m"loading timed out"[39m
+    Received string:    [31m"The public sample could not load. Choose Load sample to retry, or use your own local CSV."[39m
+    Timeout: 5000ms
+
+    Call log:
+    [2m  - Expect "toContainText" with timeout 5000ms[22m
+    [2m  - waiting for locator('#status')[22m
+    [2m    9 × locator resolved to <p id="status" role="status" aria-live="polite">The public sample could not load. Choose Load sam…</p>[22m
+    [2m      - unexpected value "The public sample could not load. Choose Load sample to retry, or use your own local CSV."[22m
+
+
+       99 |   await expect.poll(()=>page.evaluate(()=>window.__terrainWorkers.length)).toBe(1);
+      100 |   await page.clock.fastForward(15001);
+    > 101 |   await expect(page.locator('#status')).toContainText('loading timed out');
+          |                                         ^
+      102 |   await expect(page.locator('#retry')).toBeVisible();await noResult(page);
+      103 |   expect(await page.evaluate(()=>window.__terrainWorkers[0].retired)).toBe(true);
+      104 |   release();await lateReply(page);await expect(page.locator('#status')).toContainText('loading timed out');
+        at C:\src\terrain-self-service-20261105\tests\browser\recovery.spec.js:101:41
+
+    Error Context: test-results\recovery-late-sample-failu-975a4--deadline-message-and-Retry\error-context.md
+
+  1 failed
+    tests\browser\recovery.spec.js:94:1 › late sample failure preserves the engine deadline message and Retry 

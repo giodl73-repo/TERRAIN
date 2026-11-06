@@ -1,0 +1,13 @@
+{
+  "command": [
+    "npm.cmd",
+    "test",
+    "--",
+    "--reporter=list,json"
+  ],
+  "exit_code": 1,
+  "source_head": "d053e4964585c5554ff3e1a3589c603d7fe5e253",
+  "live_expected_default": "d790b600becb209ad52f232ce32956a4ba58af48",
+  "source_tree": "fc21cee7139c0f20d837f2f94d77980d2fe7e59b",
+  "scope": "Same committed browser suite against anonymous public origin; source tree identical to default; no local server."
+}

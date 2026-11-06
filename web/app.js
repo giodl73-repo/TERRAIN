@@ -2,7 +2,7 @@ import {PlannerSession} from './planner-session.js';
 const $ = selector => document.querySelector(selector);
 const params = new URLSearchParams(location.search);
 const format = value => value === null ? '∞' : value.toLocaleString('en-US', {maximumFractionDigits:2});
-let generation = 0, timer, sample, sampleAbort, svgUrl, completed;
+let generation = 0, timer, sample, sampleAbort, svgUrl, completed, engineFailure;
 
 function controls() {
   $('#count-value').textContent = $('#count').value;
@@ -30,12 +30,17 @@ function error(message) {
 
 const session = new PlannerSession({
   onState(state) {
+    if (state !== 'failed') engineFailure = null;
     $('#stop').disabled = !['initializing','planning'].includes(state);
     $('#retry').hidden = !['failed','stopped'].includes(state);
     if (state === 'initializing') $('#status').textContent = 'Loading Rust planning engine…';
     if (state === 'planning') $('#status').textContent = 'Planning… You can stop this calculation; the limit is two minutes.';
   },
-  onError(message) {clearTimeout(timer); error(message);},
+  onError(message) {
+    clearTimeout(timer);
+    if (session.state === 'failed') engineFailure = message;
+    error(message);
+  },
   onResult(result, ms, input) {
     completed = {geojson:result.geojson, input, generation};
     $('#status').textContent = `${result.site_count} sites · ${result.territory_count} territories · ${ms.toFixed(1)} ms · processing stays on your device`;
@@ -120,7 +125,7 @@ async function loadSample(automatic = false) {
       if (!automatic || session.state !== 'failed') plan();
     }
   } catch {
-    if (current === generation) error('The public sample could not load. Choose Load sample to retry, or use your own local CSV.');
+    if (current === generation) error(engineFailure || 'The public sample could not load. Choose Load sample to retry, or use your own local CSV.');
   } finally {
     clearTimeout(deadline);
     if (sampleAbort === abort) sampleAbort = null;
