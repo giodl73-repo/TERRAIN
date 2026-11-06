@@ -1,0 +1,61 @@
+{
+  "actual_source_head": "967410f4d6b5fffbccbded5494689f05cc89a7ea",
+  "unchanged_original_runtime_source": "bfa81f8a0d6f3aa369c3689ae5c393b458554214",
+  "files": [
+    {
+      "path": "original-browser-v1/receipt.json",
+      "bytes": 4148,
+      "sha256": "0da604f459cf7b76cb212cfa1b20969b99101f79f7cf9087056cdc43f94fbd78",
+      "original_observation": "C:\\src\\terrain-self-service-qualification-20261105\\original-browser-v1\\receipt.json"
+    },
+    {
+      "path": "original-browser-v1/commands.json",
+      "bytes": 802,
+      "sha256": "891e4bef5ce9dba3f942411bab1e6b25c372111faea632a4e0d2b0c6d81ddf12",
+      "original_observation": "C:\\src\\terrain-self-service-qualification-20261105\\original-browser-v1\\commands.json"
+    },
+    {
+      "path": "original-browser-v1/site.stdout",
+      "bytes": 110,
+      "sha256": "9026d97f81c893f38e6de79b44154295f27c00c20456cef11f316cba8de87a33",
+      "original_observation": "C:\\src\\terrain-self-service-qualification-20261105\\original-browser-v1\\site.stdout"
+    },
+    {
+      "path": "original-browser-v1/site.stderr",
+      "bytes": 1244,
+      "sha256": "504523cb3e33a5e5025b18bee4c1225e76456eec30b8a14b90a731794a1d2b0a",
+      "original_observation": "C:\\src\\terrain-self-service-qualification-20261105\\original-browser-v1\\site.stderr"
+    },
+    {
+      "path": "original-browser-v1/browser.stdout",
+      "bytes": 475,
+      "sha256": "34709cc4b075d74f016c89a50b8e7f54dc114166595b06f39b257452c640f3d1",
+      "original_observation": "C:\\src\\terrain-self-service-qualification-20261105\\original-browser-v1\\browser.stdout"
+    },
+    {
+      "path": "original-browser-v1/browser.stderr",
+      "bytes": 344,
+      "sha256": "d363444873e198e48457f57aaa26921ddf4b45bfecef0ba145fb0ff2046b33db",
+      "original_observation": "C:\\src\\terrain-self-service-qualification-20261105\\original-browser-v1\\browser.stderr"
+    },
+    {
+      "path": "original-browser-v1/browser-report.json",
+      "bytes": 5945,
+      "sha256": "4abca0bd6243442b586dd7c91482eb9372dc17e5c7fb5a92cabb096a75b0d59e",
+      "original_observation": "C:\\src\\terrain-self-service-qualification-20261105\\original-browser-v1\\browser-report.json"
+    },
+    {
+      "path": "original-browser-v1/server.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_observation": "C:\\src\\terrain-self-service-qualification-20261105\\original-browser-v1\\server.stdout"
+    },
+    {
+      "path": "original-browser-v1/server.stderr",
+      "bytes": 2423,
+      "sha256": "dbcd04e9a9a8eee75ebdc6a7252ec0f0068a8eb716b37711e56432b325787703",
+      "original_observation": "C:\\src\\terrain-self-service-qualification-20261105\\original-browser-v1\\server.stderr"
+    }
+  ],
+  "scope": "Unmodified original real-browser/site observations; distinct documentation/runtime source identities and installed test/build prerequisites retained. Full parity/owned input/source/archive/receiver/default/live delivery remains open."
+}

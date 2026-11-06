@@ -121,3 +121,24 @@ independent human or operational certification is implied.
 
 This pulse freezes the baseline. The next pulse implements and verifies the
 native/WASM contract and owned input/source delivery before release promotion.
+
+## Original real-browser baseline
+
+Documentation-only source `967410f4d6b5fffbccbded5494689f05cc89a7ea` also passes
+the original release WASM build and all four original browser cases once, with
+no retries, failures, skips or flaky results. Every runtime source path, Cargo
+file, browser test and fixture remains byte-unchanged from original `bfa81f8a`.
+The actual original Windows site totals 483,301 bytes; each generated file's
+length/hash and the full commands/report are retained under
+`validation/original-browser-v1/`. This runtime-only total does not close the
+5 MB complete source/input/notice delivery budget.
+
+These cases exercise real WASM, both partition methods, keyboard count changes,
+SVG rendering, GeoJSON export, settings sharing/reload, malformed CSV recovery,
+mobile width, sample-load failure and stale oversized-file invalidation. They
+are the original smoke coverage, not complete native/WASM result equality or
+new stop/retry/deadline/generation evidence. Installed locked-version Playwright
+1.58.2 test packages and Chromium were reused explicitly, along with the
+installed Rust/bindgen/Python and shared compiled target. The script-owned
+local HTTP server and browser processes finished; the source remained clean.
+No planner or worker implementation changed for this evidence pulse.
