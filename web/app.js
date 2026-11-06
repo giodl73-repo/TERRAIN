@@ -95,7 +95,7 @@ async function loadSample(automatic = false) {
   sampleAbort = abort;
   const deadline = setTimeout(() => abort.abort(), 10000);
   try {
-    const response = await fetch('./sample.csv', {signal:abort.signal});
+    const response = await fetch(new URL('./sample.csv', import.meta.url), {signal:abort.signal});
     if (!response.ok) throw new Error('unavailable');
     const reader = response.body.getReader();
     const chunks = [];

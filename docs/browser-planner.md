@@ -53,3 +53,26 @@ Web files are LF-pinned through .gitattributes so generated runtime bytes and
 sample input agree with raw Git/source-archive bytes across checkout platforms.
 Earlier Windows CRLF and hosted LF controls remain distinct historical records;
 no output normalization is used to claim exact native/WASM equality.
+
+### Download and rebuild an exact source release
+
+The Pages footer links to build.html, source.tar.xz, receiver.zip and
+BUILD-MANIFEST.json. The archive contains all committed source, the original
+locked input archives and complete scoped grants. The receiver uses Python
+3.11+ stdlib only; inspect/trust its bundle and obtain the archive expected SHA
+through a trusted channel. No Git or package manager is needed to receive.
+The guide lists the separately installed build tools and new directory flags.
+Do not build unreviewed source. Runtime assets are scoped to the actual source
+commit; the planner's sample request resolves relative to its module.
+
+After building, run the complete source replay with external new directories:
+
+```sh
+python -B tools/check-source-replay.py --site dist/TERRAIN --output /new/terrain-replay --browser
+```
+
+This reuses installed tools and installed npm/Playwright development dependencies
+from the original checkout, but receives source without Git and uses new owned
+inputs/home and an initially absent compiled target. It retains failures and raw
+logs. Same-platform complete file/manifest equality is required; cross-platform
+compiler-byte equality is not promised. Do not run another server on port 8767.

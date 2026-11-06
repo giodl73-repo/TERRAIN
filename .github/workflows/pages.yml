@@ -59,6 +59,19 @@ jobs:
           npm test
           sha="$(cut -d' ' -f1 cargo-inputs/inputs.sha256)"
           python -I -S -B tools/input_custody.py --sha256 "${sha}" --inputs "${TERRAIN_INPUTS}" --cargo-home "${CARGO_HOME}" --readback
+      - name: Rebuild complete source archive outside Git with an empty target
+        run: python -B tools/check-source-replay.py --site dist/TERRAIN --output "${RUNNER_TEMP}/terrain-source-replay" --browser
+      - name: Retain source replay observations
+        if: always() && !cancelled()
+        uses: actions/upload-artifact@v4
+        with:
+          name: terrain-source-replay
+          path: |
+            ${{ runner.temp }}/terrain-source-replay/*.json
+            ${{ runner.temp }}/terrain-source-replay/*.stdout
+            ${{ runner.temp }}/terrain-source-replay/*.stderr
+            ${{ runner.temp }}/terrain-source-replay/planner-parity
+          if-no-files-found: warn
       - name: Retain full planner comparisons
         if: always() && !cancelled()
         uses: actions/upload-artifact@v4

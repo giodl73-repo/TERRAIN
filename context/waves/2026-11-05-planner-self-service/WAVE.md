@@ -443,3 +443,26 @@ b11 source and passes against the fix. All 22 browser cases then pass without
 retries/skips/flakiness, including the actual 2,000-site Rust graph/export case.
 The injection happens before the Rust call and is not described as a naturally
 occurring Rust panic/OOM measurement. No Rust model or adapter changes occur.
+
+## Complete source delivery candidate
+
+The builder now packages every committed regular Git blob/mode as source.tar.xz,
+with a managed original commit/tree/file inventory supplement for no-Git rebuilds.
+The small stdlib receiver bundle is a separate trust boundary; it verifies an
+external archive SHA, bounds XZ/tar resources, rejects links/unsafe paths/Git
+administrative files, and restores only a new destination. No downloaded source
+is executed during receipt. Installed Python/Rust/bindgen/Node remain external
+prerequisites. Original source and dependency/runtime notices are retained.
+
+Runtime assets share assets/<actual-source-commit>/ so an old app cannot silently
+load a different release worker/adapter/WASM. Source downloads and the build guide
+are HTML links available without JavaScript. BUILD-MANIFEST.json covers all other
+published files and includes the original source inventory and input policy; it
+explicitly excludes its own hash. The total published-byte budget remains 5 MB.
+
+The new full archive replay runner receives through an isolated stdlib helper
+with no Git/Cargo PATH, verifies the source, requires new inputs/Cargo home/empty
+target, rebuilds and compares every published file and the manifest, then runs
+native validation, full native/WASM controls and optional browser tests. CI invokes
+this runner. These new end-to-end gates are pending; this candidate is not a
+qualified default/live release.

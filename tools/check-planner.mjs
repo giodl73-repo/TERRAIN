@@ -6,8 +6,11 @@ import { createHash } from 'node:crypto';
 
 const [site, controlsPath, outputPath, abiPath] = process.argv.slice(2);
 if (!site || !controlsPath || !outputPath || !abiPath) throw new Error('Use SITE CONTROLS OUTPUT RAW_ABI_OUTPUT');
-const wasm = await fs.readFile(path.join(site, 'pkg/terrain_web_bg.wasm'));
-const { default:init, plan_json } = await import(pathToFileURL(path.resolve(site, 'pkg/terrain_web.js')).href);
+const manifest = JSON.parse(await fs.readFile(path.join(site, 'BUILD-MANIFEST.json'), 'utf8'));
+if (!/^assets\/[a-f0-9]{40}$/.test(manifest.runtime)) throw new Error('Invalid revision-scoped runtime');
+const runtime = path.join(site, manifest.runtime);
+const wasm = await fs.readFile(path.join(runtime, 'pkg/terrain_web_bg.wasm'));
+const { default:init, plan_json } = await import(pathToFileURL(path.resolve(runtime, 'pkg/terrain_web.js')).href);
 await init({ module_or_path:wasm });
 const controlBytes = await fs.readFile(controlsPath, 'utf8');
 if (!controlBytes.endsWith('\n')) throw new Error('Expected complete NDJSON controls');
