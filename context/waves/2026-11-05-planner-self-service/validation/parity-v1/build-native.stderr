@@ -1,0 +1,17 @@
+   Compiling rand_core v0.6.4
+   Compiling itoa v1.0.18
+   Compiling memchr v2.8.3
+   Compiling serde_core v1.0.229
+   Compiling zmij v1.0.23
+   Compiling serde_json v1.0.151
+   Compiling serde v1.0.229
+   Compiling thiserror v2.0.18
+   Compiling rand v0.8.6
+   Compiling rand_pcg v0.3.1
+   Compiling syn v2.0.117
+   Compiling thiserror-impl v2.0.18
+   Compiling metis-core v0.1.0 (https://github.com/giodl73-repo/METIS-CORE.git#78ae3409)
+   Compiling scenarium v0.1.0 (https://github.com/giodl73-repo/SCENARIUM.git?rev=f731ad4f99cc57479eafce6b68ea6521160c6853#f731ad4f)
+   Compiling terrain-core v0.1.0 (C:\src\terrain-self-service-20261105\terrain-core)
+   Compiling terrain-web v0.1.0 (C:\src\terrain-self-service-20261105\terrain-web)
+    Finished `release` profile [optimized] target(s) in 17.18s

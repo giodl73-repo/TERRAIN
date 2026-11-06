@@ -1,0 +1,22 @@
+{
+  "actual_head": "2e7b8154772e7886447e6fb8e1e89eebb64329be",
+  "clean": false,
+  "added_instrumentation": [
+    {
+      "path": "terrain-web/examples/planner-control.rs",
+      "sha256": "b4746f2caf858e00dec981e9d4361c8dc2a942b734a224e500189a561de958d1",
+      "bytes": 1449
+    },
+    {
+      "path": "tools/check-planner.py",
+      "sha256": "a66ae0cb847a83b6e9bada658320e0bcf37f323a0a12dda68e0ea1a23795d160",
+      "bytes": 7937
+    },
+    {
+      "path": "tools/check-planner.mjs",
+      "sha256": "34372bf045900791fa3760ac67567d5330d279c6be6339563da9dccfa77a204a",
+      "bytes": 2231
+    }
+  ],
+  "scope": "Exact instrumentation bytes used for original69-case discrepancy; original core, adapter, Cargo files and WASM module unchanged. This record does not relabel the dirty instrumentation as committed-source qualification."
+}

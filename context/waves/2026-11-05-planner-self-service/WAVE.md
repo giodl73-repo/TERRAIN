@@ -142,3 +142,35 @@ new stop/retry/deadline/generation evidence. Installed locked-version Playwright
 installed Rust/bindgen/Python and shared compiled target. The script-owned
 local HTTP server and browser processes finished; the source remained clean.
 No planner or worker implementation changed for this evidence pulse.
+
+## Full original native/WASM comparison: discrepancy retained
+
+The new additive native control calls the existing `terrain_web::plan` directly;
+the Node runner instantiates the actual original WASM and calls `plan_json`.
+There is no JavaScript partitioning/audit implementation. Compare the entire
+Rust Result serialization, including every summary, ratio, status, SVG and
+GeoJSON byte and all errors. Named nonfinite-f64 tokens are test transport only;
+five raw JavaScript usize-coercion observations remain separate.
+
+The first 69 controls meet all declared outcome/boundary/conservation/zero-total
+expectations, including both methods, 2,000 sites, 32 territories, the numeric
+ceiling, quoted Unicode CSV and exact ASCII/multibyte 500,000-byte boundaries.
+Sixty-two outputs match exactly. Seven graph cases differ: sample k=8/k=18,
+32 singleton territories, zero/positive totals, the workload/coordinate ceiling
+and quoted Unicode. Differences include assignments, ratios and exports, not
+just labels. Full original inputs/results and exact harness source are retained;
+lossless gzip storage does not normalize them. The comparison remains failing.
+
+METIS-CORE already documents target-specific seed replay. Its original and
+current runtime source are identical; current metadata also restores governing
+Apache-2.0 terms and upstream NOTICE rather than the historical MIT notice.
+Preserve the historical source bytes; do not treat that old notice as superseding
+upstream terms when packaging dependencies.
+
+Three `usize` random draws in METIS initialization/coarsening are a concrete
+width-dependence hypothesis. Test an opt-in fixed-width sampling policy in the
+kernel while retaining legacy defaults and original native64 outputs. No kernel
+or dependency-pin change is qualified or adopted yet. Preserve all 69 controls
+and full outputs; sorting/relabeling or dropping cases cannot close this gap.
+Kernel changes must follow its compatibility/role/ROUTE rehearsal gates, without
+claiming gpmetis quality, operational readiness or independent human approval.
